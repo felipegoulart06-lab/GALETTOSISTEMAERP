@@ -1516,10 +1516,12 @@ svg {
 .media-body button {
   height: 40px;
   padding: 0 14px;
-  border: 1px solid #ccd7e7;
-  background: #ffffff;
-  color: var(--text);
+  border: 1px solid #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 700;
   cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
 
 .media-card-button {
@@ -1528,10 +1530,19 @@ svg {
   justify-content: center;
   min-height: 40px;
   padding: 0 14px;
-  border: 1px solid #ccd7e7;
-  background: #ffffff;
-  color: var(--text);
+  border: 1px solid #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 700;
   text-decoration: none;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.media-card-button:hover,
+.media-body button:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  transform: translateY(-1px);
 }
 
 .media-card-title-link {
@@ -1744,16 +1755,16 @@ svg {
 
 .campaign-board[data-section="campanhas"] .media-card-button,
 .campaign-board[data-section="campanhas"] .media-body button {
-  border-color: #6d28d9;
-  background: #6d28d9;
+  border-color: #2563eb;
+  background: #2563eb;
   color: #ffffff;
   font-weight: 700;
 }
 
 .campaign-board[data-section="campanhas"] .media-card-button:hover,
 .campaign-board[data-section="campanhas"] .media-body button:hover {
-  background: #5b21b6;
-  border-color: #5b21b6;
+  background: #1d4ed8;
+  border-color: #1d4ed8;
 }
 
 .gallery-panel {
@@ -2724,8 +2735,8 @@ svg {
   justify-content: center;
   min-height: 44px;
   padding: 0 18px;
-  border: 1px solid #20345d;
-  background: #20345d;
+  border: 1px solid #2563eb;
+  background: #2563eb;
   color: #ffffff;
   text-decoration: none;
   transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
@@ -2733,8 +2744,8 @@ svg {
 
 .mentoria-library-card:hover .mentoria-card-action {
   transform: translateY(-1px);
-  background: #162745;
-  border-color: #162745;
+  background: #1d4ed8;
+  border-color: #1d4ed8;
 }
 
 .mentoria-support-grid {
@@ -4840,9 +4851,10 @@ svg {
 .sorteios-card-action {
   min-height: 40px;
   padding: 0 14px;
-  border: 1px solid #dce5f1;
-  background: #f8fbff;
-  color: #203a65;
+  border: 1px solid #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 700;
   font: inherit;
 }
 
@@ -6383,10 +6395,17 @@ svg {
   justify-content: center;
   min-height: 44px;
   padding: 0 16px;
-  border: 1px solid #0d1830;
-  background: #0d1830;
+  border: 1px solid #2563eb;
+  background: #2563eb;
   color: #ffffff;
   font-weight: 700;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.hero-link-button:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  transform: translateY(-1px);
 }
 
 .hero-link-button-secondary {
@@ -6862,10 +6881,18 @@ svg {
   min-height: 40px;
   margin-top: 16px;
   padding: 0 14px;
-  border: 1px solid #ccd7e7;
-  background: #ffffff;
-  color: var(--text);
+  border: 1px solid #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 700;
   text-decoration: none;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.cta-visual-action:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  transform: translateY(-1px);
 }
 
 .company-visual-action {
@@ -7919,13 +7946,13 @@ svg {
   border-radius: 12px;
   font-weight: 700;
   font-size: 14px;
-  background: #0f172a;
+  background: #2563eb;
   color: #ffffff;
-  border: 1px solid #0f172a;
+  border: 1px solid #2563eb;
   transition: transform 150ms ease, background 150ms ease;
 }
 .hero-link-button-primary:hover {
-  background: #1e293b;
+  background: #1d4ed8;
   transform: translateY(-1px);
 }
 .hero-link-button-secondary {
@@ -8317,9 +8344,9 @@ svg {
   color: #ffffff;
 }
 .related-card-action-blue   { background: #2563eb; }
-.related-card-action-green  { background: #16a34a; }
-.related-card-action-orange { background: #ea580c; }
-.related-card-action-violet { background: #7c3aed; }
+.related-card-action-green  { background: #2563eb; }
+.related-card-action-orange { background: #2563eb; }
+.related-card-action-violet { background: #2563eb; }
 
 @media (max-width: 1024px) {
   .company-hero-brand { grid-template-columns: 180px minmax(0, 1fr); }
