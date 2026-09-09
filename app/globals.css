@@ -7416,6 +7416,302 @@ svg {
   color: var(--text-soft);
 }
 
+.cta-renda-layout {
+  grid-template-columns: minmax(0, 1.45fr) 360px;
+  align-items: start;
+}
+
+.cta-renda-main,
+.cta-renda-side {
+  display: grid;
+  gap: 18px;
+}
+
+.cta-renda-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 18px;
+}
+
+.cta-renda-balance-card,
+.cta-renda-history-panel,
+.cta-renda-status-card,
+.cta-renda-flow-panel,
+.cta-renda-steps-panel {
+  border: 1px solid var(--line);
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.05);
+}
+
+.cta-renda-balance-card {
+  padding: 24px;
+  background:
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.14), transparent 28%),
+    radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.12), transparent 28%),
+    linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+}
+
+.cta-renda-balance-card span,
+.cta-renda-status-card span,
+.cta-renda-history-headline p,
+.cta-renda-step-card span {
+  display: inline-block;
+  color: var(--text-faint);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.cta-renda-balance-card > strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 34px;
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+}
+
+.cta-renda-balance-card > p {
+  margin: 12px 0 0;
+  color: var(--text-soft);
+  line-height: 1.7;
+}
+
+.cta-renda-balance-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.cta-renda-balance-strip div {
+  padding: 14px;
+  border: 1px solid #dbe6f3;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.cta-renda-balance-strip small,
+.cta-renda-balance-strip strong {
+  display: block;
+}
+
+.cta-renda-balance-strip small {
+  color: var(--text-faint);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.cta-renda-balance-strip strong {
+  margin-top: 8px;
+  font-size: 20px;
+  letter-spacing: -0.03em;
+}
+
+.cta-renda-status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.cta-renda-status-card {
+  padding: 20px;
+}
+
+.cta-renda-status-card strong,
+.cta-renda-status-card small {
+  display: block;
+}
+
+.cta-renda-status-card strong {
+  margin-top: 10px;
+  font-size: 28px;
+  letter-spacing: -0.04em;
+}
+
+.cta-renda-status-card small {
+  margin-top: 8px;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.cta-renda-status-card.tone-blue { border-color: rgba(37, 99, 235, 0.18); }
+.cta-renda-status-card.tone-green { border-color: rgba(34, 197, 94, 0.18); }
+.cta-renda-status-card.tone-orange { border-color: rgba(249, 115, 22, 0.18); }
+.cta-renda-status-card.tone-violet { border-color: rgba(124, 58, 237, 0.18); }
+
+.cta-renda-history-panel {
+  padding: 22px;
+}
+
+.cta-renda-history-headline {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.cta-renda-history-headline h3 {
+  margin: 8px 0 0;
+  font-size: 30px;
+  letter-spacing: -0.05em;
+}
+
+.cta-renda-history-headline > span {
+  color: var(--text-faint);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.cta-renda-history-table {
+  margin-top: 18px;
+  overflow: hidden;
+  border: 1px solid #dbe6f3;
+  border-radius: 22px;
+  background: #ffffff;
+}
+
+.cta-renda-history-head,
+.cta-renda-history-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1.5fr) 110px 110px 110px 120px;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 16px;
+}
+
+.cta-renda-history-head {
+  background: #f8fbff;
+  border-bottom: 1px solid #e4edf8;
+}
+
+.cta-renda-history-body .cta-renda-history-row + .cta-renda-history-row {
+  border-top: 1px solid #eef3f8;
+}
+
+.cta-renda-history-row strong,
+.cta-renda-history-row span,
+.cta-renda-history-row small {
+  display: block;
+}
+
+.cta-renda-history-row strong {
+  font-size: 14px;
+}
+
+.cta-renda-history-row span {
+  color: var(--text-soft);
+  font-size: 13px;
+}
+
+.cta-renda-status-pill {
+  width: fit-content;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: inline-flex !important;
+  align-items: center;
+}
+
+.cta-renda-status-pill.is-paid {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.cta-renda-status-pill.is-ready,
+.cta-renda-status-pill.is-approved {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.cta-renda-status-pill.is-pending {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.cta-renda-monthly-list,
+.cta-renda-steps-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.cta-renda-monthly-item,
+.cta-renda-step-card {
+  padding: 16px;
+  border: 1px solid #dbe6f3;
+  border-radius: 18px;
+  background: #f8fbff;
+}
+
+.cta-renda-monthly-copy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cta-renda-monthly-copy strong {
+  font-size: 16px;
+}
+
+.cta-renda-monthly-copy span,
+.cta-renda-step-card p {
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.cta-renda-monthly-bar {
+  height: 10px;
+  margin-top: 12px;
+  border-radius: 999px;
+  background: #e6eef8;
+  overflow: hidden;
+}
+
+.cta-renda-monthly-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
+}
+
+.cta-renda-step-card strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 18px;
+  letter-spacing: -0.03em;
+}
+
+.cta-renda-step-card p {
+  margin: 10px 0 0;
+}
+
+@media (max-width: 1240px) {
+  .cta-renda-layout,
+  .cta-renda-summary,
+  .cta-renda-status-grid,
+  .cta-renda-balance-strip {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .cta-renda-history-head,
+  .cta-renda-history-row {
+    grid-template-columns: 1fr;
+  }
+
+  .cta-renda-history-head {
+    display: none;
+  }
+}
+
 .cta-analytics-top {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;

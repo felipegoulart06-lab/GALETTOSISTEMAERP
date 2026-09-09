@@ -389,33 +389,177 @@ function BoardDetail({ sectionKey }: { sectionKey: SectionKey }) {
 
 function RendaDetail({ sectionKey }: { sectionKey: SectionKey }) {
   const page = clientCtaPages[sectionKey];
+  const ledgerRows = [
+    { origin: "Fone Bluetooth", type: "Produto", amount: "R$ 25,98", when: "08/09/2026", status: "Aprovado" },
+    { origin: "Indicação de serviço", type: "Rede", amount: "R$ 30,00", when: "08/09/2026", status: "Em validação" },
+    { origin: "Desafio de vendas da temporada", type: "Campanha", amount: "R$ 180,00", when: "07/09/2026", status: "Disponível" },
+    { origin: "Mentoria premium indicada", type: "Produto", amount: "R$ 92,00", when: "06/09/2026", status: "Processando" },
+    { origin: "Bônus por meta semanal", type: "Campanha", amount: "R$ 240,00", when: "05/09/2026", status: "Pago" }
+  ];
+  const releaseStages = [
+    {
+      label: "Pendente",
+      title: "Aguardando confirmação de origem",
+      detail: "Entradas que ainda dependem de lead validado, venda confirmada ou fechamento da campanha."
+    },
+    {
+      label: "Disponível",
+      title: "Pronto para próxima janela de liberação",
+      detail: "Valores já reconhecidos pelo sistema e preparados para entrar no próximo ciclo."
+    },
+    {
+      label: "Pago",
+      title: "Histórico preservado e auditável",
+      detail: "Tudo que já foi concluído continua legível para conferência, prova e acompanhamento."
+    }
+  ];
+  const sourceSummary = [
+    { label: "Produtos", value: "48%", detail: "Maior motor de comissão no período", tone: "blue" },
+    { label: "Indicações", value: "31%", detail: "Leads e serviços com validação ativa", tone: "green" },
+    { label: "Campanhas", value: "14%", detail: "Bônus e aceleração de metas", tone: "orange" },
+    { label: "Missões", value: "7%", detail: "Complemento gamificado do ciclo", tone: "violet" }
+  ];
+  const monthlyFlow = [
+    { month: "Jun", total: "R$ 3,2k", width: "38%" },
+    { month: "Jul", total: "R$ 4,8k", width: "56%" },
+    { month: "Ago", total: "R$ 6,1k", width: "72%" },
+    { month: "Set", total: "R$ 4,3k", width: "51%" }
+  ];
+
   return (
     <>
-      <section className="cta-hero cta-hero-finance">
+      <section className="cta-hero cta-hero-finance cta-renda-hero">
         <div className="cta-hero-copy">
           <span>{page.eyebrow}</span>
           <h2>{page.title}</h2>
           <p>{page.description}</p>
+          <div className="cta-chip-row">
+            <span>Origem clara</span>
+            <span>Status visível</span>
+            <span>Histórico auditável</span>
+            <span>Leitura sem cara de banco</span>
+          </div>
         </div>
-        <ManagedMedia alt={page.title} sizeLabel="1600 x 720" className="managed-media-fill" />
+        <ManagedMedia alt={page.title} sizeLabel="1600 x 720" src={page.heroImage} className="managed-media-fill" />
       </section>
       <CtaMetricStrip sectionKey={sectionKey} />
       <section className="cta-renda-layout">
-        <div className="cta-source-strip">
-          {page.primaryCards.map((item) => (
-            <VisualCard key={item.title} {...item} />
-          ))}
+        <div className="cta-renda-main">
+          <section className="cta-renda-summary">
+            <article className="cta-renda-balance-card">
+              <span>Visão do ciclo</span>
+              <strong>Você já gerou R$ 18.420</strong>
+              <p>Leitura executiva da sua renda com origem, estágio e histórico detalhado por transação.</p>
+              <div className="cta-renda-balance-strip">
+                <div>
+                  <small>Liberado</small>
+                  <strong>R$ 2.840</strong>
+                </div>
+                <div>
+                  <small>Em validação</small>
+                  <strong>R$ 1.260</strong>
+                </div>
+                <div>
+                  <small>Próxima janela</small>
+                  <strong>12 Set</strong>
+                </div>
+              </div>
+            </article>
+            <div className="cta-renda-status-grid">
+              {sourceSummary.map((item) => (
+                <article key={item.label} className={`cta-renda-status-card tone-${item.tone}`}>
+                  <span>{item.label}</span>
+                  <strong>{item.value}</strong>
+                  <small>{item.detail}</small>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="cta-source-strip">
+            {page.primaryCards.map((item) => (
+              <VisualCard key={item.title} {...item} fitContain />
+            ))}
+          </section>
+
+          <section className="cta-renda-history-panel">
+            <div className="cta-renda-history-headline">
+              <div>
+                <p>Histórico detalhado</p>
+                <h3>Tudo que entrou, em qual etapa está e de onde veio</h3>
+              </div>
+              <span>Atualizado agora</span>
+            </div>
+            <div className="cta-renda-history-table">
+              <div className="cta-renda-history-head">
+                <span>Origem</span>
+                <span>Categoria</span>
+                <span>Valor</span>
+                <span>Data</span>
+                <span>Status</span>
+              </div>
+              <div className="cta-renda-history-body">
+                {ledgerRows.map((row) => (
+                  <article key={`${row.origin}-${row.when}`} className="cta-renda-history-row">
+                    <strong>{row.origin}</strong>
+                    <span>{row.type}</span>
+                    <span>{row.amount}</span>
+                    <span>{row.when}</span>
+                    <small
+                      className={`cta-renda-status-pill ${
+                        row.status === "Pago"
+                          ? "is-paid"
+                          : row.status === "Disponível"
+                            ? "is-ready"
+                            : row.status === "Aprovado"
+                              ? "is-approved"
+                              : "is-pending"
+                      }`}
+                    >
+                      {row.status}
+                    </small>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
         </div>
-        <div className="cta-ledger-panel">
-          <p>Histórico detalhado</p>
-          <h3>Movimentações recentes</h3>
-          <div className="cta-ledger-list">
-            <div><strong>Produto: Fone Bluetooth</strong><span>Venda confirmada • R$ 25,98 • Aprovado</span></div>
-            <div><strong>Indicação de serviço</strong><span>Lead convertido • R$ 30,00 • Em validação</span></div>
-            <div><strong>Campanha de vendas</strong><span>Bônus temporário • R$ 180,00 • Disponível</span></div>
+
+        <div className="cta-renda-side">
+          <div className="cta-ledger-panel cta-renda-flow-panel">
+            <p>Evolução mensal</p>
+            <h3>Fluxo por período</h3>
+            <div className="cta-renda-monthly-list">
+              {monthlyFlow.map((item) => (
+                <div key={item.month} className="cta-renda-monthly-item">
+                  <div className="cta-renda-monthly-copy">
+                    <strong>{item.month}</strong>
+                    <span>{item.total}</span>
+                  </div>
+                  <div className="cta-renda-monthly-bar">
+                    <span style={{ width: item.width }} />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
+
+          <div className="cta-ledger-panel cta-renda-steps-panel">
+            <p>Jornada do valor</p>
+            <h3>Como o dinheiro caminha até ficar disponível</h3>
+            <div className="cta-renda-steps-list">
+              {releaseStages.map((stage) => (
+                <article key={stage.label} className="cta-renda-step-card">
+                  <span>{stage.label}</span>
+                  <strong>{stage.title}</strong>
+                  <p>{stage.detail}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <SideNotes sectionKey={sectionKey} />
         </div>
-        <SideNotes sectionKey={sectionKey} />
       </section>
     </>
   );
