@@ -2051,7 +2051,12 @@ function SorteiosLayout({ section }: { section: SectionConfig }) {
             </div>
             <div className="sorteios-live-grid">
               <div className="sorteios-live-prize">
-                <ManagedMedia alt={liveDraw.subtitle} sizeLabel="1200 x 900" src={liveDraw.image} className="managed-media-fill" />
+                <ManagedMedia
+                  alt={liveDraw.subtitle}
+                  sizeLabel="1200 x 900"
+                  src={liveDraw.image}
+                  className="managed-media-fill managed-media-fit-contain sorteios-live-media"
+                />
                 <div className="sorteios-live-copy">
                   <small>{liveDraw.eyebrow}</small>
                   <strong>{liveDraw.subtitle}</strong>
@@ -2095,7 +2100,12 @@ function SorteiosLayout({ section }: { section: SectionConfig }) {
             <div className="sorteios-upcoming-grid">
               {upcomingDraws.map((card) => (
                 <article key={card.title} className={`sorteios-upcoming-card tone-${card.accent}`}>
-                  <ManagedMedia alt={card.subtitle} sizeLabel="1200 x 900" src={card.image} className="managed-media-fill" />
+                  <ManagedMedia
+                    alt={card.subtitle}
+                    sizeLabel="1200 x 900"
+                    src={card.image}
+                    className="managed-media-fill managed-media-fit-contain sorteios-upcoming-media"
+                  />
                   <div className="sorteios-upcoming-copy">
                     <span className="sorteios-status-badge is-upcoming">{card.badge}</span>
                     <strong>{card.title}</strong>
@@ -2112,7 +2122,12 @@ function SorteiosLayout({ section }: { section: SectionConfig }) {
             <div className="sorteios-types-grid">
               {section.cards.map((card) => (
                 <article key={card.title} className={`sorteios-type-card tone-${card.accent}`}>
-                  <ManagedMedia alt={card.subtitle} sizeLabel="1200 x 900" src={card.image} className="managed-media-fill" />
+                  <ManagedMedia
+                    alt={card.subtitle}
+                    sizeLabel="1200 x 900"
+                    src={card.image}
+                    className="managed-media-fill managed-media-fit-contain sorteios-type-media"
+                  />
                   <div className="sorteios-type-copy">
                     <div className="sorteios-type-top">
                       <span>{card.title}</span>
@@ -2195,7 +2210,12 @@ function SorteiosLayout({ section }: { section: SectionConfig }) {
             <div className="sorteios-prize-stack">
               {prizeCards.map((card) => (
                 <article key={card.title} className={`sorteios-prize-card tone-${card.accent}`}>
-                  <ManagedMedia alt={card.subtitle} sizeLabel="1200 x 900" src={card.image} className="managed-media-fill" />
+                  <ManagedMedia
+                    alt={card.subtitle}
+                    sizeLabel="1200 x 900"
+                    src={card.image}
+                    className="managed-media-fill managed-media-fit-contain sorteios-prize-media"
+                  />
                   <div>
                     <strong>{card.subtitle}</strong>
                     <p>{card.meta}</p>

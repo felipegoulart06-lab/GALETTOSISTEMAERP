@@ -4455,13 +4455,13 @@ svg {
 .layout-sorteios-top,
 .layout-sorteios {
   display: grid;
-  gap: 18px;
+  gap: 22px;
 }
 
 .sorteios-command {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
-  gap: 18px;
+  gap: 22px;
 }
 
 .sorteios-command-copy,
@@ -4470,16 +4470,17 @@ svg {
   border: 1px solid var(--line);
   background: #ffffff;
   box-shadow: 0 18px 44px rgba(15, 23, 42, 0.06);
+  border-radius: 28px;
 }
 
 .sorteios-command-copy {
   display: grid;
-  gap: 18px;
-  padding: 24px;
+  gap: 20px;
+  padding: 28px;
   background:
     radial-gradient(circle at top right, rgba(245, 158, 11, 0.18), transparent 32%),
-    radial-gradient(circle at bottom left, rgba(124, 58, 237, 0.12), transparent 28%),
-    linear-gradient(180deg, #ffffff 0%, #fffaf1 100%);
+    radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.16), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, #fffaf1 46%, #f8fbff 100%);
 }
 
 .sorteios-command-copy > span,
@@ -4558,6 +4559,8 @@ svg {
   padding: 16px;
   border: 1px solid #e5eaf4;
   background: #ffffff;
+  border-radius: 20px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88);
 }
 
 .sorteios-highlight-card strong {
@@ -4581,6 +4584,8 @@ svg {
   border: 1px solid var(--line);
   min-height: 360px;
   background: #0d1424;
+  border-radius: 30px;
+  box-shadow: 0 26px 60px rgba(15, 23, 42, 0.18);
 }
 
 .sorteios-command-media,
@@ -4601,6 +4606,7 @@ svg {
   background: rgba(7, 16, 31, 0.72);
   color: #ffffff;
   backdrop-filter: blur(12px);
+  border-radius: 24px;
 }
 
 .sorteios-command-overlay strong {
@@ -4649,6 +4655,19 @@ svg {
   display: grid;
   gap: 8px;
   padding: 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sorteios-kpi-card::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 0;
+  height: 4px;
+  border-radius: 999px 999px 0 0;
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.78) 0%, rgba(96, 165, 250, 0.45) 100%);
 }
 
 .sorteios-kpi-card strong {
@@ -4680,9 +4699,12 @@ svg {
 
 .sorteios-panel {
   display: grid;
-  gap: 18px;
-  padding: 22px;
+  gap: 20px;
+  padding: 24px;
   min-width: 0;
+  background:
+    radial-gradient(circle at top right, rgba(59, 130, 246, 0.06), transparent 24%),
+    linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
 }
 
 .sorteios-panel-wide,
@@ -4721,10 +4743,23 @@ svg {
   overflow: hidden;
   border: 1px solid #dce5f1;
   background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.05);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.sorteios-live-prize:hover,
+.sorteios-upcoming-card:hover,
+.sorteios-type-card:hover,
+.sorteios-prize-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.09);
+  border-color: #d3e0f0;
 }
 
 .sorteios-live-prize {
   grid-template-columns: minmax(180px, 0.8fr) minmax(0, 1fr);
+  min-height: 280px;
 }
 
 .sorteios-live-prize .managed-media-fill {
@@ -4757,6 +4792,8 @@ svg {
   background:
     radial-gradient(circle at top right, rgba(245, 158, 11, 0.22), transparent 32%),
     linear-gradient(180deg, #fffaf1 0%, #ffffff 100%);
+  border-radius: 24px;
+  box-shadow: 0 18px 38px rgba(194, 120, 3, 0.10);
 }
 
 .sorteios-live-counter {
@@ -4771,6 +4808,7 @@ svg {
   padding: 14px;
   border: 1px solid #eadfcf;
   background: rgba(255, 255, 255, 0.88);
+  border-radius: 18px;
 }
 
 .sorteios-live-counter strong {
@@ -4794,6 +4832,7 @@ svg {
   font-size: 24px;
   font-weight: 800;
   animation: sorteios-float 2.8s ease-in-out infinite;
+  border-radius: 18px;
 }
 
 .sorteios-ball-machine span:nth-child(2),
@@ -4828,13 +4867,13 @@ svg {
 
 .sorteios-upcoming-card,
 .sorteios-type-card {
-  grid-template-rows: 160px auto;
+  grid-template-rows: 210px auto;
 }
 
 .sorteios-upcoming-card .managed-media-fill,
 .sorteios-type-card .managed-media-fill,
 .sorteios-prize-card .managed-media-fill {
-  min-height: 160px;
+  min-height: 210px;
 }
 
 .sorteios-types-grid {
@@ -4856,6 +4895,14 @@ svg {
   color: #ffffff;
   font-weight: 700;
   font: inherit;
+  border-radius: 12px;
+  transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.sorteios-card-action:hover {
+  transform: translateY(-1px);
+  background: #1d4ed8;
+  border-color: #1d4ed8;
 }
 
 .sorteios-winner-card {
@@ -4865,7 +4912,9 @@ svg {
   align-items: center;
   padding: 16px;
   border: 1px solid #dce5f1;
-  background: #ffffff;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  border-radius: 22px;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.05);
 }
 
 .sorteios-winner-position,
@@ -4887,6 +4936,7 @@ svg {
   border: 1px solid #dce5f1;
   background: #ffffff;
   overflow: hidden;
+  border-radius: 22px;
 }
 
 .sorteios-history-head,
@@ -4913,12 +4963,12 @@ svg {
 }
 
 .sorteios-prize-card {
-  grid-template-columns: 96px minmax(0, 1fr);
+  grid-template-columns: 128px minmax(0, 1fr);
   align-items: center;
 }
 
 .sorteios-prize-card .managed-media-fill {
-  min-height: 96px;
+  min-height: 128px;
 }
 
 .sorteios-prize-card > div {
@@ -4937,6 +4987,7 @@ svg {
   padding: 16px;
   border: 1px solid #dce5f1;
   background: #ffffff;
+  border-radius: 20px;
 }
 
 .sorteios-insight-card strong {
@@ -4950,6 +5001,7 @@ svg {
   padding: 14px;
   border: 1px solid #dce5f1;
   background: #fbfdff;
+  border-radius: 18px;
 }
 
 .sorteios-rules-list {
@@ -4957,6 +5009,38 @@ svg {
   padding-left: 18px;
   display: grid;
   gap: 10px;
+}
+
+.sorteios-live-media,
+.sorteios-upcoming-media,
+.sorteios-type-media,
+.sorteios-prize-media {
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 36%),
+    linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+}
+
+.sorteios-live-media {
+  min-height: 100%;
+}
+
+.sorteios-live-media img,
+.sorteios-upcoming-media img,
+.sorteios-type-media img,
+.sorteios-prize-media img {
+  object-fit: contain;
+  padding: 18px;
+}
+
+.sorteios-upcoming-media,
+.sorteios-type-media {
+  height: 210px;
+  min-height: 210px;
+}
+
+.sorteios-prize-media {
+  height: 128px;
+  min-height: 128px;
 }
 
 .sorteios-highlight-card.tone-orange,
@@ -5061,6 +5145,19 @@ svg {
 
   .sorteios-ball-machine {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sorteios-upcoming-card,
+  .sorteios-type-card {
+    grid-template-rows: 180px auto;
+  }
+
+  .sorteios-upcoming-card .managed-media-fill,
+  .sorteios-type-card .managed-media-fill,
+  .sorteios-upcoming-media,
+  .sorteios-type-media {
+    min-height: 180px;
+    height: 180px;
   }
 }
 
