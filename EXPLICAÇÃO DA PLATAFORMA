@@ -1,0 +1,1152 @@
+Você é um engenheiro de software sênior, arquiteto de sistemas, especialista em SaaS, CRM, marketplaces, plataformas de afiliados, dashboards administrativos, UX/UI responsiva, aplicações mobile-first e sistemas preparados para futura transformação em aplicativo. 
+ 
+ Sua missão é desenvolver, neste projeto, um protótipo funcional e profissional de uma plataforma de monetização, conteúdo, benefícios, afiliados, indicações e comunidade, com um CRM administrativo completo. 
+ 
+ NÃO trate o projeto simplesmente como um CRM tradicional. 
+ 
+ O conceito do produto é: 
+ 
+ “Uma plataforma onde usuários encontram oportunidades para aprender, vender, indicar produtos/serviços, aproveitar benefícios e gerar renda.” 
+ 
+ O sistema deverá possuir duas grandes experiências: 
+ 
+ 1. ÁREA DO USUÁRIO 
+ 2. ÁREA ADMINISTRATIVA 
+ 
+ A interface deverá funcionar perfeitamente em: 
+ 
+ * Desktop 
+ * Tablet 
+ * Smartphone 
+ 
+ A arquitetura deverá ser preparada para futuramente transformar a aplicação em aplicativo mobile, preferencialmente utilizando uma API/backend desacoplado da interface. 
+ 
+ ================================================== 
+ 
+ 1. REGRA FUNDAMENTAL 
+ ================================================== 
+ 
+ ANTES DE ESCREVER GRANDE QUANTIDADE DE CÓDIGO: 
+ 
+ 1. Analise todo o projeto existente. 
+ 2. Identifique framework, linguagem, banco de dados, estrutura de pastas e dependências. 
+ 3. Não destrua funcionalidades existentes. 
+ 4. Não recrie arquivos desnecessariamente. 
+ 5. Identifique o que pode ser reutilizado. 
+ 6. Crie uma arquitetura clara. 
+ 7. Verifique problemas de segurança. 
+ 8. Verifique responsividade. 
+ 9. Verifique acessibilidade. 
+ 10. Verifique performance. 
+ 
+ Se já existir uma tecnologia definida no projeto, mantenha-a salvo se houver uma justificativa técnica muito forte para alteração. 
+ 
+ Não troque o stack simplesmente por preferência pessoal. 
+ 
+ ================================================== 
+ 2. AUTENTICAÇÃO 
+ =============== 
+ 
+ Toda a plataforma deverá exigir autenticação. 
+ 
+ Criar: 
+ 
+ * Login 
+ * Logout 
+ * Cadastro 
+ * Recuperação de senha 
+ * Sessão segura 
+ * Proteção de rotas 
+ * Controle de permissões 
+ * Expiração de sessão quando apropriado 
+ * Proteção contra acesso direto a páginas privadas 
+ 
+ Existem dois grandes tipos de conta: 
+ 
+ USER 
+ ADMIN 
+ 
+ Entretanto, o sistema deverá utilizar permissões granulares para administradores. 
+ 
+ Criar possibilidade de: 
+ 
+ SUPER ADMIN 
+ ADMIN FINANCEIRO 
+ ADMIN CONTEÚDO 
+ ADMIN COMERCIAL 
+ ADMIN LIVES 
+ ADMIN EMPRESAS 
+ 
+ A arquitetura deverá permitir criação de novos papéis futuramente. 
+ 
+ Nunca confiar somente no frontend para autorização. 
+ 
+ Todas as permissões deverão ser validadas também no backend. 
+ 
+ ================================================== 
+ 3. ÁREA DO USUÁRIO 
+ ================== 
+ 
+ Criar dashboard moderno, visual, intuitivo e altamente responsivo. 
+ 
+ No DESKTOP: 
+ 
+ * Sidebar lateral esquerda 
+ * Conteúdo principal à direita 
+ * Header superior 
+ * Perfil do usuário 
+ * Notificações 
+ * Busca global quando fizer sentido 
+ 
+ No MOBILE: 
+ 
+ * Sidebar transformada em navegação apropriada para smartphone 
+ * Menu inferior ou menu lateral mobile 
+ * Cards adaptados para toque 
+ * Botões grandes o suficiente 
+ * Nenhuma tabela deverá quebrar a tela 
+ * Conteúdo horizontal deverá utilizar scroll controlado 
+ * Interface mobile-first 
+ 
+ ================================================== 
+ 4. MENU INÍCIO 
+ ============== 
+ 
+ Criar uma Home personalizada. 
+ 
+ Mostrar: 
+ 
+ * Saudação 
+ * Saldo disponível 
+ * Valores pendentes 
+ * Ganhos do mês 
+ * Lives ao vivo 
+ * Produtos em destaque 
+ * Oportunidades de indicação 
+ * Cursos em andamento 
+ * Ofertas do Clubão 
+ * Missões 
+ * Recompensas 
+ 
+ Exemplo visual: 
+ 
+ “Olá, [NOME]. Veja novas oportunidades para ganhar hoje.” 
+ 
+ Criar seções visualmente separadas. 
+ 
+ A Home deverá ser dinâmica. 
+ 
+ O administrador deverá conseguir definir conteúdos em destaque. 
+ 
+ ================================================== 
+ 5. MENU LIVES 
+ ============= 
+ 
+ Criar uma área de Lives com experiência visual inspirada em plataformas de streaming. 
+ 
+ Os cards deverão possuir: 
+ 
+ * Thumbnail 
+ * Nome da LIVE 
+ * Nome do vendedor 
+ * Produto em destaque 
+ * Status AO VIVO 
+ * Quantidade de espectadores quando disponível 
+ * Categoria 
+ * Data/hora 
+ * CTA para assistir 
+ 
+ As thumbnails deverão ser visualmente fortes e orientadas à conversão. 
+ 
+ Criar categorias e filtros. 
+ 
+ Exemplos: 
+ 
+ * Ao vivo agora 
+ * Mais assistidas 
+ * Produtos em alta 
+ * Novas lives 
+ 
+ IMPORTANTE: 
+ 
+ NÃO presumir que qualquer LIVE do TikTok poderá ser incorporada diretamente. 
+ 
+ Criar uma arquitetura de “provedores de transmissão”. 
+ 
+ Exemplo conceitual: 
+ 
+ LiveProvider 
+ TikTokProvider 
+ InternalLiveProvider 
+ FutureProvider 
+ 
+ A primeira versão deverá funcionar sem depender obrigatoriamente do TikTok. 
+ 
+ Preparar a arquitetura para futuras integrações oficiais com plataformas externas. 
+ 
+ Não utilizar scraping. 
+ 
+ Não utilizar métodos que violem termos de uso de plataformas externas. 
+ 
+ Caso uma integração oficial com TikTok seja tecnicamente possível no futuro, ela deverá ser adicionada como módulo independente. 
+ 
+ ================================================== 
+ 6. MENU PRODUTOS 
+ ================ 
+ 
+ Criar marketplace interno de produtos disponíveis para afiliação. 
+ 
+ Cada produto deverá possuir: 
+ 
+ * Nome 
+ * Imagens 
+ * Thumbnail 
+ * Descrição 
+ * Preço 
+ * Comissão percentual 
+ * Comissão fixa quando aplicável 
+ * Categoria 
+ * Status 
+ * Estoque/status quando aplicável 
+ * Link de venda 
+ * Link de afiliado 
+ * Data de criação 
+ * Status de aprovação 
+ 
+ O usuário poderá: 
+ 
+ * Visualizar produto 
+ * Ver comissão 
+ * Solicitar afiliação 
+ * Tornar-se afiliado 
+ * Gerar link 
+ * Copiar link 
+ * Compartilhar 
+ * Acompanhar desempenho 
+ 
+ Criar área: 
+ 
+ “Meus Produtos” 
+ 
+ Mostrar: 
+ 
+ * Cliques 
+ * Conversões 
+ * Vendas 
+ * Comissão gerada 
+ * Comissão pendente 
+ * Comissão aprovada 
+ 
+ ================================================== 
+ 7. MENU MENTORIA 
+ ================ 
+ 
+ Criar plataforma de conteúdos educacionais. 
+ 
+ Cards RETANGULARES. 
+ 
+ Categorias: 
+ 
+ * Vendas 
+ * Marketing 
+ * Afiliados 
+ * Redes sociais 
+ * Inteligência Artificial 
+ * Negócios 
+ * Conteúdo 
+ * Finanças 
+ * Escala 
+ * Iniciantes 
+ 
+ Cada mentoria/curso deverá possuir: 
+ 
+ * Thumbnail 
+ * Título 
+ * Descrição 
+ * Instrutor 
+ * Número de aulas 
+ * Duração 
+ * Progresso 
+ * Categoria 
+ * Status 
+ 
+ Criar: 
+ 
+ * Página do curso 
+ * Lista de aulas 
+ * Controle de progresso 
+ * Continuar assistindo 
+ * Histórico 
+ * Conclusão 
+ 
+ O administrador deverá conseguir cadastrar: 
+ 
+ * Cursos 
+ * Módulos 
+ * Aulas 
+ * Vídeos 
+ * Thumbnails 
+ * Descrições 
+ 
+ ================================================== 
+ 8. MENU CLUBÃO 
+ ============== 
+ 
+ Criar área de benefícios. 
+ 
+ Cards QUADRADOS. 
+ 
+ Categorias: 
+ 
+ * Ofertas 
+ * Descontos 
+ * Benefícios 
+ * Exclusivos 
+ * Destaques 
+ 
+ Cada oferta poderá possuir: 
+ 
+ * Empresa 
+ * Logo 
+ * Imagem 
+ * Título 
+ * Descrição 
+ * Percentual de desconto 
+ * Código promocional 
+ * Link 
+ * Data de início 
+ * Data de término 
+ * Regras 
+ * Status 
+ 
+ Criar sistema de expiração automática de ofertas. 
+ 
+ ================================================== 
+ 9. MENU EMPRESAS 
+ ================ 
+ 
+ Criar diretório de empresas. 
+ 
+ Cada empresa deverá possuir: 
+ 
+ * Nome 
+ * Logo 
+ * Capa 
+ * Descrição 
+ * Categoria 
+ * Cidade 
+ * Estado 
+ * Website 
+ * Redes sociais quando aplicável 
+ * Serviços 
+ * Ofertas 
+ * Status 
+ * Informações de contato conforme política de privacidade 
+ 
+ Criar busca e filtros. 
+ 
+ A empresa poderá estar relacionada a: 
+ 
+ * Clubão 
+ * Indicações 
+ * Produtos 
+ * Serviços 
+ * Campanhas 
+ 
+ ================================================== 
+ 10. MENU INDICAÇÕES 
+ =================== 
+ 
+ Criar sistema completo de indicação. 
+ 
+ O conceito: 
+ 
+ Uma empresa cadastra um serviço. 
+ 
+ O serviço possui uma recompensa/comissão. 
+ 
+ O usuário indica esse serviço. 
+ 
+ A plataforma registra a origem. 
+ 
+ O lead é acompanhado. 
+ 
+ Quando ocorrer conversão válida, a comissão é registrada. 
+ 
+ Fluxo: 
+ 
+ USUÁRIO 
+ ↓ 
+ INDICAÇÃO 
+ ↓ 
+ LEAD 
+ ↓ 
+ CONTATO 
+ ↓ 
+ CONVERSÃO 
+ ↓ 
+ COMISSÃO 
+ ↓ 
+ APROVAÇÃO 
+ ↓ 
+ PAGAMENTO 
+ 
+ Cada oportunidade deverá possuir: 
+ 
+ * Empresa 
+ * Serviço 
+ * Descrição 
+ * Comissão 
+ * Regras 
+ * Status 
+ * Prazo 
+ * Link ou mecanismo de indicação 
+ * Forma de rastreamento 
+ 
+ O sistema deverá impedir duplicidade indevida de indicações. 
+ 
+ Criar status: 
+ 
+ PENDENTE 
+ EM ANÁLISE 
+ VALIDADA 
+ CONVERTIDA 
+ COMISSÃO GERADA 
+ PAGA 
+ CANCELADA 
+ 
+ ================================================== 
+ 11. MENU MINHA RENDA 
+ ==================== 
+ 
+ Criar carteira financeira interna do usuário. 
+ 
+ Mostrar: 
+ 
+ * Saldo disponível 
+ * Saldo pendente 
+ * Total recebido 
+ * Ganhos do mês 
+ * Ganhos históricos 
+ 
+ Criar histórico de transações. 
+ 
+ Tipos: 
+ 
+ * Comissão de produto 
+ * Comissão de indicação 
+ * Bônus 
+ * Recompensa 
+ * Ajuste 
+ * Saque 
+ 
+ Cada movimentação deverá possuir: 
+ 
+ * ID 
+ * Usuário 
+ * Tipo 
+ * Valor 
+ * Status 
+ * Data 
+ * Origem 
+ * Referência 
+ 
+ Nunca permitir alteração de saldo simplesmente pelo frontend. 
+ 
+ Toda movimentação financeira deverá ser registrada no backend. 
+ 
+ ================================================== 
+ 12. SAQUES 
+ ========== 
+ 
+ Preparar estrutura para: 
+ 
+ * Solicitação de saque 
+ * Valor 
+ * Status 
+ * Data 
+ * Processamento 
+ * Histórico 
+ 
+ Status: 
+ 
+ SOLICITADO 
+ EM ANÁLISE 
+ APROVADO 
+ PROCESSANDO 
+ PAGO 
+ RECUSADO 
+ CANCELADO 
+ 
+ Não implementar integração financeira real sem confirmação da arquitetura e credenciais necessárias. 
+ 
+ Criar inicialmente sistema mock/fake funcional para protótipo. 
+ 
+ ================================================== 
+ 13. MENU MEU DESEMPENHO 
+ ======================= 
+ 
+ Criar dashboard individual. 
+ 
+ Mostrar: 
+ 
+ * Vendas 
+ * Cliques 
+ * Conversões 
+ * Indicações 
+ * Comissões 
+ * Taxa de conversão 
+ * Ganhos 
+ * Evolução temporal 
+ 
+ Utilizar gráficos responsivos. 
+ 
+ ================================================== 
+ 14. MENU MISSÕES 
+ ================ 
+ 
+ Criar sistema de gamificação. 
+ 
+ Exemplos: 
+ 
+ “Faça sua primeira indicação.” 
+ 
+ “Realize sua primeira venda.” 
+ 
+ “Assista 3 aulas.” 
+ 
+ “Compartilhe 5 produtos.” 
+ 
+ Cada missão deverá possuir: 
+ 
+ * Nome 
+ * Descrição 
+ * Objetivo 
+ * Progresso 
+ * Recompensa 
+ * Data de início 
+ * Data de término 
+ * Status 
+ 
+ ================================================== 
+ 15. MENU RANKING 
+ ================ 
+ 
+ Criar ranking opcional. 
+ 
+ Categorias: 
+ 
+ * Maiores ganhos 
+ * Mais vendas 
+ * Mais indicações 
+ * Mais conversões 
+ * Pontuação 
+ 
+ Criar períodos: 
+ 
+ * Diário 
+ * Semanal 
+ * Mensal 
+ * Histórico 
+ 
+ Permitir configuração pelo administrador. 
+ 
+ ================================================== 
+ 16. MENU RECOMPENSAS 
+ ==================== 
+ 
+ Criar sistema de recompensas. 
+ 
+ Tipos: 
+ 
+ * Pontos 
+ * Dinheiro 
+ * Cupons 
+ * Benefícios 
+ * Produtos 
+ * Experiências 
+ 
+ Criar catálogo de recompensas. 
+ 
+ O usuário poderá visualizar: 
+ 
+ * Pontos disponíveis 
+ * Recompensas disponíveis 
+ * Histórico de resgates 
+ 
+ ================================================== 
+ 17. NOTIFICAÇÕES 
+ ================ 
+ 
+ Criar sistema de notificações. 
+ 
+ Exemplos: 
+ 
+ * Nova LIVE 
+ * Produto aprovado 
+ * Nova comissão 
+ * Indicação convertida 
+ * Nova mentoria 
+ * Nova oferta 
+ * Missão concluída 
+ * Saque atualizado 
+ 
+ Criar: 
+ 
+ * Lida 
+ * Não lida 
+ * Data 
+ * Tipo 
+ * Link de destino 
+ 
+ ================================================== 
+ 18. PERFIL 
+ ========== 
+ 
+ Criar: 
+ 
+ * Dados pessoais 
+ * Foto 
+ * Nome 
+ * E-mail 
+ * Telefone 
+ * Preferências 
+ * Segurança 
+ * Alteração de senha 
+ * Notificações 
+ 
+ Não armazenar dados sensíveis sem necessidade. 
+ 
+ ================================================== 
+ 19. ÁREA ADMINISTRATIVA 
+ ======================= 
+ 
+ Criar dashboard administrativo separado. 
+ 
+ Sidebar administrativa. 
+ 
+ Dashboard: 
+ 
+ * Usuários 
+ * Usuários ativos 
+ * Novos usuários 
+ * Produtos 
+ * Afiliados 
+ * Vendas 
+ * Comissões 
+ * Indicações 
+ * Empresas 
+ * Lives 
+ * Cursos 
+ * Ofertas 
+ * Saques 
+ * Receita 
+ * Conversão 
+ 
+ Utilizar cards, gráficos e tabelas responsivas. 
+ 
+ ================================================== 
+ 20. ADMIN — USUÁRIOS 
+ ==================== 
+ 
+ Criar CRUD completo. 
+ 
+ Permitir: 
+ 
+ * Criar 
+ * Editar 
+ * Bloquear 
+ * Desbloquear 
+ * Visualizar 
+ * Pesquisar 
+ * Filtrar 
+ * Ver histórico 
+ 
+ Mostrar: 
+ 
+ * Nome 
+ * E-mail 
+ * Cadastro 
+ * Status 
+ * Ganhos 
+ * Vendas 
+ * Indicações 
+ 
+ ================================================== 
+ 21. ADMIN — LIVES 
+ ================= 
+ 
+ Criar gerenciamento: 
+ 
+ * Criar LIVE 
+ * Editar 
+ * Agendar 
+ * Iniciar 
+ * Encerrar 
+ * Definir thumbnail 
+ * Associar vendedor 
+ * Associar produto 
+ * Categorizar 
+ 
+ Criar arquitetura de integração com provedores externos sem depender deles. 
+ 
+ ================================================== 
+ 22. ADMIN — VENDEDORES 
+ ====================== 
+ 
+ Criar cadastro de vendedores contratados pela plataforma. 
+ 
+ Dados: 
+ 
+ * Nome 
+ * Foto 
+ * Bio 
+ * Status 
+ * Especialidades 
+ * Lives 
+ * Produtos 
+ 
+ Permitir vincular vendedor a uma LIVE. 
+ 
+ ================================================== 
+ 23. ADMIN — PRODUTOS 
+ ==================== 
+ 
+ CRUD completo. 
+ 
+ Criar: 
+ 
+ * Produto 
+ * Categoria 
+ * Comissão 
+ * Imagens 
+ * Link 
+ * Status 
+ * Aprovação 
+ * Afiliados 
+ 
+ Criar aprovação administrativa. 
+ 
+ ================================================== 
+ 24. ADMIN — MENTORIAS 
+ ===================== 
+ 
+ Criar gerenciamento de: 
+ 
+ * Cursos 
+ * Módulos 
+ * Aulas 
+ * Instrutores 
+ * Vídeos 
+ * Thumbnails 
+ * Categorias 
+ * Ordem 
+ * Publicação 
+ 
+ ================================================== 
+ 25. ADMIN — CLUBÃO 
+ ================== 
+ 
+ Criar gerenciamento de: 
+ 
+ * Empresas 
+ * Ofertas 
+ * Descontos 
+ * Cupons 
+ * Benefícios 
+ * Datas de validade 
+ 
+ ================================================== 
+ 26. ADMIN — EMPRESAS 
+ ==================== 
+ 
+ CRUD completo de empresas. 
+ 
+ Permitir: 
+ 
+ * Aprovação 
+ * Bloqueio 
+ * Edição 
+ * Categorias 
+ * Serviços 
+ * Ofertas 
+ * Campanhas 
+ * Programas de indicação 
+ 
+ ================================================== 
+ 27. ADMIN — INDICAÇÕES 
+ ====================== 
+ 
+ Criar CRM de leads. 
+ 
+ Mostrar: 
+ 
+ * Indicador 
+ * Empresa 
+ * Serviço 
+ * Lead 
+ * Data 
+ * Status 
+ * Conversão 
+ * Comissão 
+ * Responsável 
+ 
+ Criar filtros. 
+ 
+ Criar histórico de alterações. 
+ 
+ ================================================== 
+ 28. ADMIN — FINANCEIRO 
+ ====================== 
+ 
+ Criar: 
+ 
+ * Comissões 
+ * Saldos 
+ * Saques 
+ * Pagamentos 
+ * Ajustes 
+ * Histórico financeiro 
+ 
+ Criar logs de auditoria. 
+ 
+ Nenhuma alteração financeira importante poderá ocorrer sem registro. 
+ 
+ ================================================== 
+ 29. ADMIN — GAMIFICAÇÃO 
+ ======================= 
+ 
+ Criar gerenciamento de: 
+ 
+ * Missões 
+ * Pontos 
+ * Rankings 
+ * Recompensas 
+ * Campanhas 
+ 
+ ================================================== 
+ 30. ADMIN — NOTIFICAÇÕES 
+ ======================== 
+ 
+ Permitir criar notificações segmentadas. 
+ 
+ Exemplos: 
+ 
+ Todos os usuários. 
+ 
+ Usuários afiliados. 
+ 
+ Usuários que realizaram determinada ação. 
+ 
+ Usuários de determinada categoria. 
+ 
+ ================================================== 
+ 31. SEGURANÇA 
+ ============= 
+ 
+ Aplicar obrigatoriamente: 
+ 
+ * Validação backend 
+ * Sanitização 
+ * Controle de autorização 
+ * Rate limiting quando apropriado 
+ * Proteção contra XSS 
+ * Proteção contra CSRF quando aplicável 
+ * Proteção contra SQL Injection 
+ * Senhas com hash seguro 
+ * Cookies seguros 
+ * Controle de sessão 
+ * Logs de auditoria 
+ * Princípio do menor privilégio 
+ * Variáveis secretas fora do código 
+ * .env.example sem segredos reais 
+ 
+ Nunca colocar: 
+ 
+ * API keys 
+ * Secrets 
+ * Senhas 
+ * Tokens privados 
+ 
+ no frontend. 
+ 
+ ================================================== 
+ 32. BANCO DE DADOS 
+ ================== 
+ 
+ Projetar entidades relacionadas para: 
+ 
+ users 
+ roles 
+ permissions 
+ user_roles 
+ products 
+ product_categories 
+ affiliates 
+ affiliate_links 
+ sales 
+ commissions 
+ withdrawals 
+ transactions 
+ live_streams 
+ live_providers 
+ sellers 
+ courses 
+ course_modules 
+ lessons 
+ lesson_progress 
+ companies 
+ services 
+ referrals 
+ referral_leads 
+ offers 
+ rewards 
+ missions 
+ mission_progress 
+ notifications 
+ rankings 
+ audit_logs 
+ 
+ Adaptar nomes ao banco/framework já existente. 
+ 
+ Criar relacionamentos adequados. 
+ 
+ Criar índices necessários. 
+ 
+ Evitar duplicidade. 
+ 
+ ================================================== 
+ 33. RESPONSIVIDADE 
+ ================== 
+ 
+ Desktop: 
+ 
+ Sidebar esquerda fixa ou colapsável. 
+ 
+ Mobile: 
+ 
+ Sidebar adaptada. 
+ 
+ Nunca deixar: 
+ 
+ * Tabelas quebradas 
+ * Botões pequenos 
+ * Cards cortados 
+ * Texto transbordando 
+ * Gráficos impossíveis de visualizar 
+ 
+ Cards deverão se adaptar ao tamanho da tela. 
+ 
+ ================================================== 
+ 34. UX/UI 
+ ========= 
+ 
+ A interface deve parecer um produto SaaS profissional. 
+ 
+ Evitar aparência de template genérico. 
+ 
+ Priorizar: 
+ 
+ * Hierarquia visual 
+ * Espaçamento consistente 
+ * Tipografia clara 
+ * Cards modernos 
+ * Estados de loading 
+ * Empty states 
+ * Skeleton loading 
+ * Feedback visual 
+ * Toasts 
+ * Confirmações 
+ * Modais quando necessários 
+ * Busca 
+ * Filtros 
+ 
+ As áreas de conteúdo devem ter identidades visuais diferentes: 
+ 
+ LIVES: 
+ Cards grandes e chamativos. 
+ 
+ PRODUTOS: 
+ Cards comerciais. 
+ 
+ MENTORIA: 
+ Cards retangulares. 
+ 
+ CLUBÃO: 
+ Cards quadrados. 
+ 
+ EMPRESAS: 
+ Cards institucionais. 
+ 
+ INDICAÇÕES: 
+ Cards focados em oportunidade e comissão. 
+ 
+ MINHA RENDA: 
+ Visual financeiro limpo. 
+ 
+ ================================================== 
+ 35. PERFORMANCE 
+ =============== 
+ 
+ Aplicar: 
+ 
+ * Lazy loading 
+ * Otimização de imagens 
+ * Paginação 
+ * Debounce em buscas 
+ * Cache quando apropriado 
+ * Queries eficientes 
+ * Índices 
+ * Evitar N+1 queries 
+ * Componentização 
+ * Code splitting quando disponível 
+ 
+ Não carregar todos os produtos/lives/empresas de uma vez. 
+ 
+ ================================================== 
+ 36. ARQUITETURA PARA FUTURO APP 
+ =============================== 
+ 
+ O sistema deverá ser desenvolvido pensando em futura aplicação mobile. 
+ 
+ Evitar acoplar regras de negócio diretamente à interface. 
+ 
+ Separar: 
+ 
+ UI 
+ BUSINESS LOGIC 
+ DATA ACCESS 
+ AUTHENTICATION 
+ API 
+ INTEGRATIONS 
+ 
+ A lógica de: 
+ 
+ * autenticação 
+ * comissões 
+ * indicações 
+ * produtos 
+ * usuários 
+ * lives 
+ * pagamentos 
+ * missões 
+ 
+ deverá estar preparada para ser consumida futuramente por aplicativo. 
+ 
+ ================================================== 
+ 37. LIVES E TIKTOK 
+ ================== 
+ 
+ IMPORTANTE: 
+ 
+ Não implementar scraping do TikTok. 
+ 
+ Não tentar contornar limitações de API. 
+ 
+ Não assumir que uma LIVE externa pode ser retransmitida livremente. 
+ 
+ Criar inicialmente: 
+ 
+ InternalLiveProvider 
+ 
+ e uma interface abstrata: 
+ 
+ LiveProvider 
+ 
+ Preparar posteriormente: 
+ 
+ TikTokLiveProvider 
+ 
+ somente se houver API oficial e permissões adequadas. 
+ 
+ A aplicação deverá funcionar normalmente mesmo sem integração TikTok. 
+ 
+ ================================================== 
+ 38. DADOS MOCK 
+ ============== 
+ 
+ Para o protótipo, criar dados fictícios realistas. 
+ 
+ Criar: 
+ 
+ * Usuários 
+ * Produtos 
+ * Vendedores 
+ * Lives 
+ * Empresas 
+ * Cursos 
+ * Ofertas 
+ * Indicações 
+ * Comissões 
+ * Missões 
+ * Rankings 
+ 
+ Os dados deverão fazer o sistema parecer funcional. 
+ 
+ Não utilizar lorem ipsum. 
+ 
+ Criar nomes, descrições e valores plausíveis. 
+ 
+ ================================================== 
+ 39. REGRAS DE DESENVOLVIMENTO 
+ ============================= 
+ 
+ Não criar tudo em um único arquivo. 
+ 
+ Não criar componentes gigantes. 
+ 
+ Não duplicar código. 
+ 
+ Utilizar componentes reutilizáveis. 
+ 
+ Criar: 
+ 
+ * Layout 
+ * Sidebar 
+ * Header 
+ * Cards 
+ * Modais 
+ * Tabelas 
+ * Filtros 
+ * Formulários 
+ * Gráficos 
+ * Badges 
+ * Toasts 
+ * Empty states 
+ * Loading states 
+ 
+ de forma reutilizável. 
+ 
+ ================================================== 
+ 40. PROCESSO OBRIGATÓRIO DE EXECUÇÃO 
+ ==================================== 
+ 
+ Execute em fases. 
+ 
+ FASE 1: 
+ Auditar o projeto atual. 
+ 
+ FASE 2: 
+ Definir arquitetura. 
+ 
+ FASE 3: 
+ Criar autenticação e autorização. 
+ 
+ FASE 4: 
+ Criar layout principal. 
+ 
+ FASE 5: 
+ Criar área do usuário. 
+ 
+ FASE 6: 
+ Criar área administrativa. 
+ 
+ FASE 7: 
+ Criar banco/modelos. 
+ 
+ FASE 8: 
+ Criar módulos de monetização. 
+ 
+ FASE 9: 
+ Criar gamificação. 
+  (abaixo tem mais 5)

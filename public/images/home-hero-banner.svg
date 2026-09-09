@@ -1,0 +1,186 @@
+<svg width="1600" height="720" viewBox="0 0 1600 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98"/>
+      <stop offset="100%" stop-color="#eef3f8" stop-opacity="0.98"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f4f7fb"/>
+    </linearGradient>
+    <linearGradient id="desk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8a5e3a"/>
+      <stop offset="100%" stop-color="#5a361f"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#152033" flood-opacity="0.18"/>
+    </filter>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="720" fill="#e8ece8"/>
+  <rect x="0" y="0" width="615" height="720" fill="#f7f5f2"/>
+  <rect x="84" y="0" width="8" height="720" fill="#dad8d4"/>
+  <rect x="110" y="0" width="4" height="720" fill="#efede8"/>
+
+  <rect x="660" y="56" width="10" height="520" fill="#2b3136" fill-opacity="0.18"/>
+  <rect x="830" y="56" width="10" height="520" fill="#2b3136" fill-opacity="0.18"/>
+  <rect x="1000" y="56" width="10" height="520" fill="#2b3136" fill-opacity="0.18"/>
+  <rect x="1170" y="56" width="10" height="520" fill="#2b3136" fill-opacity="0.18"/>
+  <rect x="1340" y="56" width="10" height="520" fill="#2b3136" fill-opacity="0.18"/>
+  <rect x="660" y="52" width="690" height="4" fill="#2b3136" fill-opacity="0.18"/>
+
+  <rect x="0" y="0" width="1600" height="720" fill="url(#glass)"/>
+
+  <text x="215" y="214" fill="#111826" font-family="Arial, Helvetica, sans-serif" font-size="76" font-weight="700" letter-spacing="-2">TRANSFORME</text>
+  <text x="215" y="302" fill="#111826" font-family="Arial, Helvetica, sans-serif" font-size="76" font-weight="700" letter-spacing="-2">SEUS RESULTADOS</text>
+
+  <text x="216" y="402" fill="#181d24" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="500">DESEMPENHO AVANÇADO PARA SEU NEGÓCIO:</text>
+  <text x="216" y="448" fill="#181d24" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="500">- VISUALIZAÇÃO DE DADOS EM TEMPO REAL</text>
+  <text x="216" y="490" fill="#181d24" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="500">- MONITORAMENTO DE CAMPANHAS CHAVE</text>
+  <text x="216" y="532" fill="#181d24" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="500">- GERENCIAMENTO DE PRODUTOS E MISSÕES</text>
+
+  <rect x="620" y="560" width="770" height="190" fill="url(#desk)"/>
+  <rect x="620" y="560" width="770" height="24" fill="#9c6f47"/>
+
+  <g filter="url(#soft)">
+    <ellipse cx="940" cy="582" rx="32" ry="12" fill="#736f66" fill-opacity="0.18"/>
+    <rect x="912" y="515" width="56" height="52" rx="2" fill="#c7c6c1"/>
+    <path d="M912 537C920 525 932 518 940 518C948 518 960 525 968 537" stroke="#6c7d3e" stroke-width="3" fill="none"/>
+    <path d="M918 543C924 531 932 525 940 525C948 525 956 531 962 543" stroke="#7d8e4a" stroke-width="3" fill="none"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1010" y="82" width="514" height="428" rx="26" fill="#1f232a"/>
+    <rect x="1034" y="105" width="466" height="384" rx="18" fill="url(#screen)"/>
+    <path d="M1229 510H1303L1328 566H1204L1229 510Z" fill="#2a2f37"/>
+    <rect x="1174" y="566" width="184" height="18" rx="9" fill="#6d7379"/>
+  </g>
+
+  <text x="1062" y="146" fill="#172023" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">FG EXATA</text>
+  <circle cx="1442" cy="128" r="8" fill="#cfd4dc"/>
+  <circle cx="1468" cy="128" r="8" fill="#d43852"/>
+  <circle cx="1494" cy="128" r="8" fill="#e8ebef"/>
+
+  <rect x="1070" y="168" width="90" height="12" rx="6" fill="#d4d9df"/>
+  <rect x="1070" y="194" width="72" height="10" rx="5" fill="#dce2e8"/>
+  <rect x="1070" y="219" width="78" height="10" rx="5" fill="#dce2e8"/>
+  <rect x="1070" y="244" width="68" height="10" rx="5" fill="#dce2e8"/>
+  <circle cx="1078" cy="284" r="7" fill="#c8ced8"/>
+  <circle cx="1078" cy="472" r="7" fill="#c8ced8"/>
+
+  <rect x="1176" y="162" width="165" height="146" rx="12" fill="#b8e44e"/>
+  <rect x="1360" y="162" width="165" height="146" rx="12" fill="#4f99f4"/>
+  <rect x="1176" y="326" width="165" height="146" rx="12" fill="#6f5df5"/>
+  <rect x="1360" y="326" width="165" height="146" rx="12" fill="#b8e44e"/>
+
+  <text x="1210" y="196" fill="#1f2a12" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">PRODUTOS</text>
+  <text x="1396" y="196" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">LIVES</text>
+  <text x="1210" y="360" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">CAMPANHAS</text>
+  <text x="1396" y="360" fill="#1f2a12" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">MISSÕES</text>
+
+  <path d="M1201 270C1228 244 1254 268 1278 241C1299 216 1320 226 1331 211" stroke="#1f2937" stroke-width="4" fill="none"/>
+  <path d="M1388 270C1411 242 1438 255 1462 220C1484 189 1503 219 1516 200" stroke="#dff3ff" stroke-width="4" fill="none"/>
+  <path d="M1202 434C1225 398 1248 420 1272 386C1297 352 1315 370 1331 344" stroke="#e1d8ff" stroke-width="4" fill="none"/>
+  <path d="M1388 434C1410 414 1431 424 1453 389C1474 356 1497 403 1516 375" stroke="#1f2937" stroke-width="4" fill="none"/>
+
+  <rect x="1178" y="284" width="104" height="8" rx="4" fill="#d5e8a1"/>
+  <rect x="1178" y="450" width="104" height="8" rx="4" fill="#9487ff"/>
+  <rect x="1388" y="284" width="104" height="8" rx="4" fill="#aee03d"/>
+  <rect x="1388" y="450" width="104" height="8" rx="4" fill="#1f2937"/>
+
+  <rect x="1546" y="161" width="0" height="311" fill="none"/>
+  <rect x="1542" y="162" width="0" height="0" fill="none"/>
+
+  <rect x="1546" y="162" width="0" height="0" fill="none"/>
+  <rect x="1547" y="161" width="0" height="0" fill="none"/>
+
+  <rect x="1178" y="488" width="165" height="0" fill="none"/>
+
+  <rect x="1538" y="162" width="0" height="0" fill="none"/>
+  <rect x="1528" y="162" width="0" height="0" fill="none"/>
+
+  <rect x="1532" y="162" width="0" height="0" fill="none"/>
+
+  <rect x="1176" y="162" width="0" height="0" fill="none"/>
+
+  <rect x="1529" y="162" width="0" height="0" fill="none"/>
+
+  <rect x="1534" y="162" width="0" height="0" fill="none"/>
+
+  <rect x="1536" y="162" width="0" height="0" fill="none"/>
+
+  <rect x="1543" y="162" width="0" height="0" fill="none"/>
+
+  <g opacity="0.95">
+    <rect x="1548" y="162" width="0" height="0" fill="none"/>
+    <rect x="1548" y="162" width="0" height="0" fill="none"/>
+  </g>
+
+  <rect x="1548" y="162" width="0" height="0" fill="none"/>
+
+  <rect x="1534" y="162" width="0" height="0" fill="none"/>
+
+  <rect x="1534" y="162" width="0" height="0" fill="none"/>
+
+  <rect x="1534" y="162" width="0" height="0" fill="none"/>
+
+  <rect x="1534" y="162" width="0" height="0" fill="none"/>
+
+  <g>
+    <rect x="1540" y="162" width="0" height="0" fill="none"/>
+  </g>
+
+  <rect x="1540" y="162" width="0" height="0" fill="none"/>
+
+  <rect x="1540" y="162" width="0" height="0" fill="none"/>
+
+  <rect x="1540" y="162" width="0" height="0" fill="none"/>
+
+  <rect x="1540" y="162" width="0" height="0" fill="none"/>
+
+  <rect x="1540" y="162" width="0" height="0" fill="none"/>
+
+  <g>
+    <rect x="1550" y="162" width="0" height="0" fill="none"/>
+  </g>
+
+  <rect x="1543" y="165" width="330" height="188" rx="12" transform="translate(-5 0)" fill="#ffffff"/>
+  <rect x="1545" y="165" width="325" height="188" rx="12" fill="#ffffff"/>
+  <rect x="1576" y="192" width="196" height="10" rx="5" fill="#dce2e8"/>
+  <rect x="1576" y="220" width="128" height="10" rx="5" fill="#e4e9ef"/>
+  <rect x="1576" y="248" width="188" height="10" rx="5" fill="#e4e9ef"/>
+  <rect x="1576" y="276" width="152" height="10" rx="5" fill="#e4e9ef"/>
+  <path d="M1588 321C1618 302 1648 332 1677 291C1708 247 1742 314 1776 248" stroke="#5f74e7" stroke-width="4" fill="none" transform="translate(-60 0)"/>
+  <path d="M1588 309C1616 280 1647 298 1674 262C1704 221 1739 282 1776 211" stroke="#9ccc4e" stroke-width="4" fill="none" transform="translate(-60 0)"/>
+  <path d="M1588 334C1614 315 1641 346 1668 309C1698 267 1732 320 1776 231" stroke="#3f83c9" stroke-width="4" fill="none" transform="translate(-60 0)"/>
+  </g>
+
+  <rect x="1290" y="386" width="208" height="76" rx="12" fill="#ffffff"/>
+  <circle cx="1318" cy="413" r="8" fill="#d8dde5"/>
+  <rect x="1336" y="406" width="78" height="10" rx="5" fill="#dce2e8"/>
+  <rect x="1336" y="426" width="98" height="10" rx="5" fill="#e4e9ef"/>
+  <circle cx="1318" cy="447" r="8" fill="#d6e3c7"/>
+  <rect x="1336" y="440" width="122" height="10" rx="5" fill="#e4e9ef"/>
+
+  <rect x="1450" y="386" width="126" height="76" rx="12" fill="#ffffff"/>
+  <rect x="1473" y="438" width="10" height="18" rx="5" fill="#cfd7e4"/>
+  <rect x="1491" y="422" width="10" height="34" rx="5" fill="#b2c868"/>
+  <rect x="1509" y="430" width="10" height="26" rx="5" fill="#d0d6df"/>
+  <rect x="1527" y="408" width="10" height="48" rx="5" fill="#5e79e8"/>
+  <rect x="1545" y="416" width="10" height="40" rx="5" fill="#85d4f4"/>
+
+  <rect x="1174" y="592" width="160" height="16" rx="8" fill="#1a1f27" fill-opacity="0.16"/>
+  <rect x="1220" y="606" width="70" height="12" rx="6" fill="#1a1f27" fill-opacity="0.12"/>
+
+  <g opacity="0.65">
+    <circle cx="1460" cy="360" r="3" fill="#ffffff"/>
+    <circle cx="1485" cy="360" r="3" fill="#ffffff"/>
+    <circle cx="1510" cy="360" r="3" fill="#ffffff"/>
+  </g>
+
+  <text x="760" y="658" fill="#221b16" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="500">DADOS SÃO O NOVO PETRÓLEO.</text>
+  <text x="810" y="684" fill="#221b16" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="500">ANALISE COM PRECISÃO.</text>
+</svg>

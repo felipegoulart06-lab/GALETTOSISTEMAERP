@@ -1,0 +1,181 @@
+<svg width="1600" height="720" viewBox="0 0 1600 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eef1f0"/>
+      <stop offset="100%" stop-color="#f8f7f3"/>
+    </linearGradient>
+    <linearGradient id="desk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d5b693"/>
+      <stop offset="100%" stop-color="#c89d73"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5f7f6"/>
+      <stop offset="100%" stop-color="#e8ecec"/>
+    </linearGradient>
+    <linearGradient id="map" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eef3f5"/>
+      <stop offset="100%" stop-color="#dce5e7"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#142233" flood-opacity="0.14"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="720" fill="url(#bg)"/>
+  <rect x="0" y="520" width="1600" height="200" fill="url(#desk)"/>
+  <rect x="0" y="520" width="1600" height="10" fill="#e6d0b4"/>
+
+  <rect x="0" y="0" width="460" height="520" fill="#e6ebeb"/>
+  <rect x="14" y="14" width="114" height="490" fill="#4f6574"/>
+  <rect x="40" y="0" width="74" height="520" fill="#dde3e4"/>
+  <rect x="138" y="44" width="128" height="476" fill="#d2d6d5"/>
+  <rect x="152" y="58" width="100" height="448" fill="#e6e2dd"/>
+  <rect x="282" y="0" width="146" height="520" fill="#cdd4d7"/>
+  <rect x="302" y="18" width="106" height="486" fill="#f5f7f7"/>
+
+  <rect x="482" y="0" width="12" height="520" fill="#d2a571"/>
+  <rect x="844" y="0" width="12" height="520" fill="#d2a571"/>
+  <rect x="912" y="0" width="220" height="520" fill="#fbfaf6"/>
+  <rect x="1142" y="0" width="458" height="520" fill="#ffffff"/>
+
+  <text x="490" y="132" fill="#242B33" font-family="Arial, Helvetica, sans-serif" font-size="68" font-weight="500">Find Your Partner</text>
+  <text x="490" y="206" fill="#242B33" font-family="Arial, Helvetica, sans-serif" font-size="68" font-weight="500">ecosystem</text>
+  <text x="830" y="206" fill="#242B33" font-family="Arial, Helvetica, sans-serif" font-size="68" font-weight="300">marketplace</text>
+  <text x="490" y="278" fill="#242B33" font-family="Arial, Helvetica, sans-serif" font-size="66" font-weight="300">for you</text>
+
+  <text x="490" y="360" fill="#20242A" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400">Discovery a your B2B</text>
+  <text x="490" y="392" fill="#20242A" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400">business marketplace, a</text>
+  <text x="490" y="424" fill="#20242A" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">light map</text>
+  <text x="590" y="424" fill="#20242A" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400">. like a city of</text>
+  <text x="490" y="456" fill="#20242A" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400">business partners.</text>
+
+  <text x="720" y="360" fill="#20242A" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400">Discovery inside a,</text>
+  <text x="720" y="392" fill="#20242A" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400">high-quality-designed</text>
+  <text x="720" y="424" fill="#20242A" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400">professional and</text>
+  <text x="720" y="456" fill="#20242A" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400">corporate partnerships.</text>
+
+  <rect x="490" y="492" width="184" height="58" rx="29" fill="#356546" filter="url(#shadow)"/>
+  <text x="508" y="528" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="500">Find Your Partner Now</text>
+
+  <text x="1188" y="82" fill="#315b47" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="500" letter-spacing="4">FG EXATA</text>
+
+  <g filter="url(#shadow)">
+    <rect x="968" y="116" width="562" height="278" rx="8" fill="#dce3e5"/>
+    <rect x="974" y="122" width="550" height="266" rx="6" fill="#f5f7f7"/>
+  </g>
+
+  <rect x="974" y="122" width="172" height="48" fill="#f2f4f4"/>
+  <text x="992" y="154" fill="#1d2228" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700">DIRECTORY HUB</text>
+  <rect x="986" y="182" width="144" height="20" rx="4" fill="#ffffff" stroke="#dbe2e5"/>
+  <rect x="995" y="188" width="48" height="8" rx="4" fill="#d5dce0"/>
+  <path d="M984 209H1138" stroke="#dfe5e7"/>
+
+  <rect x="1146" y="122" width="378" height="48" fill="#eaf0f0"/>
+  <rect x="1268" y="138" width="80" height="18" rx="4" fill="#ffffff" stroke="#dbe2e5"/>
+  <rect x="1364" y="138" width="80" height="18" rx="4" fill="#ffffff" stroke="#dbe2e5"/>
+  <rect x="1460" y="138" width="44" height="18" rx="4" fill="#ffffff" stroke="#dbe2e5"/>
+  <rect x="1478" y="138" width="40" height="18" rx="4" fill="#356546"/>
+  <text x="1486" y="151" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="700">Search</text>
+
+  <rect x="974" y="170" width="170" height="218" fill="url(#map)"/>
+  <rect x="1146" y="170" width="378" height="218" fill="#f9fbfb"/>
+
+  <path d="M1000 212L1110 186" stroke="#d0dadd" stroke-width="3"/>
+  <path d="M988 264L1132 230" stroke="#d0dadd" stroke-width="3"/>
+  <path d="M990 332L1122 292" stroke="#d0dadd" stroke-width="3"/>
+  <path d="M1028 184L1044 388" stroke="#d0dadd" stroke-width="3"/>
+  <path d="M1094 170L1106 388" stroke="#d0dadd" stroke-width="3"/>
+  <path d="M1008 244C1026 234 1044 260 1064 250C1084 240 1098 262 1120 252" stroke="#b8d2c3" stroke-width="10" fill="none"/>
+  <path d="M1018 328C1038 316 1062 336 1080 322C1100 306 1116 320 1130 310" stroke="#c6dfd1" stroke-width="10" fill="none"/>
+
+  <circle cx="1018" cy="250" r="10" fill="#4d6f6a"/>
+  <path d="M1018 245C1021 245 1024 247 1024 251C1024 256 1018 262 1018 262C1018 262 1012 256 1012 251C1012 247 1015 245 1018 245Z" fill="#4d6f6a"/>
+  <circle cx="1080" cy="302" r="10" fill="#4d6f6a"/>
+  <path d="M1080 297C1083 297 1086 299 1086 303C1086 308 1080 314 1080 314C1080 314 1074 308 1074 303C1074 299 1077 297 1080 297Z" fill="#4d6f6a"/>
+  <circle cx="1120" cy="232" r="10" fill="#356546"/>
+  <path d="M1120 227C1123 227 1126 229 1126 233C1126 238 1120 244 1120 244C1120 244 1114 238 1114 233C1114 229 1117 227 1120 227Z" fill="#356546"/>
+
+  <text x="1172" y="210" fill="#1e2329" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600">Cards</text>
+  <g>
+    <rect x="1172" y="228" width="104" height="66" rx="6" fill="#ffffff" stroke="#dde4e6"/>
+    <rect x="1286" y="228" width="104" height="66" rx="6" fill="#ffffff" stroke="#dde4e6"/>
+    <rect x="1400" y="228" width="104" height="66" rx="6" fill="#ffffff" stroke="#dde4e6"/>
+    <rect x="1172" y="304" width="104" height="66" rx="6" fill="#ffffff" stroke="#dde4e6"/>
+    <rect x="1286" y="304" width="104" height="66" rx="6" fill="#ffffff" stroke="#dde4e6"/>
+    <rect x="1400" y="304" width="104" height="66" rx="6" fill="#ffffff" stroke="#dde4e6"/>
+  </g>
+  <text x="1222" y="258" fill="#59646E" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">G</text>
+  <text x="1338" y="258" fill="#59646E" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">M</text>
+  <text x="1454" y="258" fill="#59646E" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">T</text>
+  <text x="1210" y="281" fill="#20252B" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="600">Logistics</text>
+  <text x="1329" y="281" fill="#20252B" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="600">Finance</text>
+  <text x="1444" y="281" fill="#20252B" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="600">Trade</text>
+
+  <text x="1218" y="334" fill="#59646E" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">A</text>
+  <text x="1332" y="334" fill="#59646E" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">▲</text>
+  <text x="1448" y="334" fill="#59646E" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">◆</text>
+  <text x="1206" y="357" fill="#20252B" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="600">Tech</text>
+  <text x="1322" y="357" fill="#20252B" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="600">Services</text>
+  <text x="1426" y="357" fill="#20252B" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="600">Logistics</text>
+
+  <g filter="url(#shadow)">
+    <rect x="1288" y="344" width="144" height="176" rx="12" fill="#f0dcc5"/>
+    <rect x="1312" y="394" width="92" height="118" rx="40" fill="#4f744e"/>
+    <circle cx="1358" cy="366" r="34" fill="#e4c5af"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1086" y="448" width="146" height="90" rx="8" fill="#d8dde0"/>
+    <rect x="1102" y="464" width="114" height="58" rx="6" fill="#f7f9f9"/>
+    <rect x="1154" y="472" width="14" height="30" rx="7" fill="#4a6f6a"/>
+    <rect x="1132" y="480" width="14" height="22" rx="7" fill="#97b8a7"/>
+    <rect x="1176" y="486" width="14" height="16" rx="7" fill="#d1d8dc"/>
+  </g>
+
+  <rect x="120" y="544" width="188" height="114" rx="12" fill="#3f2f24" filter="url(#shadow)"/>
+  <rect x="132" y="556" width="164" height="90" rx="10" fill="#1f1f1f"/>
+  <line x1="176" y1="580" x2="236" y2="612" stroke="#c8b28c" stroke-width="4"/>
+  <rect x="170" y="586" width="8" height="8" rx="4" fill="#d6c39d"/>
+  <rect x="234" y="612" width="8" height="8" rx="4" fill="#d6c39d"/>
+
+  <g filter="url(#shadow)">
+    <ellipse cx="630" cy="546" rx="92" ry="24" fill="#111111" fill-opacity="0.12"/>
+    <rect x="578" y="462" width="100" height="76" rx="40" fill="#101010"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="704" y="526" width="160" height="48" rx="6" fill="#f6f7f3"/>
+    <rect x="716" y="538" width="136" height="24" rx="4" fill="#e6ecee"/>
+    <path d="M724 546L840 548" stroke="#a1b5b1" stroke-width="2"/>
+    <path d="M740 554L780 540L816 548" stroke="#79968c" stroke-width="2" fill="none"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="936" y="528" width="172" height="80" rx="10" fill="#f7f5ef"/>
+    <rect x="938" y="530" width="168" height="76" rx="8" fill="#355848"/>
+    <path d="M958 556L1010 548L1056 574L1092 566" stroke="#d7e4d6" stroke-width="2" fill="none"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1064" y="536" width="198" height="86" rx="10" fill="#fafaf7"/>
+    <rect x="1066" y="538" width="194" height="82" rx="8" fill="#fdfdfd"/>
+    <text x="1110" y="570" fill="#2a2d34" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="400">COMPANY PROFILE</text>
+    <rect x="1110" y="586" width="78" height="4" rx="2" fill="#dedfe4"/>
+    <rect x="1110" y="598" width="62" height="4" rx="2" fill="#dedfe4"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1202" y="620" width="248" height="74" rx="10" fill="#fafaf7"/>
+    <rect x="1204" y="622" width="244" height="70" rx="8" fill="#fdfdfd"/>
+    <text x="1238" y="662" fill="#2a2d34" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="400">SERVICE CATALOG</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <ellipse cx="1542" cy="490" rx="82" ry="24" fill="#7d9360" fill-opacity="0.14"/>
+    <rect x="1488" y="406" width="108" height="132" rx="54" fill="#ffffff"/>
+    <rect x="1518" y="368" width="48" height="72" rx="24" fill="#6a8b34"/>
+    <circle cx="1510" cy="456" r="20" fill="#5a7a2f"/>
+    <circle cx="1572" cy="470" r="22" fill="#638638"/>
+    <circle cx="1534" cy="496" r="18" fill="#7a9a41"/>
+  </g>
+</svg>

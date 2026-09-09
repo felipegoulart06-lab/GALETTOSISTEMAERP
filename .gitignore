@@ -1,0 +1,9 @@
+.next
+node_modules
+npm-debug.log*
+*.log
+.env*
+.DS_Store
+data/platform-db.json
+data/*.json.tmp
+verify-admin-master-e2e.mjs
