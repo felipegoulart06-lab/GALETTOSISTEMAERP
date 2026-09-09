@@ -21,13 +21,15 @@ let __dbgSessionId = "vercel-server-crash";
 try {
   if (typeof process !== "undefined") {
     try {
-      const envRaw = require("fs").readFileSync(".dbg/vercel-server-crash.env", "utf8") as string;
-      envRaw.split(/\r?\n/).forEach((line) => {
-        const [k, v] = line.split("=");
-        if (!k || !v) return;
-        if (k.trim() === "DEBUG_SERVER_URL") __dbgServerUrl = v.trim();
-        if (k.trim() === "DEBUG_SESSION_ID") __dbgSessionId = v.trim();
-      });
+      if (typeof require !== "undefined") {
+        const envRaw = require("fs").readFileSync(".dbg/vercel-server-crash.env", "utf8") as string;
+        envRaw.split(/\r?\n/).forEach((line) => {
+          const [k, v] = line.split("=");
+          if (!k || !v) return;
+          if (k.trim() === "DEBUG_SERVER_URL") __dbgServerUrl = v.trim();
+          if (k.trim() === "DEBUG_SESSION_ID") __dbgSessionId = v.trim();
+        });
+      }
     } catch {}
   }
 } catch {}

@@ -7,11 +7,13 @@ const __debugEnv = (() => {
   let u = "http://127.0.0.1:7777/event";
   let s = "vercel-server-crash";
   try {
-    const content = require("fs").readFileSync(".dbg/vercel-server-crash.env", "utf8");
-    const mu = content.match(/DEBUG_SERVER_URL=(.+)/)?.[1];
-    const ms = content.match(/DEBUG_SESSION_ID=(.+)/)?.[1];
-    if (mu) u = mu;
-    if (ms) s = ms;
+    if (typeof require !== "undefined") {
+      const content = require("fs").readFileSync(".dbg/vercel-server-crash.env", "utf8");
+      const mu = content.match(/DEBUG_SERVER_URL=(.+)/)?.[1];
+      const ms = content.match(/DEBUG_SESSION_ID=(.+)/)?.[1];
+      if (mu) u = mu;
+      if (ms) s = ms;
+    }
   } catch {
   }
   return { u, s };
@@ -68,7 +70,11 @@ function toProductCard(product: ProductRecord): MediaCardData {
 }
 
 function toMentorshipCard(mentorship: MentorshipRecord): MediaCardData {
-  const lessonCount = mentorship.modules.reduce((total, moduleItem) => total + moduleItem.lessons.length, 0);
+  const modulesSafe = Array.isArray(mentorship.modules) ? mentorship.modules : [];
+  const lessonCount = modulesSafe.reduce((total, moduleItem) => {
+    const lessons = Array.isArray((moduleItem as any)?.lessons) ? (moduleItem as any).lessons : [];
+    return total + lessons.length;
+  }, 0);
 
   return {
     eyebrow: mentorship.category,
@@ -83,7 +89,7 @@ function toMentorshipCard(mentorship: MentorshipRecord): MediaCardData {
     chips: mentorship.chips,
     mentorName: mentorship.mentorName,
     mentorAvatar: mentorship.mentorAvatar,
-    moduleCount: mentorship.modules.length,
+    moduleCount: modulesSafe.length,
     lessonCount,
     duration: mentorship.duration,
     level: mentorship.level,
@@ -127,11 +133,12 @@ function toCompanyCard(company: CompanyRecord): MediaCardData {
 }
 
 function toSupplierListCard(item: SupplierListRecord): MediaCardData {
+  const suppliersCount = Array.isArray(item.suppliers) ? item.suppliers.length : 0;
   return {
     eyebrow: `Lista ${item.category}`,
     title: item.title,
     subtitle: item.shortDescription,
-    meta: `${item.suppliers.length} fornecedores • ${item.badge}`,
+    meta: `${suppliersCount} fornecedores • ${item.badge}`,
     badge: item.badge,
     accent: "blue",
     image: item.image,
@@ -172,6 +179,8 @@ function toOpportunityCard(item: OpportunityRecord): MediaCardData {
 }
 
 function toCampaignCard(item: CampaignRecord): MediaCardData {
+  const rulesSafe = Array.isArray(item.rules) ? item.rules : [];
+  const tagsSafe = Array.isArray(item.tags) ? item.tags : [];
   return {
     eyebrow: item.category,
     title: item.title,
@@ -184,23 +193,26 @@ function toCampaignCard(item: CampaignRecord): MediaCardData {
     cta: "Ver campanha",
     href: `/detalhes/campanhas/${item.slug}`,
     ctaHref: `/detalhes/campanhas/${item.slug}`,
-    facts: ["Produtos vinculados", ...item.rules.slice(0, 2)],
-    chips: ["Campanha", ...item.tags.slice(0, 2)]
+    facts: ["Produtos vinculados", ...rulesSafe.slice(0, 2)],
+    chips: ["Campanha", ...tagsSafe.slice(0, 2)]
   };
 }
 
 function toSweepstakeCard(item: SweepstakesRecord): MediaCardData {
+  const criteriaSafe = Array.isArray(item.criteria) ? item.criteria : [];
+  const participantCount = typeof item.participantCount === "number" ? item.participantCount : 0;
+  const tagsSafe = Array.isArray(item.tags) ? item.tags : [];
   return {
     eyebrow: item.sweepstakeType,
     title: item.title,
     subtitle: item.prizeLabel,
-    meta: `${item.participantCount} participantes • ${item.scheduledDate}`,
+    meta: `${participantCount} participantes • ${item.scheduledDate}`,
     badge: item.status,
     accent: item.featured ? "orange" : "blue",
     image: item.image,
     cta: "Ver sorteio",
-    facts: [`Horário ${item.scheduledTime}`, ...item.criteria.slice(0, 2)],
-    chips: item.tags
+    facts: [`Horário ${item.scheduledTime}`, ...criteriaSafe.slice(0, 2)],
+    chips: tagsSafe
   };
 }
 
@@ -213,7 +225,7 @@ function withFallback(base: SectionConfig, partial: Partial<SectionConfig>): Sec
 
 export async function getPublishedProducts() {
   const db = await getPlatformDb();
-  return db.products.filter((product) => isContentVisible(product));
+  return Array.isArray(db.products) ? db.products.filter((product) => isContentVisible(product)) : [];
 }
 
 export async function getPublishedProductBySlug(slug: string) {
@@ -228,7 +240,7 @@ export async function getRelatedPublishedProducts(slug: string) {
 
 export async function getPublishedCompanies() {
   const db = await getPlatformDb();
-  return db.companies.filter((company) => isContentVisible(company));
+  return Array.isArray(db.companies) ? db.companies.filter((company) => isContentVisible(company)) : [];
 }
 
 export async function getPublishedCompanyBySlug(slug: string) {
@@ -243,7 +255,7 @@ export async function getRelatedPublishedCompanies(slug: string) {
 
 export async function getPublishedCampaigns() {
   const db = await getPlatformDb();
-  return db.campaigns.filter((campaign) => isContentVisible(campaign));
+  return Array.isArray(db.campaigns) ? db.campaigns.filter((campaign) => isContentVisible(campaign)) : [];
 }
 
 export async function getPublishedCampaignBySlug(slug: string) {
@@ -445,7 +457,7 @@ export async function buildUserDashboardSections() {
 
 export async function getPublishedClubOffers() {
   const db = await getPlatformDb();
-  return db.clubOffers.filter((item) => isContentVisible(item));
+  return Array.isArray(db.clubOffers) ? db.clubOffers.filter((item) => isContentVisible(item)) : [];
 }
 
 export async function getPlatformSnapshot() {

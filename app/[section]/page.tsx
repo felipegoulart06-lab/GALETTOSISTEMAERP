@@ -7,11 +7,13 @@ const __debugEnv = (() => {
   let u = "http://127.0.0.1:7777/event";
   let s = "vercel-server-crash";
   try {
-    const content = require("fs").readFileSync(".dbg/vercel-server-crash.env", "utf8");
-    const mu = content.match(/DEBUG_SERVER_URL=(.+)/)?.[1];
-    const ms = content.match(/DEBUG_SESSION_ID=(.+)/)?.[1];
-    if (mu) u = mu;
-    if (ms) s = ms;
+    if (typeof require !== "undefined") {
+      const content = require("fs").readFileSync(".dbg/vercel-server-crash.env", "utf8");
+      const mu = content.match(/DEBUG_SERVER_URL=(.+)/)?.[1];
+      const ms = content.match(/DEBUG_SESSION_ID=(.+)/)?.[1];
+      if (mu) u = mu;
+      if (ms) s = ms;
+    }
   } catch {
   }
   return { u, s };
