@@ -2655,7 +2655,7 @@ export async function Dashboard({
       availableKeys: Object.keys(sections)
     });
     // #endregion
-    throw new Error(`Seção ${String(sectionKey)} não encontrada");
+    throw new Error("Seção " + String(sectionKey) + " não encontrada");
   }
 
   const clubOffersSafe = Array.isArray((snapshot as any)?.clubOffers)
@@ -2698,18 +2698,19 @@ export async function Dashboard({
           <div key={group.label} className="sidebar-group">
             <span className="sidebar-label">{group.label}</span>
             <nav className="sidebar-nav" aria-label={group.label}>
-              {group.items.map((item) => (
-                <Link
-                  key={item.key}
-                  href={item.key === "home" ? "/" : `/${item.key}`}
-                  className={`nav-item${item.key === sectionKey ? " is-active" : ""}`}
-                >
-                  <span className="nav-icon">
-                    <Icon name={item.icon} />
-                  </span>
-                  <span>{item.label}</span>
-                </Link>
-              ))}
+              {group.items.map((item) => {
+                const itemHref = item.key === "home" ? "/" : "/" + String(item.key);
+                const itemClasses =
+                  "nav-item" + (item.key === sectionKey ? " is-active" : "");
+                return (
+                  <Link key={item.key} href={itemHref} className={itemClasses}>
+                    <span className="nav-icon">
+                      <Icon name={item.icon} />
+                    </span>
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
             </nav>
           </div>
         ))}
@@ -2761,11 +2762,14 @@ export async function Dashboard({
             </p>
           </div>
           <nav className="footer-nav">
-            {sectionOrder.slice(0, 6).map((item) => (
-              <Link key={item} href={item === "home" ? "/" : `/${item}`}>
-                {sections[item].label}
-              </Link>
-            ))}
+            {sectionOrder.slice(0, 6).map((item) => {
+              const href = item === "home" ? "/" : "/" + String(item);
+              return (
+                <Link key={item} href={href}>
+                  {sections[item].label}
+                </Link>
+              );
+            })}
           </nav>
         </footer>
       </main>

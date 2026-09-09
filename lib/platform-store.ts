@@ -48,8 +48,14 @@ const __debugEmit = (hypothesisId: string, location: string, msg: string, data: 
 };
 // #endregion
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const DB_PATH = path.join(DATA_DIR, "platform-db.json");
+const IS_VERCEL = process.env.VERCEL === "1" || process.env.VERCEL_ENV !== undefined || /vercel/i.test(process.env.NEXT_RUNTIME ?? "") || process.env.LAMBDA_TASK_ROOT !== undefined;
+
+let DATA_DIR = path.join(process.cwd(), "data");
+let DB_PATH = path.join(DATA_DIR, "platform-db.json");
+if (IS_VERCEL) {
+  DATA_DIR = "/tmp/galetto-data";
+  DB_PATH = path.join(DATA_DIR, "platform-db.json");
+}
 
 type CollectionMap = {
   users: PlatformDb["users"];
@@ -77,9 +83,21 @@ async function ensureDbFile() {
     dataDir: DATA_DIR,
     dbPath: DB_PATH,
     cwd: process.cwd(),
-    nodeVersion: process.version
+    nodeVersion: process.version,
+    isVercel: IS_VERCEL
   });
   // #endregion
+
+  if (IS_VERCEL) {
+    try {
+      await readFile(DB_PATH, "utf8");
+      __debugEmit("A", "platform-store.ts:ensureDbFile:vercel:hit", "Vercel /tmp db existe", { dbPath: DB_PATH });
+      return;
+    } catch {
+      __debugEmit("A", "platform-store.ts:ensureDbFile:vercel:memOnly", "Vercel sem db persistido, manter memória seed", { dbPath: DB_PATH });
+      return;
+    }
+  }
 
   try {
     await mkdir(DATA_DIR, { recursive: true });
