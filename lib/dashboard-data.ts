@@ -343,7 +343,7 @@ export const dashboardSections: Record<SectionKey, SectionConfig> = {
     heroNotice: "Banner configurável pelo administrador para campanha, produto, Live, mentoria ou desafio.",
     heroImage: "/images/home-hero-real-v2.jpg",
     heroActionLabel: "Ver oportunidades",
-    heroActionHref: "/detalhes/home",
+    heroActionHref: "/oportunidades",
     metrics: [
       { label: "Receita validada", value: "R$ 18.420", detail: "Resultado gerado", tone: "green" },
       { label: "Saldo disponível", value: "R$ 2.840", detail: "Pronto para uso", tone: "blue" },
