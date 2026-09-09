@@ -2384,21 +2384,98 @@ function NotificacoesLayout({ section }: { section: SectionConfig }) {
 }
 
 function PerfilLayout({ section }: { section: SectionConfig }) {
+  const [accountCard, statsCard, securityCard] = section.cards;
+
   return (
     <>
-      <HeroBlock section={section} className="hero-panel-compact" />
+      <HeroBlock section={section} className="hero-panel-soft-violet" />
       <MetricsStrip section={section} className="metrics-grid-tight" />
       <section className="layout-perfil">
-        <div className="cards-grid cards-grid-three">
-          {section.cards.map((card) => (
-            <MediaCard key={card.title} card={card} compact />
-          ))}
+        <div className="profile-command">
+          <article className="profile-identity-card">
+            <div className="profile-identity-head">
+              <div className="profile-avatar-shell">
+                <span>F</span>
+              </div>
+              <div className="profile-identity-copy">
+                <span className="profile-identity-kicker">{section.heroTag}</span>
+                <h3>{section.title}</h3>
+                <p>{section.description}</p>
+              </div>
+            </div>
+
+            <div className="profile-chip-cloud">
+              {section.filters.map((filter) => (
+                <span key={filter} className="profile-chip">
+                  {filter}
+                </span>
+              ))}
+            </div>
+
+            <div className="profile-highlight-grid">
+              {section.insights.map((item) => (
+                <article key={item.label} className={`profile-highlight-card tone-${item.tone}`}>
+                  <span>{item.label}</span>
+                  <strong>{item.value}</strong>
+                </article>
+              ))}
+            </div>
+
+            <div className="profile-identity-actions">
+              <Link href={section.heroActionHref} className="hero-link-button">
+                {section.heroActionLabel}
+              </Link>
+              <span className="profile-level-pill">Status premium ativo</span>
+            </div>
+          </article>
+
+          <aside className="profile-command-side">
+            <article className="profile-focus-card">
+              <div className="profile-side-head">
+                <h3>{statsCard.title}</h3>
+                <span>{statsCard.badge}</span>
+              </div>
+              <p>{statsCard.subtitle}</p>
+              <strong>{statsCard.meta}</strong>
+              <ul className="profile-side-list">
+                {statsCard.facts.map((fact) => (
+                  <li key={fact}>{fact}</li>
+                ))}
+              </ul>
+              <Link href={statsCard.ctaHref ?? section.heroActionHref} className="media-card-button">
+                {statsCard.cta}
+              </Link>
+            </article>
+
+            <article className="profile-security-card">
+              <div className="profile-side-head">
+                <h3>{securityCard.title}</h3>
+                <span>{securityCard.badge}</span>
+              </div>
+              <p>{securityCard.subtitle}</p>
+              <div className="profile-security-points">
+                {securityCard.facts.map((fact) => (
+                  <span key={fact}>{fact}</span>
+                ))}
+              </div>
+              <Link href={securityCard.ctaHref ?? section.heroActionHref} className="media-card-button">
+                {securityCard.cta}
+              </Link>
+            </article>
+          </aside>
         </div>
-        <aside className="stack-panels">
+
+        <div className="profile-detail-grid">
+          <MediaCard key={accountCard.title} card={{ ...accountCard, coverFit: "contain", ctaHref: accountCard.ctaHref ?? section.heroActionHref }} />
+          <MediaCard key={statsCard.title} card={{ ...statsCard, coverFit: "contain", ctaHref: statsCard.ctaHref ?? section.heroActionHref }} />
+          <MediaCard key={securityCard.title} card={{ ...securityCard, coverFit: "contain", ctaHref: securityCard.ctaHref ?? section.heroActionHref }} />
+        </div>
+
+        <div className="profile-support-grid">
           <FeedPanel section={section} />
           <InsightPanel section={section} />
           <SystemPanel section={section} />
-        </aside>
+        </div>
       </section>
     </>
   );
