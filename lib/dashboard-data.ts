@@ -8,6 +8,7 @@ export type SectionKey =
   | "produtos"
   | "mentorias"
   | "clubao"
+  | "giro-da-sorte"
   | "empresas"
   | "listas"
   | "indicacoes"
@@ -285,6 +286,7 @@ export const navGroups: NavGroup[] = [
       { key: "home", label: "Home", icon: "home" },
       { key: "lives", label: "Lives", icon: "live" },
       { key: "produtos", label: "Produtos", icon: "box" },
+      { key: "giro-da-sorte", label: "Giro da Sorte", icon: "sparkles" },
       { key: "mentorias", label: "Mentorias", icon: "cap" },
       { key: "clubao", label: "Clubão", icon: "gift" },
       { key: "empresas", label: "Empresas", icon: "building" },
@@ -1844,6 +1846,104 @@ export const dashboardSections: Record<SectionKey, SectionConfig> = {
       "Sorteios devem unir urgência, prêmio claro, regras visíveis e sensação de evento ao vivo.",
       "A área conversa com missões, ranking, recompensas, desempenho e carteira.",
       "Entradas podem depender de atividade, status, missões, campanhas ou tickets especiais.",
+      ...commonSystemPoints
+    ]
+  },
+  "giro-da-sorte": {
+    key: "giro-da-sorte",
+    label: "Giro da Sorte",
+    eyebrow: "Engajamento recorrente",
+    title: "Volte diariamente para girar, desbloquear recompensas e acompanhar seu histórico premium.",
+    description:
+      "Uma área de gamificação elegante, pensada para giros diários, especiais e VIP, com leitura clara de status, recompensas e próximas liberações.",
+    heroTag: "Progressão + recompensa + retorno",
+    heroNotice:
+      "A experiência precisa parecer um benefício premium da FG EXACTA, nunca um cassino chamativo.",
+    heroImage: image(
+      "premium reward wheel dashboard for professional membership platform, elegant blue interface, luxury gamification, clean lighting, realistic",
+      "landscape_16_9"
+    ),
+    heroActionLabel: "Girar agora",
+    heroActionHref: "/giro-da-sorte#roleta-principal",
+    metrics: [
+      { label: "Giros hoje", value: "03", detail: "Disponíveis", tone: "green" },
+      { label: "Próximo giro", value: "08:42:15", detail: "Contagem ativa", tone: "blue" },
+      { label: "Prêmios ganhos", value: "12", detail: "Histórico vivo", tone: "orange" },
+      { label: "Benefícios", value: "Clubão + VIP", detail: "Ecossistema", tone: "violet" }
+    ],
+    spotlightTitle: "Tipos de roleta",
+    spotlightDescription:
+      "Giro diário, semanal, VIP, campanha, aniversário, missão, ranking, relâmpago e Clubão em uma leitura visual organizada.",
+    filters: ["Diário", "Semanal", "VIP", "Campanha", "Missão", "Clubão"],
+    cards: [
+      card(
+        "Giro Diário",
+        "Retorno rápido com recompensa imediata",
+        "Prêmios menores, giro frequente e ótima cadência de retorno",
+        "Seu giro de hoje está disponível",
+        "Próximo em 08:42:15",
+        "blue",
+        "premium daily reward wheel card, elegant enterprise gamification, realistic",
+        "Ver roleta",
+        ["Uso diário", "Baixa fricção", "Volta recorrente"],
+        ["Diário", "Retenção", "FG EXACTA"]
+      ),
+      card(
+        "Giro VIP",
+        "Prêmios premium para usuários elegíveis",
+        "Acesso especial para níveis, campanhas ou metas estratégicas",
+        "Giro liberado por nível",
+        "Elegibilidade premium",
+        "violet",
+        "premium vip reward wheel module with luxury benefits and clean blue purple design, realistic",
+        "Ver condições",
+        ["Benefícios exclusivos", "Regras claras", "Perfil qualificado"],
+        ["VIP", "Exclusivo", "Benefícios"]
+      ),
+      card(
+        "Giro de Campanha",
+        "Roleta conectada a campanhas publicadas",
+        "Engajamento visual com janela curta, prioridade e rastreabilidade",
+        "Campanha ativa",
+        "Janela limitada",
+        "orange",
+        "campaign reward wheel in professional dashboard, elegant urgency without casino look, realistic",
+        "Acompanhar",
+        ["Curto prazo", "Alta energia", "Leitura de campanha"],
+        ["Campanha", "Urgência", "Prêmios"]
+      ),
+      card(
+        "Giro Exclusivo Clubão",
+        "Benefícios e cupons premium em formato de roleta",
+        "Conecta Clubão, recompensas e experiências sem poluir a interface",
+        "Benefício premium",
+        "Conecta com o Clubão",
+        "green",
+        "exclusive membership reward wheel with club benefits and premium coupon visuals, realistic",
+        "Abrir giro",
+        ["Clubão", "Cupom", "Experiência"],
+        ["Clubão", "Premium", "Cupom"]
+      )
+    ],
+    feedTitle: "Leitura rápida",
+    feed: [
+      { title: "Seu giro de hoje está disponível", detail: "A roleta diária foi liberada e já pode ser acionada.", meta: "Agora" },
+      { title: "Giro especial disponível", detail: "Nova rodada conectada à campanha ativa do ciclo atual.", meta: "Campanha" },
+      { title: "Você já ganhou 3 recompensas", detail: "Acompanhe status, código, validade e detalhes do resgate.", meta: "Histórico" },
+      { title: "Novos prêmios publicados", detail: "O Admin Master atualizou a roleta com novos benefícios elegíveis.", meta: "Atualização" }
+    ],
+    insightTitle: "Sinais de engajamento",
+    insights: [
+      { label: "Cadência", value: "Diária", tone: "blue" },
+      { label: "Motivação", value: "Prêmio próximo", tone: "green" },
+      { label: "Destaque", value: "VIP", tone: "violet" },
+      { label: "Campanha", value: "Ativa", tone: "orange" }
+    ],
+    systemTitle: "Arquitetura de Giro da Sorte",
+    systemPoints: [
+      "Toda roleta precisa nascer no Admin Master e refletir automaticamente na área do usuário.",
+      "O resultado do giro deve ser calculado com base em configuração administrativa, estoque e regras publicadas.",
+      "A interface deve incentivar retorno frequente com elegância, sem estética de cassino ou excesso de efeitos.",
       ...commonSystemPoints
     ]
   },

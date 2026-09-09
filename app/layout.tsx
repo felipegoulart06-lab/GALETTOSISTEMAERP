@@ -4,7 +4,12 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "FG EXACTA Dashboard",
-  description: "Painel visual em Next.js para creator business, produtos, lives e mentorias."
+  description: "Painel visual em Next.js para creator business, produtos, lives e mentorias.",
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {

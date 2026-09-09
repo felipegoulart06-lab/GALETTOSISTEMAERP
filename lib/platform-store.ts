@@ -71,6 +71,7 @@ type CollectionMap = {
   campaigns: PlatformDb["campaigns"];
   missions: PlatformDb["missions"];
   rewards: PlatformDb["rewards"];
+  spinWheels: PlatformDb["spinWheels"];
   sweepstakes: PlatformDb["sweepstakes"];
   couponRedemptions: PlatformDb["couponRedemptions"];
 };

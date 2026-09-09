@@ -5,6 +5,7 @@ export type AdminMasterSectionKey =
   | "mentorias"
   | "lives"
   | "clubao"
+  | "giro-da-sorte"
   | "empresas"
   | "listas"
   | "indicacoes"
@@ -52,6 +53,7 @@ export const adminMasterNavGroups: AdminMasterNavGroup[] = [
     items: [
       { key: "mentorias", label: "Mentorias" },
       { key: "clubao", label: "Clubão" },
+      { key: "giro-da-sorte", label: "Giro da Sorte" },
       { key: "listas", label: "Listas" },
       { key: "missoes", label: "Missões" },
       { key: "recompensas", label: "Recompensas" },
@@ -69,6 +71,7 @@ export const adminMasterLabels: Record<AdminMasterSectionKey, string> = {
   mentorias: "Mentorias",
   lives: "Lives",
   clubao: "Clubão",
+  "giro-da-sorte": "Giro da Sorte",
   empresas: "Empresas",
   listas: "Listas",
   indicacoes: "Indicações",

@@ -23,6 +23,7 @@ export type ManagedModuleKey =
   | "campaigns"
   | "missions"
   | "rewards"
+  | "spinWheels"
   | "sweepstakes"
   | "couponRedemptions";
 
@@ -307,6 +308,66 @@ export interface RewardRecord extends BaseManagedEntity {
   rules: string[];
 }
 
+export interface SpinRewardRecord {
+  id: string;
+  title: string;
+  image: string;
+  description: string;
+  estimatedValue: string;
+  quantityAvailable: number;
+  category: string;
+  internalCode: string;
+  expiresAt?: string;
+  rules: string[];
+  status: "ATIVO" | "ESGOTADO" | "ENCERRADO";
+  probability: number;
+  rewardType: string;
+}
+
+export interface SpinWinnerRecord {
+  id: string;
+  userNameMasked: string;
+  rewardTitle: string;
+  wheelTitle: string;
+  wonAt: string;
+  tone: "blue" | "green" | "orange" | "violet";
+}
+
+export interface SpinHistoryRecord {
+  id: string;
+  userId: string;
+  userNameMasked: string;
+  wheelTitle: string;
+  resultLabel: string;
+  rewardTitle: string;
+  status: "ATIVO" | "UTILIZADO" | "EXPIRADO" | "AGUARDANDO_RESGATE";
+  internalCode: string;
+  expiresAt?: string;
+  playedAt: string;
+}
+
+export interface SpinWheelRecord extends BaseManagedEntity {
+  kind: "spinWheel";
+  wheelType: string;
+  spinFrequency: "Diário" | "Semanal" | "Mensal" | "Condicionado" | "Especial";
+  availableSpins: number;
+  completedSpins: number;
+  totalPrizesWon: number;
+  nextSpinAt: string;
+  nextSpinLabel: string;
+  pointsLabel: string;
+  benefitsLabel: string;
+  audienceRule: string;
+  releaseRule: string;
+  priorityLabel: string;
+  campaignLabel: string;
+  visualTone: "blue" | "green" | "orange" | "violet";
+  rewards: SpinRewardRecord[];
+  recentWinners: SpinWinnerRecord[];
+  history: SpinHistoryRecord[];
+  rules: string[];
+}
+
 export interface SweepstakesRecord extends BaseManagedEntity {
   kind: "sweepstake";
   sweepstakeType: string;
@@ -356,6 +417,7 @@ export interface PlatformDb {
   campaigns: CampaignRecord[];
   missions: MissionRecord[];
   rewards: RewardRecord[];
+  spinWheels: SpinWheelRecord[];
   sweepstakes: SweepstakesRecord[];
   couponRedemptions: CouponRedemptionRecord[];
   auditLog: AuditEntry[];

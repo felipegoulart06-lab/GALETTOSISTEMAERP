@@ -22,6 +22,7 @@ const moduleToCollection: Record<string, { collection: CollectionKey; auditModul
   campanhas: { collection: "campaigns", auditModule: "campaigns" },
   missoes: { collection: "missions", auditModule: "missions" },
   recompensas: { collection: "rewards", auditModule: "rewards" },
+  "giro-da-sorte": { collection: "spinWheels", auditModule: "spinWheels" },
   sorteios: { collection: "sweepstakes", auditModule: "sweepstakes" }
 };
 

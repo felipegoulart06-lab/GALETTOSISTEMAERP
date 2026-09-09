@@ -2,8 +2,9 @@ import Link from "next/link";
 import { LogoutButton } from "@/components/logout-button";
 import { ManagedMedia } from "@/components/managed-media";
 import { ClubaoBenefitsHub } from "@/components/clubao-benefits-hub";
+import { SpinWheelHub } from "@/components/spin-wheel-hub";
 import { buildUserDashboardSections, getPlatformSnapshot, getPublishedProducts } from "@/lib/platform-content";
-import type { CouponRedemptionRecord, ProductRecord } from "@/lib/platform-types";
+import type { CouponRedemptionRecord, ProductRecord, SpinWheelRecord } from "@/lib/platform-types";
 import {
   navGroups,
   sectionOrder,
@@ -958,20 +959,45 @@ function ListasLayout({ section }: { section: SectionConfig }) {
 
       <section className="layout-listas">
         <div className="listas-main">
-          <section className="listas-board-panel">
-            <SectionHeader eyebrow={section.eyebrow} title={section.spotlightTitle} description={section.spotlightDescription} />
-            <div className="cards-grid cards-grid-three">
+          <section className="listas-table-panel">
+            <div className="listas-table-header">
+              <span>Ícone</span>
+              <span>Informação</span>
+              <span>Meta Dados</span>
+              <span>Status</span>
+              <span className="text-right">Ação</span>
+            </div>
+            <div className="listas-table-body">
               {section.cards.map((card) => (
-                <MediaCard key={card.title} card={card} />
+                <article key={card.title} className="listas-table-row">
+                  <div className="listas-item-icon">
+                    <Icon name="list" />
+                  </div>
+                  <div className="listas-item-info">
+                    <h4>{card.title}</h4>
+                    <p>{card.subtitle}</p>
+                  </div>
+                  <div className="listas-item-meta">
+                    {card.meta}
+                  </div>
+                  <div className="listas-item-status">
+                    <span className="status-active">{card.badge || "Ativo"}</span>
+                  </div>
+                  <div className="listas-item-action">
+                    <Link href={section.heroActionHref} className="btn-list-action">
+                      <Icon name="chevron-right" />
+                    </Link>
+                  </div>
+                </article>
               ))}
             </div>
           </section>
 
           <section className="listas-ledger-panel">
             <div className="listas-ledger-head">
-              <span>Rota</span>
-              <span>Leitura</span>
               <span>Operação</span>
+              <span>Leitura de Dados</span>
+              <span>Meta</span>
             </div>
             <div className="listas-ledger-body">
               {section.feed.map((item) => (
@@ -991,6 +1017,14 @@ function ListasLayout({ section }: { section: SectionConfig }) {
         </aside>
       </section>
     </>
+  );
+}
+
+function GiroDaSorteLayout({ section, spinWheels }: { section: SectionConfig, spinWheels: SpinWheelRecord[] }) {
+  return (
+    <section className="layout-giro-da-sorte">
+      <SpinWheelHub initialWheels={spinWheels} section={section} />
+    </section>
   );
 }
 
@@ -2527,6 +2561,7 @@ function renderSectionLayout(
     catalogProducts?: ProductRecord[];
     clubOffers?: any[];
     couponRedemptions?: CouponRedemptionRecord[];
+    spinWheels?: SpinWheelRecord[];
   }
 ) {
   switch (sectionKey) {
@@ -2551,6 +2586,8 @@ function renderSectionLayout(
       return <EmpresasLayout section={section} />;
     case "listas":
       return <ListasLayout section={section} />;
+    case "giro-da-sorte":
+      return <GiroDaSorteLayout section={section} spinWheels={options?.spinWheels ?? []} />;
     case "indicacoes":
       return <IndicacoesLayout section={section} />;
     case "oportunidades":
@@ -2665,6 +2702,9 @@ export async function Dashboard({
     ? (snapshot as any).couponRedemptions
     : [];
   const publishedProductsSafe = Array.isArray(publishedProducts) ? publishedProducts : [];
+  const spinWheelsSafe = Array.isArray((snapshot as any)?.spinWheels)
+    ? (snapshot as any).spinWheels.filter((wheel: any) => wheel?.status === "PUBLICADO")
+    : [];
 
   // #region debug-point D:E:dashboard-layout-start
   void __debugEmit("D", "components/dashboard.tsx:Dashboard:layout:start", "Iniciando render do layout", {
@@ -2750,7 +2790,8 @@ export async function Dashboard({
           mentorshipFilter,
           catalogProducts: publishedProductsSafe,
           clubOffers: clubOffersSafe,
-          couponRedemptions: couponRedemptionsSafe
+          couponRedemptions: couponRedemptionsSafe,
+          spinWheels: spinWheelsSafe
         })}
 
         <footer className="content-footer">

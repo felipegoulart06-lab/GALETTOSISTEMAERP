@@ -515,7 +515,7 @@ svg {
 }
 
 .app-shell {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   grid-template-columns: var(--client-sidebar-width) minmax(0, 1fr);
   width: 100%;
@@ -541,7 +541,7 @@ svg {
   color: #f4f7ff;
   overflow-y: auto;
   overflow-x: hidden;
-  scrollbar-gutter: stable both-edges;
+  scrollbar-gutter: stable;
   box-sizing: border-box;
 }
 
@@ -8597,7 +8597,278 @@ svg {
   .login-form-card h1 {
     font-size: 46px;
   }
+}
 
+/* GIRO DA SORTE PREMIUM UI */
+.layout-giro-da-sorte {
+  margin: 24px 32px 0;
+  display: grid;
+  gap: 24px;
+}
+
+.giro-hero {
+  position: relative;
+  padding: 60px 40px;
+  background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.1), transparent 50%),
+              linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  align-items: center;
+  gap: 40px;
+}
+
+.giro-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.giro-hero-badge {
+  display: inline-flex;
+  padding: 6px 12px;
+  background: rgba(37, 99, 235, 0.2);
+  color: #60a5fa;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+}
+
+.giro-hero h1 {
+  font-size: 52px;
+  color: #ffffff;
+  margin: 0 0 16px;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.giro-hero p {
+  font-size: 18px;
+  color: #94a3b8;
+  max-width: 500px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.giro-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.spin-counter-card {
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: grid;
+  gap: 4px;
+}
+
+.spin-counter-label {
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.spin-counter-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.giro-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.status-card-compact {
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.status-card-compact span {
+  font-size: 12px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-card-compact strong {
+  font-size: 22px;
+  color: #0f172a;
+}
+
+/* WHEEL EXPERIENCE */
+.wheel-stage {
+  position: relative;
+  width: 440px;
+  height: 440px;
+  margin: 0 auto;
+}
+
+.wheel-outer {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 12px solid #1e293b;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2), 0 20px 50px rgba(0,0,0,0.5);
+  position: relative;
+  overflow: hidden;
+  transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1);
+}
+
+.wheel-pointer {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 50px;
+  background: #ef4444;
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+  z-index: 10;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+}
+
+.wheel-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  background: #1e293b;
+  border: 4px solid #334155;
+  border-radius: 50%;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.wheel-center-logo {
+  font-weight: 900;
+  color: #3b82f6;
+  font-size: 18px;
+}
+
+.wheel-slice {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  top: 0;
+  right: 0;
+  transform-origin: 0% 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 60px;
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* LISTAS REFACTOR - NO CARDS */
+.listas-table-panel {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  margin-top: 24px;
+}
+
+.listas-table-header {
+  display: grid;
+  grid-template-columns: 80px 1.5fr 1fr 120px 100px;
+  gap: 20px;
+  padding: 16px 24px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  color: #64748b;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.listas-table-row {
+  display: grid;
+  grid-template-columns: 80px 1.5fr 1fr 120px 100px;
+  gap: 20px;
+  padding: 20px 24px;
+  align-items: center;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.2s;
+}
+
+.listas-table-row:hover {
+  background: #f8fafc;
+}
+
+.listas-table-row:last-child {
+  border-bottom: 0;
+}
+
+.listas-item-icon {
+  width: 48px;
+  height: 48px;
+  background: #f1f5f9;
+  display: grid;
+  place-items: center;
+  color: #3b82f6;
+}
+
+.listas-item-info h4 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  color: #0f172a;
+}
+
+.listas-item-info p {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.listas-item-meta {
+  font-size: 13px;
+  color: #475569;
+}
+
+.listas-item-status {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.status-active { background: #dcfce7; color: #166534; }
+.status-pending { background: #fef9c3; color: #854d0e; }
+.status-closed { background: #fee2e2; color: #991b1b; }
+
+.listas-item-action {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-list-action {
+  padding: 8px;
+  color: #94a3b8;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.btn-list-action:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
   .live-stage,
   .live-stage img {
     min-height: 360px;

@@ -17,6 +17,7 @@ import type {
   ReferralRecord,
   ReferralServiceRecord,
   RewardRecord,
+  SpinWheelRecord,
   SupplierListRecord,
   SweepstakesRecord,
   WorkflowStatus
@@ -1233,6 +1234,268 @@ const seededRewards: RewardRecord[] = rewardCards.map((card, index) => ({
   rules: ["Disponível conforme estoque", "Resgate auditável e histórico permanente"]
 }));
 
+const wheelTemplates = [
+  {
+    title: "Giro Diário Premium",
+    subtitle: "Retorne todos os dias para uma rodada rápida com leitura premium",
+    category: "Giro Diário",
+    tone: "blue" as const,
+    spinFrequency: "Diário" as const,
+    nextSpinAt: "2026-09-09T20:15:00.000Z",
+    nextSpinLabel: "Próximo giro em 08:42:15",
+    audienceRule: "Todos os usuários ativos",
+    releaseRule: "1 giro liberado por dia",
+    priorityLabel: "Rotina recorrente",
+    campaignLabel: "Ciclo diário"
+  },
+  {
+    title: "Giro Semanal de Benefícios",
+    subtitle: "Benefícios maiores para quem mantém consistência durante a semana",
+    category: "Giro Semanal",
+    tone: "green" as const,
+    spinFrequency: "Semanal" as const,
+    nextSpinAt: "2026-09-12T19:00:00.000Z",
+    nextSpinLabel: "Nova rodada no sábado",
+    audienceRule: "Usuários com atividade semanal",
+    releaseRule: "1 giro semanal por usuário",
+    priorityLabel: "Retenção",
+    campaignLabel: "Semana em foco"
+  },
+  {
+    title: "Giro Especial FG EXACTA",
+    subtitle: "Roleta especial com recompensas de alto valor percebido",
+    category: "Giro Especial",
+    tone: "orange" as const,
+    spinFrequency: "Especial" as const,
+    nextSpinAt: "2026-09-10T18:30:00.000Z",
+    nextSpinLabel: "Liberação especial amanhã",
+    audienceRule: "Base liberada pelo Admin Master",
+    releaseRule: "Disponibilidade por campanha",
+    priorityLabel: "Alta",
+    campaignLabel: "Evento premium"
+  },
+  {
+    title: "Giro VIP",
+    subtitle: "Experiência exclusiva para perfis elegíveis e membros premium",
+    category: "Giro VIP",
+    tone: "violet" as const,
+    spinFrequency: "Condicionado" as const,
+    nextSpinAt: "2026-09-11T21:00:00.000Z",
+    nextSpinLabel: "Aguardando elegibilidade VIP",
+    audienceRule: "Perfis premium ou convidados",
+    releaseRule: "Nível e critérios comerciais",
+    priorityLabel: "VIP",
+    campaignLabel: "Experiência exclusiva"
+  },
+  {
+    title: "Giro de Campanha",
+    subtitle: "Roleta conectada às campanhas ativas e à cadência comercial",
+    category: "Giro de Campanha",
+    tone: "orange" as const,
+    spinFrequency: "Condicionado" as const,
+    nextSpinAt: "2026-09-09T23:30:00.000Z",
+    nextSpinLabel: "Campanha ativa até 23:30",
+    audienceRule: "Participantes de campanhas ativas",
+    releaseRule: "Cumprir entrada da campanha",
+    priorityLabel: "Campanha",
+    campaignLabel: "Sprint comercial"
+  },
+  {
+    title: "Giro de Aniversário",
+    subtitle: "Condição especial para datas comemorativas e ações sazonais",
+    category: "Giro de Aniversário",
+    tone: "green" as const,
+    spinFrequency: "Especial" as const,
+    nextSpinAt: "2026-09-18T12:00:00.000Z",
+    nextSpinLabel: "Evento sazonal programado",
+    audienceRule: "Usuários elegíveis na campanha",
+    releaseRule: "Janela sazonal liberada",
+    priorityLabel: "Sazonal",
+    campaignLabel: "Aniversário FG EXACTA"
+  },
+  {
+    title: "Giro de Missão",
+    subtitle: "Cada missão concluída pode liberar nova rodada e benefício extra",
+    category: "Giro de Missão",
+    tone: "blue" as const,
+    spinFrequency: "Condicionado" as const,
+    nextSpinAt: "2026-09-09T22:10:00.000Z",
+    nextSpinLabel: "Você desbloqueou um novo giro",
+    audienceRule: "Usuários que completarem missões",
+    releaseRule: "Meta concluída libera giro",
+    priorityLabel: "Missões",
+    campaignLabel: "Progressão"
+  },
+  {
+    title: "Giro de Ranking",
+    subtitle: "Roleta elegante ligada a desempenho, pontos e posição do ciclo",
+    category: "Giro de Ranking",
+    tone: "violet" as const,
+    spinFrequency: "Semanal" as const,
+    nextSpinAt: "2026-09-13T20:40:00.000Z",
+    nextSpinLabel: "Nova rodada após fechamento do ciclo",
+    audienceRule: "Usuários ranqueados",
+    releaseRule: "Faixa de pontuação ou posição",
+    priorityLabel: "Desempenho",
+    campaignLabel: "Fechamento semanal"
+  },
+  {
+    title: "Giro Relâmpago",
+    subtitle: "Janela curta com urgência elegante e recompensas limitadas",
+    category: "Giro Relâmpago",
+    tone: "orange" as const,
+    spinFrequency: "Especial" as const,
+    nextSpinAt: "2026-09-09T21:45:00.000Z",
+    nextSpinLabel: "Roleta relâmpago em 01:32:10",
+    audienceRule: "Usuários ativos no período",
+    releaseRule: "Janela curta definida pelo admin",
+    priorityLabel: "Urgência",
+    campaignLabel: "Relâmpago"
+  },
+  {
+    title: "Giro Exclusivo Clubão",
+    subtitle: "Cupons, experiências e benefícios premium ligados ao Clubão",
+    category: "Giro Exclusivo Clubão",
+    tone: "green" as const,
+    spinFrequency: "Condicionado" as const,
+    nextSpinAt: "2026-09-10T20:00:00.000Z",
+    nextSpinLabel: "Novo benefício amanhã às 20:00",
+    audienceRule: "Membros elegíveis do Clubão",
+    releaseRule: "Critérios premium do Clubão",
+    priorityLabel: "Clubão",
+    campaignLabel: "Benefícios premium"
+  }
+];
+
+function createSpinReward(index: number, wheelIndex: number, title: string, category: string, rewardType: string, estimatedValue: string, probability: number, quantityAvailable: number, image: string) {
+  return {
+    id: `spin-reward-${wheelIndex + 1}-${index + 1}`,
+    title,
+    image,
+    description: `Recompensa ${title} configurada pelo Admin Master para a roleta ${wheelTemplates[wheelIndex].title}.`,
+    estimatedValue,
+    quantityAvailable,
+    category,
+    internalCode: `GIRO-${String(wheelIndex + 1).padStart(2, "0")}-${String(index + 1).padStart(2, "0")}`,
+    expiresAt: index === 0 ? "2026-09-30T23:59:00.000Z" : "2026-10-10T23:59:00.000Z",
+    rules: ["Uso sujeito às regras publicadas no painel.", "Validade e estoque controlados pelo Admin Master."],
+    status: "ATIVO" as const,
+    probability,
+    rewardType
+  };
+}
+
+function maskUser(fullName: string) {
+  const [firstName = "Usuário", lastName = "FGX"] = fullName.split(" ");
+  return `${firstName} ${lastName.slice(0, 1)}.`;
+}
+
+const seededSpinWheels: SpinWheelRecord[] = wheelTemplates.map((wheel, index) => {
+  const primaryProduct = seededProducts[index % seededProducts.length];
+  const relatedOffer = seededClubOffers[index % seededClubOffers.length];
+  const relatedReward = seededRewards[index % seededRewards.length];
+  const relatedUser = seededUsers[(index % (seededUsers.length - 3)) + 3];
+  const rewards = [
+    createSpinReward(0, index, primaryProduct.title, "Produtos", "Produto", primaryProduct.price, 18, 8 + index, primaryProduct.image),
+    createSpinReward(1, index, relatedOffer.title, "Clubão", "Benefício", relatedOffer.discountLabel, 31, 16 + index, relatedOffer.image),
+    createSpinReward(2, index, relatedReward.title, "Recompensas", "Pontos", relatedReward.valueLabel, 51, 22 + index, relatedReward.image)
+  ];
+  const playedAtBase = new Date(Date.UTC(2026, 8, 6 + index, 18 + (index % 3), 15, 0)).toISOString();
+
+  return {
+    ...createBaseEntity("spin", index + 1, {
+      title: wheel.title,
+      subtitle: wheel.subtitle,
+      shortDescription: wheel.subtitle,
+      description: `${wheel.subtitle} A roleta é controlada pelo Admin Master e conecta prêmios, regras, período e histórico em uma experiência premium.`,
+      image: index % 2 === 0 ? "/images/sorteios-hero-real.jpg" : "/images/clubao-hero-real.jpg",
+      category: wheel.category,
+      tags: [wheel.category, wheel.priorityLabel, "Premium"],
+      featured: index < 2,
+      status: "PUBLICADO",
+      startAt: "2026-09-01T08:00:00.000Z",
+      endAt: index < 7 ? "2026-10-30T23:59:00.000Z" : undefined
+    }),
+    kind: "spinWheel" as const,
+    wheelType: wheel.category,
+    spinFrequency: wheel.spinFrequency,
+    availableSpins: index === 0 ? 3 : index < 4 ? 1 : 0,
+    completedSpins: 4 + index,
+    totalPrizesWon: 3 + index,
+    nextSpinAt: wheel.nextSpinAt,
+    nextSpinLabel: wheel.nextSpinLabel,
+    pointsLabel: `${850 + index * 145} pontos acumulados`,
+    benefitsLabel: index % 2 === 0 ? "Clubão + cupons + vantagens" : "Benefícios premium + acessos especiais",
+    audienceRule: wheel.audienceRule,
+    releaseRule: wheel.releaseRule,
+    priorityLabel: wheel.priorityLabel,
+    campaignLabel: wheel.campaignLabel,
+    visualTone: wheel.tone,
+    rewards,
+    recentWinners: [
+      {
+        id: `spin-winner-${index + 1}-1`,
+        userNameMasked: maskUser(relatedUser.fullName),
+        rewardTitle: rewards[0].title,
+        wheelTitle: wheel.title,
+        wonAt: playedAtBase,
+        tone: wheel.tone
+      },
+      {
+        id: `spin-winner-${index + 1}-2`,
+        userNameMasked: maskUser(seededUsers[((index + 1) % (seededUsers.length - 3)) + 3].fullName),
+        rewardTitle: rewards[1].title,
+        wheelTitle: wheel.title,
+        wonAt: new Date(Date.UTC(2026, 8, 5 + index, 15, 30, 0)).toISOString(),
+        tone: index % 2 === 0 ? "green" : "blue"
+      }
+    ],
+    history: [
+      {
+        id: `spin-history-${index + 1}-1`,
+        userId: relatedUser.id,
+        userNameMasked: maskUser(relatedUser.fullName),
+        wheelTitle: wheel.title,
+        resultLabel: "Recompensa liberada",
+        rewardTitle: rewards[0].title,
+        status: "ATIVO",
+        internalCode: rewards[0].internalCode,
+        expiresAt: rewards[0].expiresAt,
+        playedAt: playedAtBase
+      },
+      {
+        id: `spin-history-${index + 1}-2`,
+        userId: seededUsers[((index + 2) % (seededUsers.length - 3)) + 3].id,
+        userNameMasked: maskUser(seededUsers[((index + 2) % (seededUsers.length - 3)) + 3].fullName),
+        wheelTitle: wheel.title,
+        resultLabel: "Benefício entregue",
+        rewardTitle: rewards[1].title,
+        status: "UTILIZADO",
+        internalCode: rewards[1].internalCode,
+        expiresAt: rewards[1].expiresAt,
+        playedAt: new Date(Date.UTC(2026, 8, 4 + index, 13, 0, 0)).toISOString()
+      },
+      {
+        id: `spin-history-${index + 1}-3`,
+        userId: "user-01",
+        userNameMasked: "Rafael M.",
+        wheelTitle: wheel.title,
+        resultLabel: "Pontos registrados",
+        rewardTitle: rewards[2].title,
+        status: "AGUARDANDO_RESGATE",
+        internalCode: rewards[2].internalCode,
+        expiresAt: rewards[2].expiresAt,
+        playedAt: new Date(Date.UTC(2026, 8, 3 + index, 10, 45, 0)).toISOString()
+      }
+    ],
+    rules: [
+      "Resultado calculado pela plataforma com base nas configurações publicadas.",
+      "Giros, estoques e janelas de participação são controlados pelo Admin Master.",
+      "Cada recompensa possui validade, rastreio e histórico próprio."
+    ]
+  };
+});
+
 const sweepstakeCards = dashboardSections.sorteios.cards;
 const seededSweepstakes: SweepstakesRecord[] = sweepstakeCards.map((card, index) => ({
   ...createBaseEntity("sweep", index + 1, {
@@ -1381,6 +1644,7 @@ export function createPlatformSeed(): PlatformDb {
     campaigns: seededCampaigns,
     missions: seededMissions,
     rewards: seededRewards,
+    spinWheels: seededSpinWheels,
     sweepstakes: seededSweepstakes,
     couponRedemptions: seededCouponRedemptions,
     auditLog: [

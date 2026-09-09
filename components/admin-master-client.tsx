@@ -152,6 +152,41 @@ const moduleConfig: Partial<
       { name: "tags", label: "Tags (1 por linha)", type: "list", section: "Governança" }
     ]
   },
+  "giro-da-sorte": {
+    collection: "spinWheels",
+    label: "Giro da Sorte",
+    description: "Crie roletas, defina regras, giros, prêmios, período, histórico e experiência premium do usuário.",
+    previewLabel: "Ver no menu Giro da Sorte",
+    getPreviewHref: () => "/giro-da-sorte",
+    fields: [
+      { name: "title", label: "Nome da roleta", type: "text", section: "Identidade" },
+      { name: "subtitle", label: "Subtítulo", type: "text", section: "Identidade" },
+      { name: "shortDescription", label: "Descrição curta", type: "textarea", section: "Descrição" },
+      { name: "description", label: "Descrição completa", type: "textarea", section: "Descrição" },
+      { name: "image", label: "Banner / imagem", type: "text", section: "Mídia" },
+      { name: "wheelType", label: "Tipo de roleta", type: "text", section: "Operação" },
+      { name: "spinFrequency", label: "Frequência", type: "select", section: "Operação", options: ["Diário", "Semanal", "Mensal", "Condicionado", "Especial"] },
+      { name: "availableSpins", label: "Giros disponíveis", type: "number", section: "Operação" },
+      { name: "completedSpins", label: "Giros realizados", type: "number", section: "Operação" },
+      { name: "totalPrizesWon", label: "Prêmios ganhos", type: "number", section: "Operação" },
+      { name: "nextSpinAt", label: "Próximo giro em", type: "datetime", section: "Operação" },
+      { name: "nextSpinLabel", label: "Label do próximo giro", type: "text", section: "Operação" },
+      { name: "pointsLabel", label: "Pontos / benefícios", type: "text", section: "Operação" },
+      { name: "benefitsLabel", label: "Benefício acumulado", type: "text", section: "Operação" },
+      { name: "audienceRule", label: "Regra de público", type: "text", section: "Regras" },
+      { name: "releaseRule", label: "Regra de liberação", type: "text", section: "Regras" },
+      { name: "priorityLabel", label: "Prioridade da campanha", type: "text", section: "Regras" },
+      { name: "campaignLabel", label: "Campanha / contexto", type: "text", section: "Regras" },
+      { name: "visualTone", label: "Tom visual", type: "select", section: "Visual", options: ["blue", "green", "orange", "violet"] },
+      { name: "rewardsBlueprint", label: "Prêmios (Nome::Categoria::Tipo::Probabilidade::Qtd::Código::Valor::Validade::Status::Imagem)", type: "textarea", section: "Prêmios" },
+      { name: "winnerBlueprint", label: "Últimos ganhadores (Nome::Prêmio::Roleta::Data::Tom)", type: "textarea", section: "Histórico" },
+      { name: "historyBlueprint", label: "Histórico (Data::Roleta::Resultado::Prêmio::Status::Código::Validade)", type: "textarea", section: "Histórico" },
+      { name: "rules", label: "Regras (1 por linha)", type: "list", section: "Governança" },
+      { name: "status", label: "Status", type: "select", section: "Governança", options: workflowOptions },
+      { name: "featured", label: "Destaque", type: "boolean", section: "Governança" },
+      { name: "tags", label: "Tags (1 por linha)", type: "list", section: "Governança" }
+    ]
+  },
   empresas: {
     collection: "companies",
     label: "Empresas",
@@ -470,6 +505,111 @@ function parseSuppliersBlueprint(value: string) {
   });
 }
 
+function buildSpinRewardsBlueprintInput(record: RecordShape) {
+  const rewards = Array.isArray(record.rewards) ? record.rewards : [];
+  return rewards
+    .map((reward) =>
+      [
+        String((reward as RecordShape).title ?? ""),
+        String((reward as RecordShape).category ?? ""),
+        String((reward as RecordShape).rewardType ?? ""),
+        String((reward as RecordShape).probability ?? ""),
+        String((reward as RecordShape).quantityAvailable ?? ""),
+        String((reward as RecordShape).internalCode ?? ""),
+        String((reward as RecordShape).estimatedValue ?? ""),
+        String((reward as RecordShape).expiresAt ?? ""),
+        String((reward as RecordShape).status ?? "ATIVO"),
+        String((reward as RecordShape).image ?? "")
+      ].join("::")
+    )
+    .join("\n");
+}
+
+function parseSpinRewardsBlueprint(value: string) {
+  return parseList(value).map((line, index) => {
+    const [title, category, rewardType, probability, quantityAvailable, internalCode, estimatedValue, expiresAt, status, image] = line.split("::");
+    return {
+      id: `spin-reward-${globalThis.crypto.randomUUID().slice(0, 8)}`,
+      title: (title ?? "").trim(),
+      category: (category ?? "Geral").trim(),
+      rewardType: (rewardType ?? "Benefício").trim(),
+      probability: Number(probability ?? 0) || 0,
+      quantityAvailable: Number(quantityAvailable ?? 0) || 0,
+      internalCode: ((internalCode ?? "").trim() || `GIRO-${index + 1}`),
+      estimatedValue: (estimatedValue ?? "Sob consulta").trim(),
+      expiresAt: (expiresAt ?? "").trim() || undefined,
+      status: (((status ?? "ATIVO").trim() || "ATIVO") as "ATIVO" | "ESGOTADO" | "ENCERRADO"),
+      image: (image ?? "").trim() || defaultMedia[index % defaultMedia.length],
+      description: `Recompensa administrada pelo Admin Master para a roleta ${title ?? "premium"}.`,
+      rules: ["Resgate sujeito às regras publicadas da roleta."]
+    };
+  });
+}
+
+function buildSpinWinnerBlueprintInput(record: RecordShape) {
+  const winners = Array.isArray(record.recentWinners) ? record.recentWinners : [];
+  return winners
+    .map((winner) =>
+      [
+        String((winner as RecordShape).userNameMasked ?? ""),
+        String((winner as RecordShape).rewardTitle ?? ""),
+        String((winner as RecordShape).wheelTitle ?? ""),
+        String((winner as RecordShape).wonAt ?? ""),
+        String((winner as RecordShape).tone ?? "blue")
+      ].join("::")
+    )
+    .join("\n");
+}
+
+function parseSpinWinnerBlueprint(value: string) {
+  return parseList(value).map((line) => {
+    const [userNameMasked, rewardTitle, wheelTitle, wonAt, tone] = line.split("::");
+    return {
+      id: `spin-winner-${globalThis.crypto.randomUUID().slice(0, 8)}`,
+      userNameMasked: (userNameMasked ?? "").trim(),
+      rewardTitle: (rewardTitle ?? "").trim(),
+      wheelTitle: (wheelTitle ?? "").trim(),
+      wonAt: (wonAt ?? "").trim() || new Date().toISOString(),
+      tone: (((tone ?? "blue").trim() || "blue") as "blue" | "green" | "orange" | "violet")
+    };
+  });
+}
+
+function buildSpinHistoryBlueprintInput(record: RecordShape) {
+  const history = Array.isArray(record.history) ? record.history : [];
+  return history
+    .map((item) =>
+      [
+        String((item as RecordShape).playedAt ?? ""),
+        String((item as RecordShape).wheelTitle ?? ""),
+        String((item as RecordShape).resultLabel ?? ""),
+        String((item as RecordShape).rewardTitle ?? ""),
+        String((item as RecordShape).status ?? "ATIVO"),
+        String((item as RecordShape).internalCode ?? ""),
+        String((item as RecordShape).expiresAt ?? "")
+      ].join("::")
+    )
+    .join("\n");
+}
+
+function parseSpinHistoryBlueprint(value: string) {
+  return parseList(value).map((line) => {
+    const [playedAt, wheelTitle, resultLabel, rewardTitle, status, internalCode, expiresAt] = line.split("::");
+    return {
+      id: `spin-history-${globalThis.crypto.randomUUID().slice(0, 8)}`,
+      userId: "user-01",
+      userNameMasked: "Rafael M.",
+      wheelTitle: (wheelTitle ?? "").trim(),
+      resultLabel: (resultLabel ?? "").trim(),
+      rewardTitle: (rewardTitle ?? "").trim(),
+      status: (((status ?? "ATIVO").trim() || "ATIVO") as "ATIVO" | "UTILIZADO" | "EXPIRADO" | "AGUARDANDO_RESGATE"),
+      internalCode: (internalCode ?? "").trim(),
+      expiresAt: (expiresAt ?? "").trim() || undefined,
+      playedAt: (playedAt ?? "").trim() || new Date().toISOString()
+    };
+  });
+}
+
 function getCollectionItems(db: PlatformDb, sectionKey: AdminMasterSectionKey) {
   const config = moduleConfig[sectionKey];
   if (!config) {
@@ -494,6 +634,21 @@ function recordToForm(sectionKey: AdminMasterSectionKey, record?: RecordShape | 
 
     if (field.name === "suppliersBlueprint") {
       result[field.name] = buildSuppliersBlueprintInput(record);
+      return;
+    }
+
+    if (field.name === "rewardsBlueprint") {
+      result[field.name] = buildSpinRewardsBlueprintInput(record);
+      return;
+    }
+
+    if (field.name === "winnerBlueprint") {
+      result[field.name] = buildSpinWinnerBlueprintInput(record);
+      return;
+    }
+
+    if (field.name === "historyBlueprint") {
+      result[field.name] = buildSpinHistoryBlueprintInput(record);
       return;
     }
 
@@ -634,6 +789,29 @@ function formToRecord(sectionKey: AdminMasterSectionKey, formState: Record<strin
         conditions: parseList(String(formState.conditions ?? toMultiline(existing?.conditions))),
         importantInfo: parseList(String(formState.importantInfo ?? toMultiline(existing?.importantInfo))),
         couponPrefix: String(formState.couponPrefix ?? existing?.couponPrefix ?? "FGX")
+      };
+    case "giro-da-sorte":
+      return {
+        ...base,
+        kind: "spinWheel",
+        wheelType: String(formState.wheelType ?? existing?.wheelType ?? "Giro Diário"),
+        spinFrequency: String(formState.spinFrequency ?? existing?.spinFrequency ?? "Diário"),
+        availableSpins: Number(formState.availableSpins ?? existing?.availableSpins ?? 0),
+        completedSpins: Number(formState.completedSpins ?? existing?.completedSpins ?? 0),
+        totalPrizesWon: Number(formState.totalPrizesWon ?? existing?.totalPrizesWon ?? 0),
+        nextSpinAt: String(formState.nextSpinAt ?? existing?.nextSpinAt ?? new Date().toISOString()),
+        nextSpinLabel: String(formState.nextSpinLabel ?? existing?.nextSpinLabel ?? "Próximo giro em breve"),
+        pointsLabel: String(formState.pointsLabel ?? existing?.pointsLabel ?? "Pontos e benefícios acumulados"),
+        benefitsLabel: String(formState.benefitsLabel ?? existing?.benefitsLabel ?? "Clubão + recompensas premium"),
+        audienceRule: String(formState.audienceRule ?? existing?.audienceRule ?? "Todos os usuários elegíveis"),
+        releaseRule: String(formState.releaseRule ?? existing?.releaseRule ?? "Liberado pelo Admin Master"),
+        priorityLabel: String(formState.priorityLabel ?? existing?.priorityLabel ?? "Prioridade normal"),
+        campaignLabel: String(formState.campaignLabel ?? existing?.campaignLabel ?? "Campanha contínua"),
+        visualTone: String(formState.visualTone ?? existing?.visualTone ?? "blue"),
+        rewards: parseSpinRewardsBlueprint(String(formState.rewardsBlueprint ?? "")),
+        recentWinners: parseSpinWinnerBlueprint(String(formState.winnerBlueprint ?? "")),
+        history: parseSpinHistoryBlueprint(String(formState.historyBlueprint ?? "")),
+        rules: parseList(String(formState.rules ?? toMultiline(existing?.rules)))
       };
     case "empresas":
       return {
@@ -789,6 +967,7 @@ function buildSummaryMetrics(db: PlatformDb) {
     { label: "Oportunidades", value: db.opportunities.length, tone: "blue" },
     { label: "Campanhas", value: db.campaigns.length, tone: "green" },
     { label: "Missões", value: db.missions.length, tone: "violet" },
+    { label: "Giro da Sorte", value: db.spinWheels.length, tone: "blue" },
     { label: "Sorteios", value: db.sweepstakes.length, tone: "orange" }
   ];
 }

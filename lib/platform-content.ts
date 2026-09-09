@@ -47,6 +47,7 @@ import type {
   PlatformDb,
   ProductRecord,
   ReferralServiceRecord,
+  SpinWheelRecord,
   SupplierListRecord,
   SweepstakesRecord
 } from "@/lib/platform-types";
@@ -221,6 +222,27 @@ function toSweepstakeCard(item: SweepstakesRecord): MediaCardData {
   };
 }
 
+function toSpinWheelCard(item: SpinWheelRecord): MediaCardData {
+  const rewardsSafe = Array.isArray(item.rewards) ? item.rewards : [];
+  const rewardTitle = rewardsSafe[0]?.title ?? "Recompensa premium";
+  return {
+    eyebrow: item.wheelType,
+    title: item.title,
+    subtitle: item.shortDescription,
+    meta: `${item.availableSpins} giros • ${item.nextSpinLabel}`,
+    badge: rewardTitle,
+    accent: item.visualTone,
+    image: item.image,
+    cta: "Abrir giro",
+    facts: [
+      `${rewardsSafe.length} recompensas configuradas`,
+      item.audienceRule,
+      item.releaseRule
+    ],
+    chips: Array.isArray(item.tags) ? item.tags : []
+  };
+}
+
 function defaultStartEnd(now = new Date()) {
   const end = new Date(now.getTime() + 21 * 24 * 60 * 60 * 1000);
   const start = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
@@ -368,6 +390,7 @@ export async function buildUserDashboardSections() {
   const services = Array.isArray(db.referralServices) ? db.referralServices.filter((item) => isContentVisible(item)) : [];
   const opportunities = Array.isArray(db.opportunities) ? db.opportunities.filter((item) => isContentVisible(item)) : [];
   const campaigns = Array.isArray(db.campaigns) ? db.campaigns.filter((item) => isContentVisible(item)) : [];
+  const spinWheels = Array.isArray(db.spinWheels) ? db.spinWheels.filter((item) => isContentVisible(item)) : [];
   const sweepstakes = Array.isArray(db.sweepstakes) ? db.sweepstakes.filter((item) => isContentVisible(item)) : [];
   const offers = Array.isArray(db.clubOffers) ? db.clubOffers.filter((item) => isContentVisible(item)).map(toClubOfferClientCard) : [];
 
@@ -473,6 +496,20 @@ export async function buildUserDashboardSections() {
           { label: "Produtos relacionados", value: `${new Set(campaigns.flatMap((item) => (Array.isArray(item.relatedProductIds) ? item.relatedProductIds : []))).size}`, detail: "Mix conectado", tone: "orange" as const },
           { label: "Materiais", value: `${campaigns.reduce((total, item) => total + (Array.isArray(item.materials) ? item.materials.length : 0), 0)}`, detail: "Assets disponíveis", tone: "violet" as const }
         ]
+      }),
+      "giro-da-sorte": withFallback(dashboardSections["giro-da-sorte"], {
+        cards: spinWheels.map(toSpinWheelCard),
+        metrics: [
+          { label: "Roletas publicadas", value: `${spinWheels.length}`, detail: "Vindas do Admin Master", tone: "blue" as const },
+          { label: "Giros disponíveis", value: `${spinWheels.reduce((total, item) => total + (typeof item.availableSpins === "number" ? item.availableSpins : 0), 0)}`, detail: "Liberados", tone: "green" as const },
+          { label: "Prêmios ganhos", value: `${spinWheels.reduce((total, item) => total + (typeof item.totalPrizesWon === "number" ? item.totalPrizesWon : 0), 0)}`, detail: "Histórico registrado", tone: "orange" as const },
+          { label: "Tipos ativos", value: `${new Set(spinWheels.map((item) => item.wheelType)).size}`, detail: "Formatos de roleta", tone: "violet" as const }
+        ],
+        feed: spinWheels.slice(0, 4).map((item) => ({
+          title: item.title,
+          detail: item.nextSpinLabel,
+          meta: item.campaignLabel
+        }))
       }),
       sorteios: withFallback(dashboardSections.sorteios, {
         cards: sweepstakes.map(toSweepstakeCard),
