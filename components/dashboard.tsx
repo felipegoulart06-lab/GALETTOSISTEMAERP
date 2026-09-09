@@ -2288,15 +2288,91 @@ function RecompensasLayout({ section }: { section: SectionConfig }) {
 }
 
 function NotificacoesLayout({ section }: { section: SectionConfig }) {
+  const [priorityCard, ...secondaryCards] = section.cards;
+  const urgentMetrics = section.metrics.slice(0, 3);
+
   return (
     <>
-      <HeroBlock section={section} className="hero-panel-compact" />
+      <HeroBlock section={section} className="hero-panel-soft-blue" />
+      <MetricsStrip section={section} className="metrics-grid-tight" />
       <section className="layout-notificacoes">
-        <div className="cards-grid cards-grid-three">
-          {section.cards.map((card) => (
-            <MediaCard key={card.title} card={card} />
+        <div className="notification-command">
+          <article className={`notification-priority-card accent-${priorityCard.accent}`}>
+            <div className="notification-priority-copy">
+              <span className="notification-priority-tag">{priorityCard.eyebrow}</span>
+              <h3>{priorityCard.title}</h3>
+              <p>{priorityCard.subtitle}</p>
+              <strong>{priorityCard.meta}</strong>
+              <div className="notification-priority-actions">
+                {priorityCard.ctaHref || section.heroActionHref ? (
+                  <Link href={priorityCard.ctaHref ?? section.heroActionHref} className="media-card-button">
+                    {priorityCard.cta}
+                  </Link>
+                ) : (
+                  <button type="button">{priorityCard.cta}</button>
+                )}
+                <span className="notification-priority-badge">{priorityCard.badge}</span>
+              </div>
+              <div className="notification-priority-highlights">
+                {urgentMetrics.map((metric) => (
+                  <article key={metric.label} className={`notification-priority-stat tone-${metric.tone}`}>
+                    <span>{metric.label}</span>
+                    <strong>{metric.value}</strong>
+                    <small>{metric.detail}</small>
+                  </article>
+                ))}
+              </div>
+            </div>
+            <div className="notification-priority-media">
+              <ManagedMedia
+                alt={priorityCard.title}
+                sizeLabel="1200 x 900"
+                src={priorityCard.image}
+                className="managed-media-fill managed-media-fit-contain"
+                tone="soft"
+              />
+            </div>
+          </article>
+
+          <aside className="notification-command-side">
+            <section className="notification-filter-panel">
+              <div className="notification-panel-head">
+                <h3>Leitura da central</h3>
+                <span>Priorize rápido</span>
+              </div>
+              <div className="notification-filter-chip-grid">
+                {section.filters.map((filter) => (
+                  <span key={filter} className="notification-filter-chip">
+                    {filter}
+                  </span>
+                ))}
+              </div>
+            </section>
+
+            <section className="notification-mini-feed-panel">
+              <div className="notification-panel-head">
+                <h3>Próximas ações</h3>
+                <span>Fila inteligente</span>
+              </div>
+              <div className="notification-mini-feed">
+                {section.feed.map((item) => (
+                  <article key={item.title} className="notification-mini-feed-item">
+                    <strong>{item.title}</strong>
+                    <p>{item.detail}</p>
+                    <span>{item.meta}</span>
+                  </article>
+                ))}
+              </div>
+            </section>
+          </aside>
+        </div>
+
+        <div className="notification-queue-grid">
+          {secondaryCards.map((card) => (
+            <MediaCard key={card.title} card={{ ...card, coverFit: "contain", ctaHref: card.ctaHref ?? section.heroActionHref }} />
           ))}
         </div>
+
         <div className="notification-bottom-grid">
           <FeedPanel section={section} />
           <InsightPanel section={section} />
