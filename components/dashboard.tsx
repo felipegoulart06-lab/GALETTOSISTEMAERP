@@ -1798,41 +1798,58 @@ function RankingLayout({ section }: { section: SectionConfig }) {
       <HeroBlock section={section} className="hero-panel-compact" />
       <section className="layout-ranking">
         <div className="podium-board">
-          <article className="podium-card podium-second">
-            <ManagedMedia
-              alt={podiumCards[1].title}
-              sizeLabel="512 x 512"
-              src={podiumCards[1].image}
-              className="managed-media-ranking-avatar managed-media-fit-contain"
-              tone="soft"
-            />
-            <span>2</span>
+          <article className={`podium-card podium-second accent-${podiumCards[1].accent}`}>
+            <span className="podium-rank-badge">2</span>
+            <div className="podium-avatar-shell podium-avatar-shell-secondary">
+              <ManagedMedia
+                alt={podiumCards[1].title}
+                sizeLabel="512 x 512"
+                src={podiumCards[1].image}
+                className="managed-media-ranking-avatar managed-media-fit-contain"
+                tone="soft"
+              />
+            </div>
+            <span className="podium-label">{podiumCards[1].eyebrow}</span>
             <strong>{podiumCards[1].title}</strong>
             <small>{podiumCards[1].subtitle}</small>
+            <p className="podium-meta">{podiumCards[1].meta}</p>
           </article>
-          <article className="podium-card podium-first">
-            <ManagedMedia
-              alt={podiumCards[0].title}
-              sizeLabel="512 x 512"
-              src={podiumCards[0].image}
-              className="managed-media-ranking-avatar managed-media-fit-contain"
-              tone="soft"
-            />
-            <span>1</span>
+          <article className={`podium-card podium-first accent-${podiumCards[0].accent}`}>
+            <span className="podium-rank-badge podium-rank-badge-first">1</span>
+            <div className="podium-crown" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="podium-avatar-shell podium-avatar-shell-first">
+              <ManagedMedia
+                alt={podiumCards[0].title}
+                sizeLabel="512 x 512"
+                src={podiumCards[0].image}
+                className="managed-media-ranking-avatar managed-media-fit-contain"
+                tone="soft"
+              />
+            </div>
+            <span className="podium-label">{podiumCards[0].eyebrow}</span>
             <strong>{podiumCards[0].title}</strong>
             <small>{podiumCards[0].subtitle}</small>
+            <p className="podium-meta">{podiumCards[0].meta}</p>
           </article>
-          <article className="podium-card podium-third">
-            <ManagedMedia
-              alt={podiumCards[2].title}
-              sizeLabel="512 x 512"
-              src={podiumCards[2].image}
-              className="managed-media-ranking-avatar managed-media-fit-contain"
-              tone="soft"
-            />
-            <span>3</span>
+          <article className={`podium-card podium-third accent-${podiumCards[2].accent}`}>
+            <span className="podium-rank-badge">3</span>
+            <div className="podium-avatar-shell podium-avatar-shell-tertiary">
+              <ManagedMedia
+                alt={podiumCards[2].title}
+                sizeLabel="512 x 512"
+                src={podiumCards[2].image}
+                className="managed-media-ranking-avatar managed-media-fit-contain"
+                tone="soft"
+              />
+            </div>
+            <span className="podium-label">{podiumCards[2].eyebrow}</span>
             <strong>{podiumCards[2].title}</strong>
             <small>{podiumCards[2].subtitle}</small>
+            <p className="podium-meta">{podiumCards[2].meta}</p>
           </article>
         </div>
         <div className="ranking-grid">
@@ -1840,19 +1857,25 @@ function RankingLayout({ section }: { section: SectionConfig }) {
             <SectionHeader eyebrow={section.eyebrow} title="Quem está subindo agora" description={section.spotlightDescription} />
             <div className="ranking-list">
               {leaderboardCards.map((card, index) => (
-                <article key={card.title} className="ranking-list-item">
+                <article key={card.title} className={`ranking-list-item accent-${card.accent}`}>
                   <span className="ranking-list-position">{index + 4}</span>
-                  <ManagedMedia
-                    alt={card.title}
-                    sizeLabel="512 x 512"
-                    src={card.image}
-                    className="managed-media-ranking-list-avatar managed-media-fit-contain"
-                    tone="soft"
-                  />
+                  <div className="ranking-list-avatar-shell">
+                    <ManagedMedia
+                      alt={card.title}
+                      sizeLabel="512 x 512"
+                      src={card.image}
+                      className="managed-media-ranking-list-avatar managed-media-fit-contain"
+                      tone="soft"
+                    />
+                  </div>
                   <div className="ranking-list-copy">
+                    <span className="ranking-list-eyebrow">{card.eyebrow}</span>
                     <strong>{card.title}</strong>
                     <p>{card.subtitle}</p>
                     <small>{card.meta}</small>
+                  </div>
+                  <div className="ranking-list-badge">
+                    <span>{card.badge}</span>
                   </div>
                 </article>
               ))}
