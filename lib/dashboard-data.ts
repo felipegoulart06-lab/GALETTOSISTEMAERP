@@ -124,6 +124,23 @@ export interface SectionConfig {
   systemPoints: string[];
 }
 
+const countMenuLetters = (label: string) =>
+  label
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^A-Za-z]/g, "").length;
+
+const sortNavItemsByLabelLength = (items: NavItem[]) =>
+  [...items].sort((a, b) => {
+    const labelLengthDifference = countMenuLetters(a.label) - countMenuLetters(b.label);
+
+    if (labelLengthDifference !== 0) {
+      return labelLengthDifference;
+    }
+
+    return a.label.localeCompare(b.label, "pt-BR");
+  });
+
 const image = (prompt: string, imageSize = "landscape_16_9") =>
   `https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=${encodeURIComponent(
     prompt
@@ -264,7 +281,7 @@ const supplierListCard = (list: (typeof supplierListCatalog)[number]): MediaCard
 export const navGroups: NavGroup[] = [
   {
     label: "Explorar",
-    items: [
+    items: sortNavItemsByLabelLength([
       { key: "home", label: "Home", icon: "home" },
       { key: "lives", label: "Lives", icon: "live" },
       { key: "produtos", label: "Produtos", icon: "box" },
@@ -273,35 +290,35 @@ export const navGroups: NavGroup[] = [
       { key: "empresas", label: "Empresas", icon: "building" },
       { key: "listas", label: "Listas", icon: "list" },
       { key: "indicacoes", label: "Indicações", icon: "users" }
-    ]
+    ])
   },
   {
     label: "Ganhe",
-    items: [
+    items: sortNavItemsByLabelLength([
       { key: "oportunidades", label: "Oportunidades", icon: "rocket" },
       { key: "campanhas", label: "Campanhas", icon: "megaphone" }
-    ]
+    ])
   },
   {
     label: "Conquiste",
-    items: [
+    items: sortNavItemsByLabelLength([
       { key: "ranking", label: "Ranking", icon: "trophy" },
       { key: "sorteios", label: "Sorteios", icon: "gift" }
-    ]
+    ])
   },
   {
     label: "Seus resultados",
-    items: [
+    items: sortNavItemsByLabelLength([
       { key: "minha-renda", label: "Minha renda", icon: "wallet" },
       { key: "desempenho", label: "Desempenho", icon: "grid" }
-    ]
+    ])
   },
   {
     label: "Conta",
-    items: [
+    items: sortNavItemsByLabelLength([
       { key: "notificacoes", label: "Notificações", icon: "bell" },
       { key: "perfil", label: "Meu perfil", icon: "profile" }
-    ]
+    ])
   }
 ];
 
