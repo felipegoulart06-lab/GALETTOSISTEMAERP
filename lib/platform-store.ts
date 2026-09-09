@@ -12,6 +12,40 @@ import type {
   WorkflowStatus
 } from "@/lib/platform-types";
 
+// #region debug-point A:db-path
+const __debugEnv = (() => {
+  let u = "http://127.0.0.1:7777/event";
+  let s = "vercel-server-crash";
+  try {
+    const content = require("fs").readFileSync(".dbg/vercel-server-crash.env", "utf8");
+    const mu = content.match(/DEBUG_SERVER_URL=(.+)/)?.[1];
+    const ms = content.match(/DEBUG_SESSION_ID=(.+)/)?.[1];
+    if (mu) u = mu;
+    if (ms) s = ms;
+  } catch {
+  }
+  return { u, s };
+})();
+const __debugEmit = (hypothesisId: string, location: string, msg: string, data: Record<string, unknown> = {}) => {
+  try {
+    void fetch(__debugEnv.u, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sessionId: __debugEnv.s,
+        runId: "pre-fix",
+        hypothesisId,
+        location,
+        msg: `[DEBUG] ${msg}`,
+        data,
+        ts: Date.now()
+      })
+    }).catch(() => undefined);
+  } catch {
+  }
+};
+// #endregion
+
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "platform-db.json");
 
@@ -36,25 +70,103 @@ type CollectionMap = {
 export type CollectionKey = keyof CollectionMap;
 
 async function ensureDbFile() {
-  await mkdir(DATA_DIR, { recursive: true });
+  // #region debug-point A:ensure-db
+  __debugEmit("A", "platform-store.ts:ensureDbFile:enter", "ensureDbFile enter", {
+    dataDir: DATA_DIR,
+    dbPath: DB_PATH,
+    cwd: process.cwd(),
+    nodeVersion: process.version
+  });
+  // #endregion
+
+  try {
+    await mkdir(DATA_DIR, { recursive: true });
+  } catch (mkdirError) {
+    __debugEmit("A", "platform-store.ts:ensureDbFile:mkdirSkipped", "mkdir data falhou, seguindo sem escrever (read-only FS provavelmente)", {
+      error: mkdirError instanceof Error ? mkdirError.message : String(mkdirError)
+    });
+  }
 
   try {
     await readFile(DB_PATH, "utf8");
-  } catch {
+    // #region debug-point A:read-hit
+    __debugEmit("A", "platform-store.ts:ensureDbFile:hit", "ensureDbFile db file present", {
+      dbPath: DB_PATH
+    });
+    // #endregion
+  } catch (readError) {
     const seed = createPlatformSeed();
-    await writeFile(DB_PATH, JSON.stringify(seed, null, 2), "utf8");
+    try {
+      await writeFile(DB_PATH, JSON.stringify(seed, null, 2), "utf8");
+      // #region debug-point A:seed-miss
+      __debugEmit("A", "platform-store.ts:ensureDbFile:createdSeed", "ensureDbFile created seed (writable FS)", {
+        dbPath: DB_PATH,
+        seedKeys: Object.keys(seed)
+      });
+      // #endregion
+    } catch (writeError) {
+      __debugEmit("A", "platform-store.ts:ensureDbFile:seedFallbackInMemory", "writeFile falhou, usando seed em memoria sem persistir (read-only FS / Vercel)", {
+        readError: readError instanceof Error ? readError.message : String(readError),
+        writeError: writeError instanceof Error ? writeError.message : String(writeError),
+        seedKeys: Object.keys(seed)
+      });
+    }
   }
 }
 
 export async function getPlatformDb(): Promise<PlatformDb> {
+  // #region debug-point A:get-db
+  __debugEmit("A", "platform-store.ts:getPlatformDb:enter", "getPlatformDb enter", {});
+  // #endregion
   await ensureDbFile();
-  const raw = await readFile(DB_PATH, "utf8");
-  return JSON.parse(raw) as PlatformDb;
+
+  let raw: string | null = null;
+  try {
+    raw = await readFile(DB_PATH, "utf8");
+  } catch (readError) {
+    const seed = createPlatformSeed();
+    __debugEmit("A", "platform-store.ts:getPlatformDb:readFailedUsingSeed", "readFile do DB falhou, retornando seed em memoria", {
+      error: readError instanceof Error ? readError.message : String(readError),
+      seedKeys: Object.keys(seed)
+    });
+    return seed;
+  }
+
+  // #region debug-point A:parse-db
+  try {
+    const parsed = JSON.parse(raw) as PlatformDb;
+    __debugEmit("A", "platform-store.ts:getPlatformDb:ok", "getPlatformDb parsed success", {
+      keys: Object.keys(parsed),
+      users: Array.isArray(parsed.users) ? parsed.users.length : -1,
+      products: Array.isArray(parsed.products) ? parsed.products.length : -1,
+      companies: Array.isArray(parsed.companies) ? parsed.companies.length : -1,
+      campaigns: Array.isArray(parsed.campaigns) ? parsed.campaigns.length : -1,
+      clubOffers: Array.isArray(parsed.clubOffers) ? parsed.clubOffers.length : -1,
+      couponRedemptions: Array.isArray(parsed.couponRedemptions) ? parsed.couponRedemptions.length : -1,
+      auditLog: Array.isArray(parsed.auditLog) ? parsed.auditLog.length : -1
+    });
+    return parsed;
+  } catch (error) {
+    __debugEmit("A", "platform-store.ts:getPlatformDb:parseError", "getPlatformDb parse fail, fallback para seed", {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      rawLength: raw.length,
+      rawStart: raw.slice(0, 200)
+    });
+    return createPlatformSeed();
+  }
+  // #endregion
 }
 
 export async function savePlatformDb(db: PlatformDb) {
-  await ensureDbFile();
-  await writeFile(DB_PATH, JSON.stringify(db, null, 2), "utf8");
+  try {
+    await ensureDbFile();
+    await writeFile(DB_PATH, JSON.stringify(db, null, 2), "utf8");
+  } catch (err) {
+    __debugEmit("A", "platform-store.ts:savePlatformDb:writeSkipped", "savePlatformDb não pode escrever (read-only FS). Dados não persistidos mas runtime seguro.", {
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
 }
 
 export function isContentVisible(

@@ -15,6 +15,40 @@ import {
   type SectionKey
 } from "@/lib/dashboard-data";
 
+// #region debug-point D:E:dashboard-env
+let __dbgServerUrl = "http://127.0.0.1:7777/event";
+let __dbgSessionId = "vercel-server-crash";
+try {
+  if (typeof process !== "undefined") {
+    try {
+      const envRaw = require("fs").readFileSync(".dbg/vercel-server-crash.env", "utf8") as string;
+      envRaw.split(/\r?\n/).forEach((line) => {
+        const [k, v] = line.split("=");
+        if (!k || !v) return;
+        if (k.trim() === "DEBUG_SERVER_URL") __dbgServerUrl = v.trim();
+        if (k.trim() === "DEBUG_SESSION_ID") __dbgSessionId = v.trim();
+      });
+    } catch {}
+  }
+} catch {}
+const __debugEmit = async (hyp: string, where: string, msg: string, extra?: Record<string, unknown>) => {
+  try {
+    await fetch(__dbgServerUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        session_id: __dbgSessionId,
+        ts: Date.now(),
+        hypothesis: hyp,
+        where,
+        message: msg,
+        extra: extra ?? {}
+      })
+    }).catch(() => {});
+  } catch {}
+};
+// #endregion
+
 function Icon({ name }: { name: IconName }) {
   switch (name) {
     case "home":
@@ -2555,12 +2589,90 @@ export async function Dashboard({
   productCatalogFilter?: string;
   mentorshipFilter?: string;
 }) {
-  const [sections, publishedProducts, snapshot] = await Promise.all([
-    buildUserDashboardSections(),
-    getPublishedProducts(),
-    getPlatformSnapshot()
-  ]);
+  // #region debug-point D:E:dashboard-enter
+  void __debugEmit("D", "components/dashboard.tsx:Dashboard:enter", "Dashboard SSR iniciado", {
+    sectionKey,
+    productCatalogOpen,
+    productCatalogFilter,
+    mentorshipFilter
+  });
+  // #endregion
+
+  let sections: Record<SectionKey, SectionConfig> | null = null;
+  let publishedProducts: ProductRecord[] = [];
+  let snapshot: Awaited<ReturnType<typeof getPlatformSnapshot>> | null = null;
+
+  try {
+    // #region debug-point D:E:dashboard-promise-all-start
+    void __debugEmit("D", "components/dashboard.tsx:Dashboard:promiseAll:start", "Promise.all carregando dados", {});
+    // #endregion
+    const loaded = await Promise.all([
+      buildUserDashboardSections(),
+      getPublishedProducts(),
+      getPlatformSnapshot()
+    ]);
+    sections = loaded[0];
+    publishedProducts = Array.isArray(loaded[1]) ? loaded[1] : [];
+    snapshot = loaded[2];
+    // #region debug-point D:E:dashboard-promise-all-success
+    void __debugEmit("D", "components/dashboard.tsx:Dashboard:promiseAll:success", "Dados carregados", {
+      sectionsKeys: sections && typeof sections === "object" ? Object.keys(sections).length : -1,
+      publishedProductsCount: publishedProducts.length,
+      snapshotIsNull: snapshot === null || snapshot === undefined,
+      snapshotClubOffersIsArray: Array.isArray((snapshot as any)?.clubOffers),
+      snapshotClubOffersLength: Array.isArray((snapshot as any)?.clubOffers) ? (snapshot as any).clubOffers.length : -1,
+      snapshotCouponIsArray: Array.isArray((snapshot as any)?.couponRedemptions),
+      snapshotCouponLength: Array.isArray((snapshot as any)?.couponRedemptions) ? (snapshot as any).couponRedemptions.length : -1
+    });
+    // #endregion
+  } catch (error) {
+    // #region debug-point D:E:dashboard-promise-all-error
+    void __debugEmit("D", "components/dashboard.tsx:Dashboard:promiseAll:error", "Erro no carregamento de dados", {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
+    // #endregion
+    throw error;
+  }
+
+  if (!sections || typeof sections !== "object") {
+    // #region debug-point D:E:dashboard-sections-invalid
+    void __debugEmit("D", "components/dashboard.tsx:Dashboard:sections:invalid", "sections não é objeto válido", {
+      sectionsType: typeof sections,
+      sectionsIsNull: sections === null
+    });
+    // #endregion
+    throw new Error("Dashboard sections inválidas");
+  }
+
   const section = sections[sectionKey];
+  if (!section) {
+    // #region debug-point D:E:dashboard-section-missing
+    void __debugEmit("D", "components/dashboard.tsx:Dashboard:section:missing", "Seção não encontrada no sections", {
+      sectionKey,
+      availableKeys: Object.keys(sections)
+    });
+    // #endregion
+    throw new Error(`Seção ${String(sectionKey)} não encontrada");
+  }
+
+  const clubOffersSafe = Array.isArray((snapshot as any)?.clubOffers)
+    ? (snapshot as any).clubOffers.filter((offer: any) => offer?.status === "PUBLICADO")
+    : [];
+  const couponRedemptionsSafe = Array.isArray((snapshot as any)?.couponRedemptions)
+    ? (snapshot as any).couponRedemptions
+    : [];
+  const publishedProductsSafe = Array.isArray(publishedProducts) ? publishedProducts : [];
+
+  // #region debug-point D:E:dashboard-layout-start
+  void __debugEmit("D", "components/dashboard.tsx:Dashboard:layout:start", "Iniciando render do layout", {
+    sectionKey,
+    sectionLabel: (section as any)?.label ?? null,
+    clubOffersSafeCount: clubOffersSafe.length,
+    couponRedemptionsCount: couponRedemptionsSafe.length,
+    productsCount: publishedProductsSafe.length
+  });
+  // #endregion
 
   return (
     <div className="app-shell">
@@ -2633,9 +2745,9 @@ export async function Dashboard({
           productCatalogOpen,
           productCatalogFilter,
           mentorshipFilter,
-          catalogProducts: publishedProducts,
-          clubOffers: snapshot.clubOffers.filter((offer) => offer.status === "PUBLICADO"),
-          couponRedemptions: snapshot.couponRedemptions
+          catalogProducts: publishedProductsSafe,
+          clubOffers: clubOffersSafe,
+          couponRedemptions: couponRedemptionsSafe
         })}
 
         <footer className="content-footer">
