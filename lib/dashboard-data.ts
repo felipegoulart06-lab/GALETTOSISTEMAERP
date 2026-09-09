@@ -289,21 +289,10 @@ export const navGroups: NavGroup[] = [
       { key: "clubao", label: "Clubão", icon: "gift" },
       { key: "empresas", label: "Empresas", icon: "building" },
       { key: "listas", label: "Listas", icon: "list" },
-      { key: "indicacoes", label: "Indicações", icon: "users" }
-    ])
-  },
-  {
-    label: "Ganhe",
-    items: sortNavItemsByLabelLength([
+      { key: "indicacoes", label: "Indicações", icon: "users" },
+      { key: "sorteios", label: "Sorteios", icon: "gift" },
       { key: "oportunidades", label: "Oportunidades", icon: "rocket" },
       { key: "campanhas", label: "Campanhas", icon: "megaphone" }
-    ])
-  },
-  {
-    label: "Conquiste",
-    items: sortNavItemsByLabelLength([
-      { key: "ranking", label: "Ranking", icon: "trophy" },
-      { key: "sorteios", label: "Sorteios", icon: "gift" }
     ])
   },
   {
