@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { ClientShell } from "@/components/client-shell";
 import { CompanyLocationMap } from "@/components/company-location-map";
 import { ManagedMedia } from "@/components/managed-media";
@@ -16,7 +17,7 @@ function SectionHeader({ eyebrow, title, description }: { eyebrow: string; title
   );
 }
 
-function ChipPill({ children, tone = "neutral" }: { children: React.ReactNode; tone?: "neutral" | "green" | "blue" | "orange" | "violet" }) {
+function ChipPill({ children, tone = "neutral" }: { children: ReactNode; tone?: "neutral" | "green" | "blue" | "orange" | "violet" }) {
   return <span className={`detail-chip chip-${tone}`}>{children}</span>;
 }
 

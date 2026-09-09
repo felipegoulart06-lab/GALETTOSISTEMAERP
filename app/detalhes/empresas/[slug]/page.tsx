@@ -20,8 +20,21 @@ export default async function CompanyDetailsRoute({
     notFound();
   }
 
-  const clubaoOffers = db.clubOffers.filter((offer) => company.linkedOfferIds.includes(offer.id));
-  const affiliateServices = db.referralServices.filter((service) => company.linkedServiceIds.includes(service.id));
+  const safeLinkedOfferIds = Array.isArray(company.linkedOfferIds) ? company.linkedOfferIds : [];
+  const safeLinkedServiceIds = Array.isArray(company.linkedServiceIds) ? company.linkedServiceIds : [];
+  const safeClubOffers = Array.isArray(db.clubOffers) ? db.clubOffers : [];
+  const safeReferralServices = Array.isArray(db.referralServices) ? db.referralServices : [];
 
-  return <CompanyDetailPage company={company} relatedCompanies={relatedCompanies} clubaoOffers={clubaoOffers} affiliateServices={affiliateServices} />;
+  const clubaoOffers = safeClubOffers.filter((offer) => safeLinkedOfferIds.includes(offer.id));
+  const affiliateServices = safeReferralServices.filter((service) => safeLinkedServiceIds.includes(service.id));
+
+  return (
+    <CompanyDetailPage
+      company={company}
+      relatedCompanies={Array.isArray(relatedCompanies) ? relatedCompanies : []}
+      clubaoOffers={clubaoOffers}
+      affiliateServices={affiliateServices}
+    />
+  );
 }
+

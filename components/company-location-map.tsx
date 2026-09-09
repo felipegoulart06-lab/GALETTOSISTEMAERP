@@ -16,11 +16,16 @@ export function CompanyLocationMap({
   if (!token) {
     return (
       <div className="company-map-fallback">
-        <ManagedMedia alt={`Mapa de ${companyName}`} sizeLabel="640 x 360" className="managed-media-fill" hint="Adicione NEXT_PUBLIC_MAPBOX_TOKEN" />
+        <ManagedMedia
+          alt={`Mapa de ${companyName}`}
+          sizeLabel="640 x 360"
+          className="managed-media-fill managed-media-fit-contain"
+          src="/images/empresas-hero-banner.svg"
+        />
         <div className="company-map-fallback-copy">
           <strong>Mapa pronto para Mapbox</strong>
           <p>{locationLabel}</p>
-          <small>Assim que você colocar o token, o mini mapa desta empresa aparece aqui automaticamente.</small>
+          <small>Assim que você colocar o token NEXT_PUBLIC_MAPBOX_TOKEN, o mini mapa desta empresa aparece aqui automaticamente.</small>
         </div>
       </div>
     );
