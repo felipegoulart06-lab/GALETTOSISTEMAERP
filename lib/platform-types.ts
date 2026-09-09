@@ -175,15 +175,24 @@ export interface CompanyRecord extends BaseManagedEntity {
   state: string;
   neighborhood: string;
   address: string;
+  zipCode?: string;
   phone: string;
+  whatsapp?: string;
   contactEmail: string;
   website: string;
+  instagram?: string;
+  linkedin?: string;
   socialLinks: string[];
   contactName: string;
   credentialedStatus: string;
   specialties: string[];
   facts: string[];
   chips: string[];
+  operatingHours?: string;
+  targetAudience?: string;
+  valueProposition?: string;
+  businessArea?: string;
+  timeInBusiness?: string;
   linkedOfferIds: string[];
   linkedProductIds: string[];
   linkedServiceIds: string[];
@@ -191,6 +200,7 @@ export interface CompanyRecord extends BaseManagedEntity {
   linkedOpportunityIds: string[];
   latitude: number;
   longitude: number;
+  mapZoom?: number;
 }
 
 export interface ClubOfferRecord extends BaseManagedEntity {
@@ -216,16 +226,20 @@ export interface SupplierRecord {
   id: string;
   name: string;
   company: string;
+  companySlug?: string;
   logo?: string;
   image?: string;
   category: string;
   segment: string;
   description: string;
   location: string;
+  cityState?: string;
+  products?: string[];
   contact: string;
   phone: string;
   email: string;
   website: string;
+  whatsapp?: string;
   notes: string;
   status: WorkflowStatus;
 }

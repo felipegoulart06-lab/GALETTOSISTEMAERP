@@ -2,22 +2,6 @@ import "server-only";
 
 import { dashboardSections, type MediaCardData, type SectionConfig, type SectionKey } from "@/lib/dashboard-data";
 import { getPlatformDb, isContentVisible } from "@/lib/platform-store";
-// #region debug-point B:C:content-env
-const __debugEnv = (() => {
-  let u = "http://127.0.0.1:7777/event";
-  let s = "vercel-server-crash";
-  try {
-    if (typeof require !== "undefined") {
-      const content = require("fs").readFileSync(".dbg/vercel-server-crash.env", "utf8");
-      const mu = content.match(/DEBUG_SERVER_URL=(.+)/)?.[1];
-      const ms = content.match(/DEBUG_SESSION_ID=(.+)/)?.[1];
-      if (mu) u = mu;
-      if (ms) s = ms;
-    }
-  } catch {
-  }
-  return { u, s };
-})();
 const __debugEmit = (hypothesisId: string, location: string, msg: string, data: Record<string, unknown> = {}) => {
   try {
     void fetch(__debugEnv.u, {
@@ -85,7 +69,7 @@ function toMentorshipCard(mentorship: MentorshipRecord): MediaCardData {
     badge: mentorship.badge,
     accent: mentorship.accent,
     image: mentorship.coverImage,
-    cta: "Ver mentoria",
+    cta: "Ver mentoria", ctaHref: `/detalhes/mentorias/${mentorship.slug}`,
     facts: mentorship.facts,
     chips: mentorship.chips,
     mentorName: mentorship.mentorName,
@@ -143,7 +127,7 @@ function toSupplierListCard(item: SupplierListRecord): MediaCardData {
     badge: item.badge,
     accent: "blue",
     image: item.image,
-    cta: "Abrir lista",
+    cta: "Abrir lista", href: `/detalhes/listas/${item.slug}`,
     facts: item.facts,
     chips: item.chips
   };
@@ -568,4 +552,16 @@ export async function getPublishedClubOffers() {
 
 export async function getPlatformSnapshot() {
   return getPlatformDb();
+}
+export async function getPublishedSupplierListBySlug(slug: string): Promise<SupplierListRecord | null> {
+  const db = await getPlatformSnapshot();
+  if (!Array.isArray(db.supplierLists)) return null;
+  const list = db.supplierLists.find((s) => s.slug === slug && isContentVisible(s));
+  return list || null;
+}
+export async function getPublishedMentorshipBySlug(slug: string): Promise<MentorshipRecord | null> {
+  const db = await getPlatformSnapshot();
+  if (!Array.isArray(db.mentorships)) return null;
+  const item = db.mentorships.find((s) => s.slug === slug && isContentVisible(s));
+  return item || null;
 }

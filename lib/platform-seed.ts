@@ -1067,7 +1067,7 @@ const seededSupplierLists: SupplierListRecord[] = supplierListCatalog.slice(0, 1
       contact: "Comercial Prime",
       phone: "(11) 3000-1000",
       email: `contato${index + 1}@prime.com`,
-      website: `https://prime-${index + 1}.fgexacta-demo.com`,
+      website: `https://prime-${index + 1}.fgexacta-demo.com`, whatsapp: "(11) 98888-0000", cityState: "São Paulo / SP", products: ["Lote fechado", "Liquidação", "Kits"], companySlug: "axon-nexus",
       notes: "Fornecedor seed para demonstração administrativa.",
       status: "PUBLICADO"
     },
@@ -1082,7 +1082,7 @@ const seededSupplierLists: SupplierListRecord[] = supplierListCatalog.slice(0, 1
       contact: "Equipe Select",
       phone: "(47) 3000-2000",
       email: `select${index + 1}@fgexacta-demo.com`,
-      website: `https://select-${index + 1}.fgexacta-demo.com`,
+      website: `https://select-${index + 1}.fgexacta-demo.com`, whatsapp: "(47) 99999-1111", cityState: "Itajaí / SC", products: ["Matéria prima", "Insumos base", "Varejo"], companySlug: "pulse-media",
       notes: "Segmento complementar para organização de listas.",
       status: "PUBLICADO"
     }

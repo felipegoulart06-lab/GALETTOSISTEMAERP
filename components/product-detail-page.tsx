@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { ClientShell } from "@/components/client-shell";
 import { ManagedMedia } from "@/components/managed-media";
-import { Icon } from "@/components/dashboard";
+import { Icon } from "@/components/ui-icon";
 import type { ProductRecord } from "@/lib/platform-types";
 
 function CopyLinkBlock({ link, approvalFlow }: { link: string; approvalFlow: string }) {

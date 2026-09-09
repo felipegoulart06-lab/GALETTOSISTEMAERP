@@ -12,22 +12,6 @@ import type {
   WorkflowStatus
 } from "@/lib/platform-types";
 
-// #region debug-point A:db-path
-const __debugEnv = (() => {
-  let u = "http://127.0.0.1:7777/event";
-  let s = "vercel-server-crash";
-  try {
-    if (typeof require !== "undefined") {
-      const content = require("fs").readFileSync(".dbg/vercel-server-crash.env", "utf8");
-      const mu = content.match(/DEBUG_SERVER_URL=(.+)/)?.[1];
-      const ms = content.match(/DEBUG_SESSION_ID=(.+)/)?.[1];
-      if (mu) u = mu;
-      if (ms) s = ms;
-    }
-  } catch {
-  }
-  return { u, s };
-})();
 const __debugEmit = (hypothesisId: string, location: string, msg: string, data: Record<string, unknown> = {}) => {
   try {
     void fetch(__debugEnv.u, {

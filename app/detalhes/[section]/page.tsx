@@ -21,30 +21,11 @@ try {
     } catch {}
   }
 } catch {}
-const __debugEmit = async (hyp: string, where: string, msg: string, extra?: Record<string, unknown>) => {
-  try {
-    await fetch(__dbgServerUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        session_id: __dbgSessionId,
-        ts: Date.now(),
-        hypothesis: hyp,
-        where,
-        message: msg,
-        extra: extra ?? {}
-      })
-    }).catch(() => {});
-  } catch {}
-};
 // #endregion
 
 export function generateStaticParams() {
   // #region debug-point D:detalhes-static-params
-  void __debugEmit("D", "app/detalhes/[section]/page.tsx:generateStaticParams", "generateStaticParams chamado", {
-    sectionOrderCount: sectionOrder.length,
-    sections: sectionOrder
-  });
+  
   // #endregion
   return sectionOrder.map((section) => ({ section }));
 }
@@ -60,22 +41,12 @@ export default async function ClientDetailPage({
   const hasCtaPage = !!clientCtaPages[section as SectionKey];
 
   // #region debug-point D:detalhes-page-enter
-  void __debugEmit("D", "app/detalhes/[section]/page.tsx:ClientDetailPage:enter", "Detalhes page SSR iniciado", {
-    section,
-    inSectionOrder,
-    hasCtaPage,
-    sectionOrderCount: sectionOrder.length,
-    ctaPagesKeys: Object.keys(clientCtaPages)
-  });
+  
   // #endregion
 
   if (!inSectionOrder || !hasCtaPage) {
     // #region debug-point D:detalhes-notfound
-    void __debugEmit("D", "app/detalhes/[section]/page.tsx:ClientDetailPage:notFound", "Disparando notFound", {
-      section,
-      inSectionOrder,
-      hasCtaPage
-    });
+    
     // #endregion
     notFound();
   }

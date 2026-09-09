@@ -2,37 +2,6 @@
 
 import { useEffect } from "react";
 
-let __dbgServerUrl = "http://127.0.0.1:7777/event";
-let __dbgSessionId = "vercel-server-crash";
-try {
-  if (typeof require !== "undefined") {
-    try {
-      const envRaw = require("fs").readFileSync(".dbg/vercel-server-crash.env", "utf8") as string;
-      envRaw.split(/\r?\n/).forEach((line) => {
-        const [k, v] = line.split("=");
-        if (!k || !v) return;
-        if (k.trim() === "DEBUG_SERVER_URL") __dbgServerUrl = v.trim();
-        if (k.trim() === "DEBUG_SESSION_ID") __dbgSessionId = v.trim();
-      });
-    } catch {}
-  }
-} catch {}
-function __emitError(hyp: string, where: string, msg: string, extra?: Record<string, unknown>) {
-  try {
-    void fetch(__dbgServerUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        session_id: __dbgSessionId,
-        ts: Date.now(),
-        hypothesis: hyp,
-        where,
-        message: msg,
-        extra: extra ?? {}
-      })
-    }).catch(() => {});
-  } catch {}
-}
 
 export default function GlobalErrorBoundary({
   error,
@@ -42,12 +11,7 @@ export default function GlobalErrorBoundary({
   reset: () => void;
 }) {
   useEffect(() => {
-    __emitError("Z", "app/global-error.tsx:GlobalErrorBoundary", "Erro GLOBAL capturado em Root Layout", {
-      name: error?.name ?? null,
-      message: error?.message ?? String(error),
-      digest: (error as any)?.digest ?? null,
-      stack: error?.stack ?? undefined
-    });
+    console.error(error);
   }, [error]);
 
   return (

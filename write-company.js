@@ -1,10 +1,12 @@
+const fs = require('fs');
+const content = `
 "use client";
 
 import Link from "next/link";
 import { ClientShell } from "@/components/client-shell";
 import { CompanyLocationMap } from "@/components/company-location-map";
 import { ManagedMedia } from "@/components/managed-media";
-import { Icon } from "@/components/ui-icon";
+import { Icon } from "@/components/dashboard";
 import type { ClubOfferRecord, CompanyRecord, ReferralServiceRecord, OpportunityRecord } from "@/lib/platform-types";
 
 export function CompanyDetailPage({
@@ -33,7 +35,7 @@ export function CompanyDetailPage({
     <ClientShell
       activeSection="empresas"
       title={company.title}
-      breadcrumb={`FG EXACTA / EMPRESAS / ${company.title.toUpperCase()}`}
+      breadcrumb={\`FG EXACTA / EMPRESAS / \${company.title.toUpperCase()}\`}
     >
       <div className="company-premium-wrapper">
         
@@ -43,7 +45,7 @@ export function CompanyDetailPage({
             <div className="cph-brand-block">
               <div className="cph-logo-wrapper">
                 <ManagedMedia
-                  alt={`Logo ${company.title}`}
+                  alt={\`Logo \${company.title}\`}
                   sizeLabel="200 x 200"
                   src={company.logo}
                   className="managed-media-fill managed-media-fit-contain"
@@ -152,7 +154,7 @@ export function CompanyDetailPage({
                           <p className="cph-offer-desc">{offer.shortDescription}</p>
                         </div>
                         <div className="cph-offer-action">
-                          <Link href={`/detalhes/ofertas/${offer.slug}`} className="cph-btn-secondary">
+                          <Link href={\`/detalhes/ofertas/\${offer.slug}\`} className="cph-btn-secondary">
                             Ver benefício
                           </Link>
                         </div>
@@ -180,7 +182,7 @@ export function CompanyDetailPage({
                           <p className="cph-opp-desc">Indicação premiada: {service.rewardLabel}</p>
                         </div>
                         <div className="cph-opp-action">
-                          <Link href={`/detalhes/empresas/servico/${service.slug}`} className="cph-btn-outline">
+                          <Link href={\`/detalhes/empresas/servico/\${service.slug}\`} className="cph-btn-outline">
                             Detalhes
                           </Link>
                         </div>
@@ -208,7 +210,7 @@ export function CompanyDetailPage({
                   longitude={company.longitude}
                   zoom={company.mapZoom || 15}
                   markerTitle={company.title}
-                  addressSnippet={`${company.address || ""}, ${company.city || ""}`}
+                  addressSnippet={\`\${company.address || ""}, \${company.city || ""}\`}
                 />
               </div>
 
@@ -253,17 +255,17 @@ export function CompanyDetailPage({
                 <div className="cph-widget-body">
                   <div className="cph-contact-grid">
                     {company.phone && (
-                      <a href={`tel:${company.phone.replace(/\D/g,'')}`} className="cph-contact-btn">
+                      <a href={\`tel:\${company.phone.replace(/\\D/g,'')}\`} className="cph-contact-btn">
                         <Icon name="phone" /> Ligar
                       </a>
                     )}
                     {company.whatsapp && (
-                      <a href={`https://wa.me/${company.whatsapp.replace(/\D/g,'')}`} target="_blank" rel="noreferrer" className="cph-contact-btn whatsapp">
+                      <a href={\`https://wa.me/\${company.whatsapp.replace(/\\D/g,'')}\`} target="_blank" rel="noreferrer" className="cph-contact-btn whatsapp">
                         <Icon name="message-circle" /> WhatsApp
                       </a>
                     )}
                     {company.contactEmail && (
-                      <a href={`mailto:${company.contactEmail}`} className="cph-contact-btn">
+                      <a href={\`mailto:\${company.contactEmail}\`} className="cph-contact-btn">
                         <Icon name="mail" /> E-mail
                       </a>
                     )}
@@ -307,7 +309,7 @@ export function CompanyDetailPage({
                     <span className="cph-rel-loc">{rel.city} / {rel.state}</span>
                   </div>
                   <div className="cph-rel-action">
-                    <Link href={`/detalhes/empresas/${rel.slug}`} className="cph-btn-outline compact">
+                    <Link href={\`/detalhes/empresas/\${rel.slug}\`} className="cph-btn-outline compact">
                       Ver empresa
                     </Link>
                   </div>
@@ -321,3 +323,5 @@ export function CompanyDetailPage({
     </ClientShell>
   );
 }
+`;
+fs.writeFileSync('components/company-detail-page.tsx', content, 'utf8');

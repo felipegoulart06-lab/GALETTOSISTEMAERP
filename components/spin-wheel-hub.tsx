@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "react-router-dom";
-import { Icon } from "./dashboard";
+import { Icon } from "@/components/ui-icon";
 import type { SectionConfig, SpinWheelRecord, SpinRewardRecord } from "@/lib/platform-types";
 
 interface SpinWheelHubProps {
