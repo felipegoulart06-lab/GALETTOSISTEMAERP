@@ -149,6 +149,9 @@ function toSupplierListCard(item: SupplierListRecord): MediaCardData {
 }
 
 function toReferralServiceCard(service: ReferralServiceRecord): MediaCardData {
+  const factsSafe = Array.isArray(service.facts) ? service.facts : [];
+  const chipsSafe = Array.isArray(service.chips) ? service.chips : [];
+  const hrefSuffix = (typeof (service as any)?.slug === "string" && (service as any).slug) ? encodeURIComponent((service as any).slug) : encodeURIComponent(String(service.id));
   return {
     eyebrow: service.category,
     title: service.title,
@@ -158,8 +161,10 @@ function toReferralServiceCard(service: ReferralServiceRecord): MediaCardData {
     accent: "green",
     image: service.image,
     cta: "Ver serviço",
-    facts: service.facts,
-    chips: service.chips
+    ctaHref: `/detalhes/empresas/servico/${hrefSuffix}`,
+    href: `/detalhes/empresas/servico/${hrefSuffix}`,
+    facts: factsSafe,
+    chips: chipsSafe
   };
 }
 
@@ -213,6 +218,70 @@ function toSweepstakeCard(item: SweepstakesRecord): MediaCardData {
     cta: "Ver sorteio",
     facts: [`Horário ${item.scheduledTime}`, ...criteriaSafe.slice(0, 2)],
     chips: tagsSafe
+  };
+}
+
+function defaultStartEnd(now = new Date()) {
+  const end = new Date(now.getTime() + 21 * 24 * 60 * 60 * 1000);
+  const start = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+  end.setMilliseconds(0);
+  start.setMilliseconds(0);
+  return { startAt: start.toISOString(), endAt: end.toISOString() };
+}
+
+function toClubOfferClientCard(item: ClubOfferRecord): {
+  id: string;
+  offerCode: string;
+  title: string;
+  subtitle: string;
+  shortLabel: string;
+  description: string;
+  image: string;
+  partnerName: string;
+  partnerLocation: string;
+  category: string;
+  discountLabel: string;
+  originalPrice?: string;
+  discountedPrice?: string;
+  startAt: string;
+  endAt: string;
+  validityLabel: string;
+  redemptionLimit: number;
+  redeemedCount: number;
+  singleUsePerUser: boolean;
+  rules: string[];
+  conditions: string[];
+  importantInfo: string[];
+} {
+  const defaults = defaultStartEnd();
+  const startAtRaw = (item as any)?.startAt ?? item.publishedAt ?? defaults.startAt;
+  const endAtRaw = (item as any)?.endAt ?? defaults.endAt;
+  const rulesSafe = Array.isArray(item.rules) ? item.rules : [];
+  const conditionsSafe = Array.isArray(item.conditions) ? item.conditions : [];
+  const importantSafe = Array.isArray(item.importantInfo) ? item.importantInfo : [];
+  return {
+    id: String(item.id ?? Math.random().toString(36).slice(2, 10)),
+    offerCode: String(item.offerCode ?? "OFR-PENDENTE"),
+    title: String(item.title ?? "Oferta"),
+    subtitle: String(item.subtitle ?? ""),
+    shortLabel: String(item.shortDescription ?? item.subtitle ?? ""),
+    description: String(item.description ?? ""),
+    image: String(item.image ?? ""),
+    partnerName: String(item.partnerName ?? "Parceiro FG EXACTA"),
+    partnerLocation: String(item.partnerLocation ?? "Atendimento nacional"),
+    category: String(item.category ?? "Clubão"),
+    discountLabel: String(item.discountLabel ?? "Benefício exclusivo"),
+    originalPrice: typeof item.originalPrice === "string" && item.originalPrice ? item.originalPrice : undefined,
+    discountedPrice: typeof item.discountedPrice === "string" && item.discountedPrice ? item.discountedPrice : undefined,
+    startAt: typeof startAtRaw === "string" && startAtRaw ? startAtRaw : defaults.startAt,
+    endAt: typeof endAtRaw === "string" && endAtRaw ? endAtRaw : defaults.endAt,
+    validityLabel: String(item.validityLabel ?? "Conferir regulamento"),
+    redemptionLimit: typeof item.redemptionLimit === "number" ? item.redemptionLimit : 9999,
+    redeemedCount: typeof item.redeemedCount === "number" ? item.redeemedCount : 0,
+    singleUsePerUser: Boolean(item.singleUsePerUser),
+    rules: rulesSafe.map((rule) => String(rule)),
+    conditions: conditionsSafe.map((condition) => String(condition)),
+    importantInfo: importantSafe.map((info) => String(info))
   };
 }
 
@@ -300,7 +369,7 @@ export async function buildUserDashboardSections() {
   const opportunities = Array.isArray(db.opportunities) ? db.opportunities.filter((item) => isContentVisible(item)) : [];
   const campaigns = Array.isArray(db.campaigns) ? db.campaigns.filter((item) => isContentVisible(item)) : [];
   const sweepstakes = Array.isArray(db.sweepstakes) ? db.sweepstakes.filter((item) => isContentVisible(item)) : [];
-  const offers = Array.isArray(db.clubOffers) ? db.clubOffers.filter((item) => isContentVisible(item)) : [];
+  const offers = Array.isArray(db.clubOffers) ? db.clubOffers.filter((item) => isContentVisible(item)).map(toClubOfferClientCard) : [];
 
   const homeHighlights = [
     ...products.slice(0, 1).map(toProductCard),

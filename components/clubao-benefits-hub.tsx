@@ -405,29 +405,70 @@ function buildCouponStatus(redemption: CouponRedemption, now = new Date()): Coup
     return "UTILIZADO";
   }
 
-  return new Date(redemption.validUntil) <= now ? "EXPIRADO" : "ATIVO";
+  const validUntilMs = safeParseDate(redemption.validUntil).getTime();
+  return Number.isFinite(validUntilMs) && validUntilMs <= now.getTime() ? "EXPIRADO" : "ATIVO";
+}
+
+function safeParseDate(value: string | undefined | null): Date {
+  if (value == null) {
+    const fallback = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+    fallback.setMilliseconds(0);
+    return fallback;
+  }
+  if (typeof value !== "string") {
+    const fallback = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+    fallback.setMilliseconds(0);
+    return fallback;
+  }
+  const trimmed = value.trim();
+  if (!trimmed) {
+    const fallback = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+    fallback.setMilliseconds(0);
+    return fallback;
+  }
+  const d = new Date(trimmed);
+  const ms = d.getTime();
+  if (Number.isFinite(ms)) {
+    return d;
+  }
+  const isoMatch = trimmed.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (isoMatch) {
+    const y = Number(isoMatch[1]);
+    const mo = Math.max(1, Math.min(12, Number(isoMatch[2])));
+    const da = Math.max(1, Math.min(28, Number(isoMatch[3])));
+    const rebuilt = new Date(Date.UTC(y, mo - 1, da, 23, 59, 0, 0));
+    if (Number.isFinite(rebuilt.getTime())) {
+      return rebuilt;
+    }
+  }
+  const fallback = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+  fallback.setMilliseconds(0);
+  return fallback;
 }
 
 function formatDateTime(value: string) {
+  const d = safeParseDate(value);
   return new Intl.DateTimeFormat("pt-BR", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit"
-  }).format(new Date(value));
+  }).format(d);
 }
 
 function formatDate(value: string) {
+  const d = safeParseDate(value);
   return new Intl.DateTimeFormat("pt-BR", {
     day: "2-digit",
     month: "long",
     year: "numeric"
-  }).format(new Date(value));
+  }).format(d);
 }
 
 function getCountdownParts(target: string, now = new Date()) {
-  const diff = new Date(target).getTime() - now.getTime();
+  const targetMs = safeParseDate(target).getTime();
+  const diff = targetMs - now.getTime();
 
   if (diff <= 0) {
     return { expired: true, days: 0, hours: 0, minutes: 0 };
@@ -448,10 +489,10 @@ function getOfferRemainingLabel(target: string, now = new Date()) {
   }
 
   if (countdown.days === 0) {
-    return `Expira hoje em ${countdown.hours}h ${countdown.minutes}min`;
+    return "Expira hoje em " + String(countdown.hours) + "h " + String(countdown.minutes) + "min";
   }
 
-  return `Expira em ${countdown.days} dias`;
+  return "Expira em " + String(countdown.days) + " dias";
 }
 
 function getCouponRemainingLabel(target: string, now = new Date()) {
@@ -462,17 +503,19 @@ function getCouponRemainingLabel(target: string, now = new Date()) {
   }
 
   if (countdown.days === 0) {
-    return `Expira hoje às ${new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit" }).format(new Date(target))}`;
+    const hourPart = new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit" }).format(safeParseDate(target));
+    return "Expira hoje às " + hourPart;
   }
 
-  return `Expira em ${countdown.days} dias`;
+  return "Expira em " + String(countdown.days) + " dias";
 }
 
 function getOfferState(offer: ClubOffer, redemptions: CouponRedemption[], now = new Date()): OfferState {
   const hasUserRedemption = redemptions.some((item) => item.offerId === offer.id && item.userId === CURRENT_USER.id);
-  const ended = new Date(offer.endAt) <= now;
-  const soldOut = offer.redeemedCount >= offer.redemptionLimit;
-  const nearEnd = !ended && new Date(offer.endAt).getTime() - now.getTime() <= 1000 * 60 * 60 * 48;
+  const endAtMs = safeParseDate(offer.endAt).getTime();
+  const ended = Number.isFinite(endAtMs) && endAtMs <= now.getTime();
+  const soldOut = typeof offer.redeemedCount === "number" && typeof offer.redemptionLimit === "number" && offer.redeemedCount >= offer.redemptionLimit;
+  const nearEnd = !ended && Number.isFinite(endAtMs) && endAtMs - now.getTime() <= 1000 * 60 * 60 * 48;
 
   if (ended) {
     return "ENCERRADA";
