@@ -765,23 +765,25 @@ export function ClubaoBenefitsHub({
           if (already) {
             return current;
           }
+          const validationToken = payload.validationToken ?? globalThis.crypto.randomUUID();
+          const couponCode = payload.couponCode ?? "FGX-PENDENTE";
           const fallbackRedemption: CouponRedemption = {
             id: globalThis.crypto.randomUUID(),
-            couponId: `coupon-${payload.validationToken.slice(0, 12)}`,
-            publicCode: payload.couponCode,
+            couponId: `coupon-${validationToken.slice(0, 12)}`,
+            publicCode: couponCode,
             offerTitle: offer.title,
-            qrValidationToken: payload.validationToken,
+            qrValidationToken: validationToken,
             userId: CURRENT_USER.id,
             userName: CURRENT_USER.fullName,
             userEmail: CURRENT_USER.email,
             offerId: offer.id,
-            couponCode: payload.couponCode,
-            validationToken: payload.validationToken,
-            qrPayload: `https://fgexacta.app/clubao/validate/${payload.validationToken}`,
+            couponCode,
+            validationToken,
+            qrPayload: `https://fgexacta.app/clubao/validate/${validationToken}`,
             redeemedAt: new Date().toISOString(),
-            validUntil: offer.endAt,
+            validUntil: offer.endAt ?? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
             status: "ATIVO",
-            pdfReference: `voucher-${payload.couponCode.toLowerCase()}.html`,
+            pdfReference: `voucher-${couponCode.toLowerCase()}.html`,
             downloadCount: 0
           };
           return [fallbackRedemption, ...current];

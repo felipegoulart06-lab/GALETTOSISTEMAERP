@@ -1026,7 +1026,7 @@ function CampanhasLayout({ section }: { section: SectionConfig }) {
       <HeroBlock section={section} className="hero-panel-compact" />
       <MetricsStrip section={section} />
       <section className="layout-campanhas">
-        <div className="campaign-board">
+        <div className="campaign-board" data-section="campanhas">
           {section.cards.map((card) => (
             <MediaCard key={card.title} card={card} />
           ))}

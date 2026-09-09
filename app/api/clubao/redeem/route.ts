@@ -88,7 +88,9 @@ export async function POST(request: NextRequest) {
     const validationToken = createSecureToken();
     const couponCode = createPublicCode();
     const redeemedAt = new Date().toISOString();
-    const validUntil = offer.endAt;
+    const validUntil =
+      offer.endAt ??
+      new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
     const redemption: CouponRedemptionRecord = {
       id: globalThis.crypto.randomUUID(),

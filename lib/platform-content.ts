@@ -147,7 +147,10 @@ function toCampaignCard(item: CampaignRecord): MediaCardData {
     badge: item.rewardLabel,
     accent: "violet",
     image: item.image,
+    coverFit: "contain",
     cta: "Ver campanha",
+    href: `/detalhes/campanhas/${item.slug}`,
+    ctaHref: `/detalhes/campanhas/${item.slug}`,
     facts: ["Produtos vinculados", ...item.rules.slice(0, 2)],
     chips: ["Campanha", ...item.tags.slice(0, 2)]
   };
@@ -203,6 +206,21 @@ export async function getPublishedCompanyBySlug(slug: string) {
 export async function getRelatedPublishedCompanies(slug: string) {
   const companies = await getPublishedCompanies();
   return companies.filter((company) => company.slug !== slug).slice(0, 3);
+}
+
+export async function getPublishedCampaigns() {
+  const db = await getPlatformDb();
+  return db.campaigns.filter((campaign) => isContentVisible(campaign));
+}
+
+export async function getPublishedCampaignBySlug(slug: string) {
+  const campaigns = await getPublishedCampaigns();
+  return campaigns.find((campaign) => campaign.slug === slug);
+}
+
+export async function getRelatedPublishedCampaigns(slug: string) {
+  const campaigns = await getPublishedCampaigns();
+  return campaigns.filter((campaign) => campaign.slug !== slug).slice(0, 3);
 }
 
 export async function buildUserDashboardSections() {
