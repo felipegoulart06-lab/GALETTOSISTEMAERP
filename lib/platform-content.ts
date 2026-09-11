@@ -5,11 +5,11 @@ import { parseSafeDate } from "@/lib/safe-date";
 import { getPlatformDb, isContentVisible } from "@/lib/platform-store";
 const __debugEmit = (hypothesisId: string, location: string, msg: string, data: Record<string, unknown> = {}) => {
   try {
-    void fetch(__debugEnv.u, {
+    void fetch("http://127.0.0.1:7777/event", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        sessionId: __debugEnv.s,
+        sessionId: "local",
         runId: "pre-fix",
         hypothesisId,
         location,

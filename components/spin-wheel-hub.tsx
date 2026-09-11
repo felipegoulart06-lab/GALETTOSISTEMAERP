@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import Link from "react-router-dom";
 import { Icon } from "@/components/ui-icon";
-import type { SectionConfig, SpinWheelRecord, SpinRewardRecord } from "@/lib/platform-types";
+import type { SpinWheelRecord, SpinRewardRecord } from "@/lib/platform-types";
+import type { SectionConfig } from "@/lib/dashboard-data";
 
 interface SpinWheelHubProps {
   initialWheels: SpinWheelRecord[];
@@ -212,10 +212,10 @@ export function SpinWheelHub({ initialWheels, section }: SpinWheelHubProps) {
         <div className="listas-table-body">
           {activeWheel.history?.length ? activeWheel.history.map((entry, idx) => (
             <article key={idx} className="listas-table-row">
-              <div className="text-sm text-slate-500">{entry.date}</div>
+              <div className="text-sm text-slate-500">{entry.playedAt}</div>
               <div className="font-medium text-slate-700">{entry.wheelTitle}</div>
               <div className="text-blue-600 font-bold">{entry.rewardTitle}</div>
-              <div className="font-mono text-xs bg-slate-100 px-2 py-1 rounded">{entry.rewardCode}</div>
+              <div className="font-mono text-xs bg-slate-100 px-2 py-1 rounded">{entry.internalCode}</div>
               <div className="listas-item-action">
                 <span className={`status-active`}>{entry.status}</span>
               </div>

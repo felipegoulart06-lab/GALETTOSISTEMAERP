@@ -14,6 +14,7 @@ export type CtaLayoutType =
   | "campanhas"
   | "divulgue"
   | "missoes"
+  | "giro-da-sorte"
   | "ranking"
   | "recompensas"
   | "renda"
@@ -209,6 +210,31 @@ export const clientCtaPages: Record<SectionKey, ClientCtaPageConfig> = {
       "O Clubao deve vender exclusividade e pertencimento.",
       "Beneficios encerrados nao devem sumir do nada.",
       "Cada oferta precisa de regras, validade, local e acao clara."
+    ]
+  },
+  "giro-da-sorte": {
+    sectionKey: "giro-da-sorte",
+    layout: "recompensas",
+    ctaLabel: "Girar agora",
+    eyebrow: "Roleta premium",
+    title: "Gire, desbloqueie recompensas e acompanhe seu historico.",
+    description: "Uma area de gamificacao elegante, com giros diarios, especiais e VIP, sem cara de cassino.",
+    heroImage: image("premium reward wheel dashboard for professional membership platform, elegant blue interface, luxury gamification, realistic"),
+    metrics: [
+      { label: "Giros hoje", value: "03", detail: "Disponiveis", tone: "green" },
+      { label: "Proximo giro", value: "08:42", detail: "Contagem ativa", tone: "blue" },
+      { label: "Premios ganhos", value: "12", detail: "Historico vivo", tone: "orange" },
+      { label: "Beneficios", value: "Clubao + VIP", detail: "Ecossistema", tone: "violet" }
+    ],
+    primaryCards: [
+      card("Giro diario", "Retorno rapido com recompensa imediata", "Baixa friccao e cadencia de retorno", "Hoje", "premium daily reward wheel card, elegant enterprise gamification, realistic"),
+      card("Giro VIP", "Premios maiores para membros em destaque", "Exclusivo e com leitura premium", "VIP", "premium vip reward wheel card, luxury membership platform, realistic"),
+      card("Historico", "Codigos, status e validade dos giros", "Tudo registrado para conferencia", "Registro", "reward wheel history ledger visual, realistic")
+    ],
+    secondaryItems: [
+      "A roleta precisa parecer beneficio da plataforma, nao jogo de azar.",
+      "Estoque, validade e codigo do premio devem ficar visiveis.",
+      "O giro conversa com Clubao, missoes e recompensas."
     ]
   },
   empresas: {

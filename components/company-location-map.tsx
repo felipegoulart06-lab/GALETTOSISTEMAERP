@@ -96,7 +96,7 @@ export function CompanyLocationMap({
       <div ref={mapContainer} className="cph-map-instance" />
       <div className="cph-map-actions">
         <a 
-          href={`https://www.google.com/maps/dir/?api=1&destination=`,``}
+          href={`https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`}
           target="_blank" 
           rel="noreferrer" 
           className="cph-map-action-btn"
