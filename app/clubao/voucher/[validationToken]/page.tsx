@@ -113,8 +113,7 @@ export default async function ClubVoucherPage({
             </small>
             <h1 style={{ margin: 0, fontSize: 28 }}>Voucher do benefício</h1>
             <p style={{ margin: 0, lineHeight: 1.6, opacity: 0.85 }}>
-              Página de confirmação do cupom individual. Após o download, este
-              arquivo não poderá ser gerado novamente.
+              Página de confirmação do cupom. O PDF oficial usa numeração exclusiva deste resgate.
             </p>
           </div>
 
@@ -132,22 +131,21 @@ export default async function ClubVoucherPage({
             style={{
               padding: 18,
               borderRadius: 18,
-              background: "rgba(245, 158, 11, 0.12)",
-              border: "1px solid rgba(245, 158, 11, 0.28)",
+              background: "rgba(22, 163, 74, 0.10)",
+              border: "1px solid rgba(22, 163, 74, 0.24)",
               display: "grid",
               gap: 4
             }}
           >
-            <strong style={{ color: "#a16207" }}>
-              Download já realizado
+            <strong style={{ color: "#15803d" }}>
+              PDF já emitido
             </strong>
-            <p style={{ margin: 0, color: "#854d0e", lineHeight: 1.6 }}>
-              Este cupom já foi baixado em{" "}
+            <p style={{ margin: 0, color: "#166534", lineHeight: 1.6 }}>
+              Este cupom mantém a mesma numeração. Último download em{" "}
               {redemption.downloadedAt
                 ? formatDateTime(redemption.downloadedAt)
                 : "—"}
-              . Para garantir a autenticidade, não permitimos novos downloads.
-              Se precisar de ajuda, entre em contato com o suporte.
+              .
             </p>
           </div>
         ) : null}
@@ -362,6 +360,7 @@ export default async function ClubVoucherPage({
                     opacity: 0.8
                   }}
                 >
+                  {redemption.serialNumber ? `${redemption.serialNumber} · ` : ""}
                   {redemption.couponCode}
                 </p>
               </div>

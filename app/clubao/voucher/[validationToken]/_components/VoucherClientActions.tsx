@@ -16,7 +16,7 @@ export default function VoucherClientActions({
   const [error, setError] = useState<string | null>(null);
 
   const handleDownload = async () => {
-    if (downloading || !canDownload) {
+    if (downloading) {
       return;
     }
 
@@ -43,7 +43,7 @@ export default function VoucherClientActions({
       const blob = await response.blob();
       const contentDisposition = response.headers.get("Content-Disposition") ?? "";
       const match = contentDisposition.match(/filename="?([^";]+)"?/);
-      const filename = match?.[1] ?? `voucher-${token}.html`;
+      const filename = match?.[1] ?? `cupom-${token}.pdf`;
 
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
@@ -54,10 +54,7 @@ export default function VoucherClientActions({
       anchor.remove();
       URL.revokeObjectURL(url);
 
-      setClosing(true);
-      window.setTimeout(() => {
-        window.close();
-      }, 1500);
+      setDownloading(false);
     } catch (unknownError) {
       console.error("[voucher] Falha ao baixar cupom:", unknownError);
       setError("Não foi possível baixar o cupom. Tente novamente.");
@@ -77,21 +74,21 @@ export default function VoucherClientActions({
       <button
         type="button"
         onClick={handleDownload}
-        disabled={!canDownload || downloading || closing}
+        disabled={downloading || closing}
         style={{
           padding: "14px 22px",
           borderRadius: 16,
           border: "none",
-          cursor: canDownload && !downloading && !closing ? "pointer" : "not-allowed",
+          cursor: !downloading && !closing ? "pointer" : "not-allowed",
           background:
-            canDownload && !downloading && !closing
+            !downloading && !closing
               ? "linear-gradient(180deg, #16a34a 0%, #15803d 100%)"
               : "#cbd5e1",
           color: "#ffffff",
           fontSize: 15,
           fontWeight: 700,
           boxShadow:
-            canDownload && !downloading && !closing
+            !downloading && !closing
               ? "0 10px 24px rgba(22, 163, 74, 0.22)"
               : "none",
           minWidth: 220
@@ -102,8 +99,8 @@ export default function VoucherClientActions({
           : downloading
           ? "Preparando download..."
           : alreadyDownloaded
-          ? "Download já realizado"
-          : "Baixar cupom"}
+          ? "Baixar PDF novamente"
+          : "Baixar PDF do cupom"}
       </button>
 
       {error ? (

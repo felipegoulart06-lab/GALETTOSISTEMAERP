@@ -408,6 +408,7 @@ export interface CouponRedemptionRecord {
   redeemedAt: string;
   validUntil: string;
   status: "ATIVO" | "EXPIRADO" | "UTILIZADO";
+  serialNumber?: string;
   pdfReference: string;
   qrValidationToken: string;
   validationToken: string;

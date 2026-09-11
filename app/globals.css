@@ -217,6 +217,20 @@
   gap: 12px;
 }
 
+.master-admin-coupon-ledger {
+  margin: 0 0 20px;
+}
+
+.master-admin-coupon-ledger-copy {
+  margin: 0 0 14px;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
+.master-admin-coupon-row .master-admin-row-main {
+  min-width: 0;
+}
+
 .master-admin-audit-card,
 .master-admin-row {
   min-width: 0;

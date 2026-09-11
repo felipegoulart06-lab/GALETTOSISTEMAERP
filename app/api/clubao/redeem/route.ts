@@ -1,66 +1,43 @@
 import "server-only";
 
 import { NextRequest, NextResponse } from "next/server";
+import { createPublicCouponCode, createSecureToken, nextCouponSerial } from "@/lib/clubao-coupon";
 import { getPlatformDb, savePlatformDb } from "@/lib/platform-store";
 import type { CouponRedemptionRecord } from "@/lib/platform-types";
 
 export const dynamic = "force-dynamic";
 
-function createSecureToken() {
-  const bytes = new Uint8Array(24);
-  globalThis.crypto.getRandomValues(bytes);
-  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
-}
-
-function createPublicCode() {
-  const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ";
-  const digits = "23456789";
-  const pick = (pool: string, length: number) =>
-    Array.from(
-      { length },
-      () => pool[Math.floor(Math.random() * pool.length)]
-    ).join("");
-  return `FGX-${pick(letters, 3)}-${pick(digits, 2)}${pick(letters, 2)}${pick(digits, 1)}`;
-}
-
 export async function POST(request: NextRequest) {
   try {
-    const body = (await request.json()) as { offerId?: string };
+    const body = (await request.json()) as {
+      offerId?: string;
+      userId?: string;
+      userName?: string;
+      userEmail?: string;
+    };
     const offerId = body.offerId?.trim();
 
     if (!offerId) {
-      return NextResponse.json(
-        { ok: false, error: "Oferta não informada." },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: "Oferta não informada." }, { status: 400 });
     }
 
-    const userId = request.cookies.get("fgx_user_id")?.value ?? "user-01";
-    const userName =
-      request.cookies.get("fgx_user_name")?.value ?? "Usuário FG EXACTA";
-    const userEmail =
-      request.cookies.get("fgx_user_email")?.value ?? "usuario@fgexacta.com";
+    const userId = body.userId?.trim() || request.cookies.get("fgx_user_id")?.value || "usr-felipe-goulart-01";
+    const userName = body.userName?.trim() || request.cookies.get("fgx_user_name")?.value || "Felipe Goulart";
+    const userEmail = body.userEmail?.trim() || request.cookies.get("fgx_user_email")?.value || "felipe@fgexacta.com";
 
     const db = await getPlatformDb();
-    const offer = db.clubOffers.find((item) => item.id === offerId);
+    const offer = Array.isArray(db.clubOffers) ? db.clubOffers.find((item) => item.id === offerId) : undefined;
 
     if (!offer) {
-      return NextResponse.json(
-        { ok: false, error: "Oferta não encontrada." },
-        { status: 404 }
-      );
+      return NextResponse.json({ ok: false, error: "Oferta não encontrada." }, { status: 404 });
     }
 
     if (offer.status !== "PUBLICADO") {
-      return NextResponse.json(
-        { ok: false, error: "Oferta indisponível para resgate." },
-        { status: 422 }
-      );
+      return NextResponse.json({ ok: false, error: "Oferta indisponível para resgate." }, { status: 422 });
     }
 
-    const alreadyRedeemed = db.couponRedemptions.find(
-      (item) => item.offerId === offerId && item.userId === userId
-    );
+    const redemptions = Array.isArray(db.couponRedemptions) ? db.couponRedemptions : [];
+    const alreadyRedeemed = redemptions.find((item) => item.offerId === offerId && item.userId === userId);
 
     if (alreadyRedeemed) {
       return NextResponse.json(
@@ -69,34 +46,35 @@ export async function POST(request: NextRequest) {
           duplicated: true,
           validationToken: alreadyRedeemed.validationToken,
           couponCode: alreadyRedeemed.couponCode,
-          voucherUrl: `/clubao/voucher/${alreadyRedeemed.validationToken}`
+          serialNumber: alreadyRedeemed.serialNumber,
+          pdfUrl: `/api/clubao/download?token=${encodeURIComponent(alreadyRedeemed.validationToken)}`,
+          voucherUrl: `/clubao/voucher/${alreadyRedeemed.validationToken}`,
+          redemption: alreadyRedeemed
         },
         { status: 200 }
       );
     }
 
-    if (
-      offer.redemptionLimit > 0 &&
-      (offer.redeemedCount ?? 0) >= offer.redemptionLimit
-    ) {
-      return NextResponse.json(
-        { ok: false, error: "Estoque de cupons esgotado." },
-        { status: 422 }
-      );
+    if (offer.redemptionLimit > 0 && (offer.redeemedCount ?? 0) >= offer.redemptionLimit) {
+      return NextResponse.json({ ok: false, error: "Estoque de cupons esgotado." }, { status: 422 });
     }
 
     const validationToken = createSecureToken();
-    const couponCode = createPublicCode();
+    const couponPrefix = typeof (offer as { couponPrefix?: string }).couponPrefix === "string" && (offer as { couponPrefix?: string }).couponPrefix
+      ? String((offer as { couponPrefix?: string }).couponPrefix)
+      : "FGX";
+    const couponCode = createPublicCouponCode(couponPrefix.replace(/[^A-Z0-9]/gi, "").slice(0, 4) || "FGX");
+    const serialNumber = nextCouponSerial(redemptions);
     const redeemedAt = new Date().toISOString();
-    const validUntil =
-      offer.endAt ??
-      new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    const validUntil = offer.endAt ?? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    const origin = request.nextUrl.origin;
 
     const redemption: CouponRedemptionRecord = {
       id: globalThis.crypto.randomUUID(),
-      couponId: `coupon-${validationToken.slice(0, 12)}`,
+      couponId: `coupon-${serialNumber.toLowerCase()}`,
       couponCode,
       publicCode: couponCode,
+      serialNumber,
       offerId: offer.id,
       offerTitle: offer.title,
       userId,
@@ -105,32 +83,45 @@ export async function POST(request: NextRequest) {
       redeemedAt,
       validUntil,
       status: "ATIVO",
-      pdfReference: `voucher-${couponCode.toLowerCase()}.html`,
+      pdfReference: `cupom-${serialNumber.toLowerCase()}.pdf`,
       qrValidationToken: validationToken,
       validationToken,
-      qrPayload: `https://fgexacta.app/clubao/validate/${validationToken}`,
+      qrPayload: `${origin}/clubao/voucher/${validationToken}`,
       downloadCount: 0
     };
 
     const nextOffers = db.clubOffers.map((current) =>
-      current.id === offer.id
-        ? { ...current, redeemedCount: (current.redeemedCount ?? 0) + 1 }
-        : current
+      current.id === offer.id ? { ...current, redeemedCount: (current.redeemedCount ?? 0) + 1 } : current
     );
 
-    const nextDb: typeof db = {
+    await savePlatformDb({
       ...db,
       clubOffers: nextOffers,
-      couponRedemptions: [redemption, ...db.couponRedemptions]
-    };
-
-    await savePlatformDb(nextDb);
+      couponRedemptions: [redemption, ...redemptions],
+      auditLog: [
+        {
+          id: globalThis.crypto.randomUUID(),
+          module: "couponRedemptions",
+          entityId: redemption.id,
+          entityTitle: `${serialNumber} · ${couponCode}`,
+          action: "CREATE",
+          changedByUserId: userId,
+          changedByName: userName,
+          changedAt: redeemedAt,
+          nextStatus: "ATIVO",
+          summary: `Cupom ${serialNumber} (${couponCode}) resgatado para "${offer.title}" por ${userName}.`
+        },
+        ...(Array.isArray(db.auditLog) ? db.auditLog : [])
+      ]
+    });
 
     return NextResponse.json(
       {
         ok: true,
         validationToken,
         couponCode,
+        serialNumber,
+        pdfUrl: `/api/clubao/download?token=${encodeURIComponent(validationToken)}`,
         voucherUrl: `/clubao/voucher/${validationToken}`,
         redemption
       },
@@ -138,9 +129,6 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("[clubao/redeem] Falha ao registrar resgate:", error);
-    return NextResponse.json(
-      { ok: false, error: "Falha interna ao registrar resgate." },
-      { status: 500 }
-    );
+    return NextResponse.json({ ok: false, error: "Falha interna ao registrar resgate." }, { status: 500 });
   }
 }

@@ -49,6 +49,7 @@ interface CouponRedemption {
   userEmail: string;
   offerId: string;
   couponCode: string;
+  serialNumber?: string;
   validationToken: string;
   qrPayload: string;
   redeemedAt: string;
@@ -650,6 +651,7 @@ function normalizeRedemption(raw: Partial<CouponRedemption> | Record<string, unk
     userEmail: String(record.userEmail ?? CURRENT_USER.email),
     offerId: String(record.offerId ?? offer?.id ?? ""),
     couponCode: String(record.couponCode ?? ""),
+    serialNumber: typeof record.serialNumber === "string" ? record.serialNumber : undefined,
     validationToken: String(record.validationToken ?? ""),
     qrPayload: String(record.qrPayload ?? ""),
     redeemedAt: parseSafeDate(record.redeemedAt).toISOString(),
@@ -775,12 +777,37 @@ export function ClubaoBenefitsHub({
     [couponCards]
   );
 
+  const downloadCouponPdf = async (token: string, filenameHint?: string) => {
+    const response = await fetch(`/api/clubao/download?token=${encodeURIComponent(token)}`);
+    if (!response.ok) {
+      const payload = (await response.json().catch(() => ({}))) as { error?: string };
+      throw new Error(payload.error ?? "Não foi possível gerar o PDF do cupom.");
+    }
+
+    const blob = await response.blob();
+    const contentDisposition = response.headers.get("Content-Disposition") ?? "";
+    const match = contentDisposition.match(/filename="?([^";]+)"?/);
+    const filename = match?.[1] ?? `cupom-${(filenameHint ?? token).toLowerCase()}.pdf`;
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = filename;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+  };
+
   const handleRedeem = async (offer: ClubOffer) => {
     const existing = redemptions.find((item) => item.offerId === offer.id && item.userId === CURRENT_USER.id);
     const state = getOfferState(offer, redemptions, now);
 
     if (existing) {
-      openCouponVoucher(existing);
+      try {
+        await downloadCouponPdf(existing.validationToken, existing.serialNumber ?? existing.couponCode);
+      } catch (error) {
+        setRedeemError(error instanceof Error ? error.message : "Não foi possível baixar o PDF deste cupom.");
+      }
       return;
     }
 
@@ -795,7 +822,12 @@ export function ClubaoBenefitsHub({
       const response = await fetch("/api/clubao/redeem", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ offerId: offer.id })
+        body: JSON.stringify({
+          offerId: offer.id,
+          userId: CURRENT_USER.id,
+          userName: CURRENT_USER.fullName,
+          userEmail: CURRENT_USER.email
+        })
       });
 
       const payload = (await response.json().catch(() => ({}))) as {
@@ -804,6 +836,8 @@ export function ClubaoBenefitsHub({
         duplicated?: boolean;
         validationToken?: string;
         couponCode?: string;
+        serialNumber?: string;
+        pdfUrl?: string;
         voucherUrl?: string;
         redemption?: CouponRedemption;
       };
@@ -841,44 +875,30 @@ export function ClubaoBenefitsHub({
             userEmail: CURRENT_USER.email,
             offerId: offer.id,
             couponCode,
+            serialNumber: payload.serialNumber,
             validationToken,
             qrPayload: `https://fgexacta.app/clubao/validate/${validationToken}`,
             redeemedAt: new Date().toISOString(),
             validUntil: offer.endAt ?? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
             status: "ATIVO",
-            pdfReference: `voucher-${couponCode.toLowerCase()}.html`,
+            pdfReference: `cupom-${couponCode.toLowerCase()}.pdf`,
             downloadCount: 0
           };
           return [fallbackRedemption, ...current];
         });
       }
 
-      if (payload.voucherUrl) {
+      if (payload.validationToken) {
+        try {
+          await downloadCouponPdf(payload.validationToken, payload.serialNumber ?? payload.couponCode);
+        } catch (pdfError) {
+          setRedeemError(pdfError instanceof Error ? pdfError.message : "Resgate registrado, mas o PDF não pôde ser gerado agora.");
+        }
+      } else if (payload.voucherUrl) {
         const voucherWindow = window.open(payload.voucherUrl, "_blank", "noopener,noreferrer,width=1100,height=900");
         if (voucherWindow) {
           voucherWindow.focus();
         }
-      } else if (payload.validationToken) {
-        const tokenRedemption: CouponRedemption = {
-          id: globalThis.crypto.randomUUID(),
-          couponId: `coupon-${payload.validationToken.slice(0, 12)}`,
-          publicCode: payload.couponCode,
-          offerTitle: offer.title,
-          qrValidationToken: payload.validationToken,
-          userId: CURRENT_USER.id,
-          userName: CURRENT_USER.fullName,
-          userEmail: CURRENT_USER.email,
-          offerId: offer.id,
-          couponCode: payload.couponCode ?? "FGX-XXXXX",
-          validationToken: payload.validationToken,
-          qrPayload: `https://fgexacta.app/clubao/validate/${payload.validationToken}`,
-          redeemedAt: new Date().toISOString(),
-          validUntil: offer.endAt,
-          status: "ATIVO",
-          pdfReference: `voucher-${(payload.couponCode ?? "cupom").toLowerCase()}.html`,
-          downloadCount: 0
-        };
-        openCouponVoucher(tokenRedemption);
       }
     } catch (unknownError) {
       console.error("[clubao] Falha ao resgatar:", unknownError);
@@ -964,6 +984,7 @@ export function ClubaoBenefitsHub({
                           <span className={`clubao-state-badge tone-${getStateTone(coupon.status)}`}>{coupon.status}</span>
                         </div>
                         <p>{coupon.offer.partnerName}</p>
+                        <small>Nº {coupon.serialNumber || coupon.couponCode}</small>
                         <small>Código: {coupon.couponCode}</small>
                         <small>Resgatado em {formatDateTime(coupon.redeemedAt)}</small>
                         <small>Validade: {formatDateTime(coupon.validUntil)}</small>
@@ -971,8 +992,16 @@ export function ClubaoBenefitsHub({
                           {coupon.remainingLabel}
                         </small>
                         <div className="clubao-coupon-actions">
-                          <button type="button" className="clubao-download-action" onClick={() => openCouponVoucher(coupon)}>
-                            Baixar cupom
+                          <button
+                            type="button"
+                            className="clubao-download-action"
+                            onClick={() => {
+                              void downloadCouponPdf(coupon.validationToken, coupon.serialNumber ?? coupon.couponCode).catch((error) => {
+                                setRedeemError(error instanceof Error ? error.message : "Não foi possível gerar o PDF.");
+                              });
+                            }}
+                          >
+                            Baixar PDF
                           </button>
                           <button type="button" className="clubao-detail-action" onClick={() => setSelectedOfferId(coupon.offer.id)}>
                             Ver detalhes
@@ -1017,8 +1046,16 @@ export function ClubaoBenefitsHub({
                 <span>{coupon.remainingLabel}</span>
                 <small className={`clubao-state-badge tone-${getStateTone(coupon.status)}`}>{coupon.status}</small>
                 <div className="clubao-history-actions">
-                  <button type="button" className="clubao-download-action" onClick={() => openCouponVoucher(coupon)}>
-                    Baixar novamente
+                  <button
+                    type="button"
+                    className="clubao-download-action"
+                    onClick={() => {
+                      void downloadCouponPdf(coupon.validationToken, coupon.serialNumber ?? coupon.couponCode).catch((error) => {
+                        setRedeemError(error instanceof Error ? error.message : "Não foi possível gerar o PDF.");
+                      });
+                    }}
+                  >
+                    Baixar PDF novamente
                   </button>
                   <button type="button" className="clubao-detail-action" onClick={() => setSelectedOfferId(coupon.offer.id)}>
                     Ver detalhes
@@ -1159,10 +1196,21 @@ export function ClubaoBenefitsHub({
                           <button type="button" className="clubao-redeemed-button" disabled>
                             Cupom resgatado
                           </button>
-                          <button type="button" className="clubao-download-action" onClick={() => openCouponVoucher(existing)}>
-                            Baixar cupom
+                          <button
+                            type="button"
+                            className="clubao-download-action"
+                            onClick={() => {
+                              void downloadCouponPdf(existing.validationToken, existing.serialNumber ?? existing.couponCode).catch((error) => {
+                                setRedeemError(error instanceof Error ? error.message : "Não foi possível gerar o PDF.");
+                              });
+                            }}
+                          >
+                            Baixar PDF do cupom
                           </button>
-                          <small>{existing.couponCode}</small>
+                          <small>
+                            {existing.serialNumber ? `${existing.serialNumber} · ` : ""}
+                            {existing.couponCode}
+                          </small>
                         </div>
                       );
                     }
@@ -1192,10 +1240,10 @@ export function ClubaoBenefitsHub({
                           }}
                         >
                           {redeemingOfferId === selectedOffer.id
-                            ? "Registrando resgate..."
+                            ? "Gerando cupom PDF..."
                             : "Resgatar cupom"}
                         </button>
-                        <small>Gera cupom individual, QR Code único e voucher A4 pronto para PDF.</small>
+                        <small>Gera PDF oficial com número exclusivo deste resgate e registra no Admin Master.</small>
                         {redeemError && selectedOfferId === selectedOffer.id ? (
                           <small
                             style={{

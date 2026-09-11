@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ManagedMedia } from "@/components/managed-media";
 import { adminMasterLabels, adminMasterNavGroups, type AdminMasterSectionKey } from "@/lib/admin-master-config";
+import { formatPtDateTime } from "@/lib/safe-date";
 import type { AdminSession, PlatformDb, WorkflowStatus } from "@/lib/platform-types";
 
 type EditorFieldType = "text" | "textarea" | "number" | "date" | "datetime" | "boolean" | "select" | "list";
@@ -1298,6 +1299,48 @@ export function AdminMasterClient({
             </button>
           </div>
         </section>
+
+        {sectionKey === "clubao" ? (
+          <section className="master-admin-surface master-admin-coupon-ledger">
+            <div className="master-admin-head">
+              <div>
+                <span>Resgates</span>
+                <h3>{Array.isArray(db.couponRedemptions) ? db.couponRedemptions.length : 0} cupons emitidos</h3>
+              </div>
+            </div>
+            <p className="master-admin-coupon-ledger-copy">
+              Cada clique em Resgatar cupom gera um PDF com numeração exclusiva e fica registrado aqui, com usuário, oferta, código e protocolo.
+            </p>
+            <div className="master-admin-table">
+              {(Array.isArray(db.couponRedemptions) ? [...db.couponRedemptions] : [])
+                .sort((a, b) => String(b.redeemedAt).localeCompare(String(a.redeemedAt)))
+                .map((item) => (
+                  <article key={item.id} className="master-admin-row master-admin-coupon-row">
+                    <div className="master-admin-row-main">
+                      <div>
+                        <strong>{item.serialNumber || item.publicCode || item.couponCode}</strong>
+                        <p>
+                          {item.offerTitle} · {item.userName} ({item.userEmail})
+                        </p>
+                        <small>
+                          Código {item.couponCode} · {item.status} · resgatado em {formatPtDateTime(item.redeemedAt)}
+                          {item.downloadCount ? ` · PDF baixado ${item.downloadCount}x` : " · PDF ainda não baixado"}
+                        </small>
+                      </div>
+                    </div>
+                    <div className="master-admin-row-actions">
+                      <a className="master-admin-inline" href={`/clubao/voucher/${item.validationToken}`} target="_blank" rel="noreferrer">
+                        Ver voucher
+                      </a>
+                      <a className="master-admin-inline" href={`/api/clubao/download?token=${encodeURIComponent(item.validationToken)}`}>
+                        Baixar PDF
+                      </a>
+                    </div>
+                  </article>
+                ))}
+            </div>
+          </section>
+        ) : null}
 
         <section className="master-admin-grid">
           <div className="master-admin-surface">
