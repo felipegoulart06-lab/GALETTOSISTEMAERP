@@ -22,30 +22,33 @@ export async function POST(request: Request) {
     
     // Filtra recompensas com estoque
     const availableRewards = wheel.rewards.filter(r => r.quantityAvailable > 0 && r.status === "ATIVO");
-    if (availableRewards.length === 0) {
+    const fallbackReward = availableRewards[0];
+    if (!fallbackReward) {
       return NextResponse.json({ error: "Nenhuma recompensa disponível no momento" }, { status: 400 });
     }
     
     // Algoritmo de sorteio por probabilidade
     const totalProb = availableRewards.reduce((sum, r) => sum + r.probability, 0);
     let random = Math.random() * totalProb;
-    let selectedReward: SpinRewardRecord | null = null;
-    let selectedIndex = -1;
+    let selectedReward: SpinRewardRecord = fallbackReward;
+    let selectedIndex = wheel.rewards.findIndex(r => r.id === selectedReward.id);
     
-    for (let i = 0; i < availableRewards.length; i++) {
-      random -= availableRewards[i].probability;
+    for (const reward of availableRewards) {
+      random -= reward.probability;
       if (random <= 0) {
-        selectedReward = availableRewards[i];
-        // Encontra o index real no array original de rewards da wheel
-        selectedIndex = wheel.rewards.findIndex(r => r.id === selectedReward?.id);
+        selectedReward = reward;
+        selectedIndex = wheel.rewards.findIndex(r => r.id === reward.id);
         break;
       }
     }
     
-    if (!selectedReward || selectedIndex === -1) {
-      // Fallback para o primeiro se algo der errado no loop
-      selectedReward = availableRewards[0];
+    if (selectedIndex === -1) {
+      selectedReward = fallbackReward;
       selectedIndex = wheel.rewards.findIndex(r => r.id === selectedReward.id);
+    }
+
+    if (selectedIndex === -1) {
+      return NextResponse.json({ error: "Recompensa sorteada não encontrada na roleta" }, { status: 400 });
     }
     
     // Atualiza estoque da recompensa
