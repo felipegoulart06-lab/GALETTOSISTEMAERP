@@ -573,7 +573,9 @@ export function AdminDashboard({ sectionKey }: { sectionKey: AdminSectionKey }) 
           <div key={group.label} className="sidebar-group">
             <span className="sidebar-label">{group.label}</span>
             <nav className="sidebar-nav" aria-label={group.label}>
-              {group.items.map((item) => {
+              {group.items
+                .filter((item) => item.key !== "ranking")
+                .map((item) => {
                 const href = item.key === "resumo" ? "/admin" : `/admin/${item.key}`;
                 const active = item.key === sectionKey;
 

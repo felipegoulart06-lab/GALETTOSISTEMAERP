@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { ManagedMedia } from "@/components/managed-media";
+import { formatPtDate, formatPtDateTime, formatPtTime, parseSafeDate } from "@/lib/safe-date";
 
 type OfferState = "DISPONÍVEL" | "PRÓXIMA DO FIM" | "RESGATADA" | "ESGOTADA" | "ENCERRADA";
 type CouponStatus = "ATIVO" | "EXPIRADO" | "UTILIZADO";
@@ -400,74 +401,65 @@ function buildOffers(base = new Date()): ClubOffer[] {
   ];
 }
 
+function asStringList(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item)).filter(Boolean);
+  }
+  if (typeof value === "string" && value.trim()) {
+    return value.split(/\n|;/).map((item) => item.trim()).filter(Boolean);
+  }
+  return [];
+}
+
+function normalizeOffer(raw: Partial<ClubOffer> | Record<string, unknown>): ClubOffer {
+  const record = raw as Partial<ClubOffer> & Record<string, unknown>;
+  const startFallback = Date.now() - 3 * 86400000;
+  const endFallback = Date.now() + 21 * 86400000;
+  return {
+    id: String(record.id ?? "offer"),
+    offerCode: String(record.offerCode ?? "OFR"),
+    title: String(record.title ?? "Oferta"),
+    subtitle: String(record.subtitle ?? record.shortLabel ?? record.shortDescription ?? ""),
+    shortLabel: String(record.shortLabel ?? record.shortDescription ?? record.subtitle ?? ""),
+    description: String(record.description ?? ""),
+    image: String(record.image ?? ""),
+    partnerName: String(record.partnerName ?? "Parceiro FG EXACTA"),
+    partnerLocation: String(record.partnerLocation ?? "Atendimento nacional"),
+    category: String(record.category ?? "Clubão"),
+    discountLabel: String(record.discountLabel ?? "Benefício exclusivo"),
+    originalPrice: typeof record.originalPrice === "string" ? record.originalPrice : undefined,
+    discountedPrice: typeof record.discountedPrice === "string" ? record.discountedPrice : undefined,
+    startAt: parseSafeDate(record.startAt ?? record.publishedAt, startFallback).toISOString(),
+    endAt: parseSafeDate(record.endAt, endFallback).toISOString(),
+    validityLabel: String(record.validityLabel ?? "Conferir regulamento"),
+    redemptionLimit: typeof record.redemptionLimit === "number" ? record.redemptionLimit : 9999,
+    redeemedCount: typeof record.redeemedCount === "number" ? record.redeemedCount : 0,
+    singleUsePerUser: Boolean(record.singleUsePerUser),
+    rules: asStringList(record.rules),
+    conditions: asStringList(record.conditions),
+    importantInfo: asStringList(record.importantInfo)
+  };
+}
+
 function buildCouponStatus(redemption: CouponRedemption, now = new Date()): CouponStatus {
   if (redemption.status === "UTILIZADO") {
     return "UTILIZADO";
   }
 
-  const validUntilMs = safeParseDate(redemption.validUntil).getTime();
+  const validUntilMs = parseSafeDate(redemption.validUntil, Date.now() + 14 * 86400000).getTime();
   return Number.isFinite(validUntilMs) && validUntilMs <= now.getTime() ? "EXPIRADO" : "ATIVO";
 }
 
-function safeParseDate(value: string | undefined | null): Date {
-  if (value == null) {
-    const fallback = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
-    fallback.setMilliseconds(0);
-    return fallback;
-  }
-  if (typeof value !== "string") {
-    const fallback = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
-    fallback.setMilliseconds(0);
-    return fallback;
-  }
-  const trimmed = value.trim();
-  if (!trimmed) {
-    const fallback = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
-    fallback.setMilliseconds(0);
-    return fallback;
-  }
-  const d = new Date(trimmed);
-  const ms = d.getTime();
-  if (Number.isFinite(ms)) {
-    return d;
-  }
-  const isoMatch = trimmed.match(/(\d{4})-(\d{2})-(\d{2})/);
-  if (isoMatch) {
-    const y = Number(isoMatch[1]);
-    const mo = Math.max(1, Math.min(12, Number(isoMatch[2])));
-    const da = Math.max(1, Math.min(28, Number(isoMatch[3])));
-    const rebuilt = new Date(Date.UTC(y, mo - 1, da, 23, 59, 0, 0));
-    if (Number.isFinite(rebuilt.getTime())) {
-      return rebuilt;
-    }
-  }
-  const fallback = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
-  fallback.setMilliseconds(0);
-  return fallback;
-}
-
 function formatDateTime(value: string) {
-  const d = safeParseDate(value);
-  return new Intl.DateTimeFormat("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  }).format(d);
+  return formatPtDateTime(value);
 }
 
 function formatDate(value: string) {
-  const d = safeParseDate(value);
-  return new Intl.DateTimeFormat("pt-BR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric"
-  }).format(d);
+  return formatPtDate(value);
 }
 
 function getCountdownParts(target: string, now = new Date()) {
-  const targetMs = safeParseDate(target).getTime();
+  const targetMs = parseSafeDate(target).getTime();
   const diff = targetMs - now.getTime();
 
   if (diff <= 0) {
@@ -503,7 +495,7 @@ function getCouponRemainingLabel(target: string, now = new Date()) {
   }
 
   if (countdown.days === 0) {
-    const hourPart = new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit" }).format(safeParseDate(target));
+    const hourPart = formatPtTime(target);
     return "Expira hoje às " + hourPart;
   }
 
@@ -512,7 +504,7 @@ function getCouponRemainingLabel(target: string, now = new Date()) {
 
 function getOfferState(offer: ClubOffer, redemptions: CouponRedemption[], now = new Date()): OfferState {
   const hasUserRedemption = redemptions.some((item) => item.offerId === offer.id && item.userId === CURRENT_USER.id);
-  const endAtMs = safeParseDate(offer.endAt).getTime();
+  const endAtMs = parseSafeDate(offer.endAt).getTime();
   const ended = Number.isFinite(endAtMs) && endAtMs <= now.getTime();
   const soldOut = typeof offer.redeemedCount === "number" && typeof offer.redemptionLimit === "number" && offer.redeemedCount >= offer.redemptionLimit;
   const nearEnd = !ended && Number.isFinite(endAtMs) && endAtMs - now.getTime() <= 1000 * 60 * 60 * 48;
@@ -644,6 +636,31 @@ function buildSeededRedemptions(offers: ClubOffer[]): CouponRedemption[] {
   ];
 }
 
+function normalizeRedemption(raw: Partial<CouponRedemption> | Record<string, unknown>, offers: ClubOffer[]): CouponRedemption {
+  const record = raw as Partial<CouponRedemption> & Record<string, unknown>;
+  const offer = offers.find((item) => item.id === record.offerId);
+  return {
+    id: String(record.id ?? `redeem-${Math.random().toString(36).slice(2, 8)}`),
+    couponId: String(record.couponId ?? record.id ?? ""),
+    publicCode: typeof record.publicCode === "string" ? record.publicCode : undefined,
+    offerTitle: typeof record.offerTitle === "string" ? record.offerTitle : offer?.title,
+    qrValidationToken: typeof record.qrValidationToken === "string" ? record.qrValidationToken : undefined,
+    userId: String(record.userId ?? CURRENT_USER.id),
+    userName: String(record.userName ?? CURRENT_USER.fullName),
+    userEmail: String(record.userEmail ?? CURRENT_USER.email),
+    offerId: String(record.offerId ?? offer?.id ?? ""),
+    couponCode: String(record.couponCode ?? ""),
+    validationToken: String(record.validationToken ?? ""),
+    qrPayload: String(record.qrPayload ?? ""),
+    redeemedAt: parseSafeDate(record.redeemedAt).toISOString(),
+    validUntil: parseSafeDate(record.validUntil ?? offer?.endAt, Date.now() + 14 * 86400000).toISOString(),
+    status: record.status === "EXPIRADO" || record.status === "UTILIZADO" ? record.status : "ATIVO",
+    pdfReference: String(record.pdfReference ?? ""),
+    downloadCount: typeof record.downloadCount === "number" ? record.downloadCount : 0,
+    downloadedAt: record.downloadedAt ? parseSafeDate(record.downloadedAt).toISOString() : undefined
+  };
+}
+
 export function ClubaoBenefitsHub({
   initialOffers,
   initialRedemptions
@@ -651,9 +668,12 @@ export function ClubaoBenefitsHub({
   initialOffers?: ClubOffer[];
   initialRedemptions?: CouponRedemption[];
 }) {
-  const fallbackOffers = initialOffers && initialOffers.length > 0 ? initialOffers : buildOffers();
+  const fallbackOffers =
+    initialOffers && initialOffers.length > 0 ? initialOffers.map((offer) => normalizeOffer(offer)) : buildOffers();
   const fallbackRedemptions =
-    initialRedemptions && initialRedemptions.length > 0 ? initialRedemptions : buildSeededRedemptions(fallbackOffers);
+    initialRedemptions && initialRedemptions.length > 0
+      ? initialRedemptions.map((item) => normalizeRedemption(item, fallbackOffers))
+      : buildSeededRedemptions(fallbackOffers);
   const [offers] = useState<ClubOffer[]>(() => fallbackOffers);
   const [redemptions, setRedemptions] = useState<CouponRedemption[]>(() => fallbackRedemptions);
   const [selectedOfferId, setSelectedOfferId] = useState<string | null>(null);
@@ -902,7 +922,7 @@ export function ClubaoBenefitsHub({
               </div>
               <div className="clubao-offer-copy">
                 <strong>{offer.title}</strong>
-                <p>{offer.shortLabel}</p>
+                <p>{offer.subtitle || offer.shortLabel}</p>
                 <button type="button" className="clubao-card-action" onClick={() => setSelectedOfferId(offer.id)}>
                   Ver oferta
                 </button>
@@ -1025,6 +1045,7 @@ export function ClubaoBenefitsHub({
                 </span>
                 <small>{selectedOffer.partnerName}</small>
                 <h3>{selectedOffer.title}</h3>
+                {selectedOffer.subtitle ? <p className="clubao-detail-subtitle">{selectedOffer.subtitle}</p> : null}
                 <p>{selectedOffer.description}</p>
                 <div className="clubao-detail-pricing">
                   <article>

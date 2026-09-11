@@ -1,6 +1,7 @@
 import "server-only";
 
 import { dashboardSections, type MediaCardData, type SectionConfig, type SectionKey } from "@/lib/dashboard-data";
+import { parseSafeDate } from "@/lib/safe-date";
 import { getPlatformDb, isContentVisible } from "@/lib/platform-store";
 const __debugEmit = (hypothesisId: string, location: string, msg: string, data: Record<string, unknown> = {}) => {
   try {
@@ -93,12 +94,16 @@ function toLiveCard(live: LiveRecord): MediaCardData {
     accent: live.featured ? "orange" : "blue",
     image: live.image,
     cta: "Ver live",
+    href: `/detalhes/lives/${live.slug}`,
+    ctaHref: `/detalhes/lives/${live.slug}`,
     facts: live.facts,
     chips: live.chips
   };
 }
 
 function toCompanyCard(company: CompanyRecord): MediaCardData {
+  const coverImage = company.image || (Array.isArray(company.gallery) ? company.gallery[0] : "") || company.logo;
+
   return {
     eyebrow: `Categoria ${company.category}`,
     title: company.title,
@@ -106,9 +111,9 @@ function toCompanyCard(company: CompanyRecord): MediaCardData {
     meta: `${company.city} • ${company.type}`,
     badge: company.badge,
     accent: company.accent,
-    image: company.logo,
-    logo: company.logo,
-    coverFit: "contain",
+    image: coverImage,
+    logo: company.logo && company.logo !== coverImage ? company.logo : undefined,
+    coverFit: "cover",
     cta: "Ver empresa",
     href: `/detalhes/empresas/${company.slug}`,
     ctaHref: `/detalhes/empresas/${company.slug}`,
@@ -127,7 +132,9 @@ function toSupplierListCard(item: SupplierListRecord): MediaCardData {
     badge: item.badge,
     accent: "blue",
     image: item.image,
-    cta: "Abrir lista", href: `/detalhes/listas/${item.slug}`,
+    cta: "Abrir lista",
+    href: `/detalhes/listas/${item.slug}`,
+    ctaHref: `/detalhes/listas/${item.slug}`,
     facts: item.facts,
     chips: item.chips
   };
@@ -279,8 +286,8 @@ function toClubOfferClientCard(item: ClubOfferRecord): {
     discountLabel: String(item.discountLabel ?? "Benefício exclusivo"),
     originalPrice: typeof item.originalPrice === "string" && item.originalPrice ? item.originalPrice : undefined,
     discountedPrice: typeof item.discountedPrice === "string" && item.discountedPrice ? item.discountedPrice : undefined,
-    startAt: typeof startAtRaw === "string" && startAtRaw ? startAtRaw : defaults.startAt,
-    endAt: typeof endAtRaw === "string" && endAtRaw ? endAtRaw : defaults.endAt,
+    startAt: parseSafeDate(startAtRaw, Date.parse(defaults.startAt)).toISOString(),
+    endAt: parseSafeDate(endAtRaw, Date.parse(defaults.endAt)).toISOString(),
     validityLabel: String(item.validityLabel ?? "Conferir regulamento"),
     redemptionLimit: typeof item.redemptionLimit === "number" ? item.redemptionLimit : 9999,
     redeemedCount: typeof item.redeemedCount === "number" ? item.redeemedCount : 0,
@@ -559,9 +566,25 @@ export async function getPublishedSupplierListBySlug(slug: string): Promise<Supp
   const list = db.supplierLists.find((s) => s.slug === slug && isContentVisible(s));
   return list || null;
 }
+export async function getPublishedMentorships(): Promise<MentorshipRecord[]> {
+  const db = await getPlatformDb();
+  return Array.isArray(db.mentorships) ? db.mentorships.filter((item) => isContentVisible(item)) : [];
+}
+
 export async function getPublishedMentorshipBySlug(slug: string): Promise<MentorshipRecord | null> {
+  const mentorships = await getPublishedMentorships();
+  const decoded = decodeURIComponent(slug);
+  return mentorships.find((item) => item.slug === decoded || item.slug === slug || item.id === decoded) ?? null;
+}
+
+export async function getPublishedLiveBySlug(slug: string): Promise<LiveRecord | null> {
   const db = await getPlatformSnapshot();
-  if (!Array.isArray(db.mentorships)) return null;
-  const item = db.mentorships.find((s) => s.slug === slug && isContentVisible(s));
+  if (!Array.isArray(db.lives)) return null;
+  const decoded = decodeURIComponent(slug);
+  const item = db.lives.find(
+    (live) =>
+      (live.slug === decoded || live.slug === slug || live.id === decoded) &&
+      live.status !== "ARQUIVADO"
+  );
   return item || null;
 }

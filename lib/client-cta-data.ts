@@ -547,11 +547,11 @@ export const clientCtaPages: Record<SectionKey, ClientCtaPageConfig> = {
     layout: "perfil",
     ctaLabel: "Editar perfil",
     eyebrow: "Identidade do usuario",
-    title: "Uma pagina de perfil mais rica, bonita e com sensacao de status.",
-    description: "Depois do clique, o usuario entra em um perfil mais completo, com avatar, nivel, badge, pontuacao, conquistas, estatisticas e modulos de conta.",
+    title: "Uma pagina de perfil mais clara, com conta, atividade e segurança.",
+    description: "Depois do clique, o usuario entra em um perfil completo, com avatar, pontuacao, conquistas, estatisticas e modulos de conta.",
     heroImage: image("premium user profile page with avatar, achievements and stats, realistic"),
     metrics: [
-      { label: "Nivel", value: "7 Pro", detail: "Atual", tone: "green" },
+      { label: "Pontos", value: "4.820", detail: "No ciclo", tone: "green" },
       { label: "Pontos", value: "4.820", detail: "No ciclo", tone: "blue" },
       { label: "Conquistas", value: "14", detail: "Desbloqueadas", tone: "orange" },
       { label: "Ranking", value: "#27", detail: "Posicao", tone: "violet" }
@@ -563,8 +563,8 @@ export const clientCtaPages: Record<SectionKey, ClientCtaPageConfig> = {
     ],
     secondaryItems: [
       "Perfil nao e so cadastro: ele precisa mostrar identidade dentro da plataforma.",
-      "Nivel, badge e pontuacao ajudam muito na percepcao de valor.",
-      "Conta e evolucao precisam conviver bem nesta tela."
+      "Pontuacao e conquistas conectam a conta ao restante da plataforma.",
+      "Conta e atividade precisam conviver bem nesta tela."
     ]
   }
 };

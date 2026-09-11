@@ -3,8 +3,9 @@ import { LogoutButton } from "@/components/logout-button";
 import { ManagedMedia } from "@/components/managed-media";
 import { ClubaoBenefitsHub } from "@/components/clubao-benefits-hub";
 import { SpinWheelHub } from "@/components/spin-wheel-hub";
+import { UpcomingLivesPanel, mapUpcomingLives } from "@/components/upcoming-lives-panel";
 import { buildUserDashboardSections, getPlatformSnapshot, getPublishedProducts } from "@/lib/platform-content";
-import type { CouponRedemptionRecord, ProductRecord, SpinWheelRecord } from "@/lib/platform-types";
+import type { CouponRedemptionRecord, LiveRecord, ProductRecord, SpinWheelRecord } from "@/lib/platform-types";
 import {
   navGroups,
   sectionOrder,
@@ -34,21 +35,8 @@ try {
     } catch {}
   }
 } catch {}
-const __debugEmit = async (hyp: string, where: string, msg: string, extra?: Record<string, unknown>) => {
-  try {
-    await fetch(__dbgServerUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        session_id: __dbgSessionId,
-        ts: Date.now(),
-        hypothesis: hyp,
-        where,
-        message: msg,
-        extra: extra ?? {}
-      })
-    }).catch(() => {});
-  } catch {}
+const __debugEmit = async (_hyp: string, _where: string, _msg: string, _extra?: Record<string, unknown>) => {
+  return;
 };
 // #endregion
 
@@ -460,11 +448,17 @@ function productMatchesFilter(product: ProductRecord, selectedFilter: string) {
 function ProductCatalogPanel({
   selectedFilter,
   products,
-  filters
+  filters,
+  bannerImage,
+  bannerTitle,
+  bannerText
 }: {
   selectedFilter: string;
   products: ProductRecord[];
   filters: string[];
+  bannerImage?: string;
+  bannerTitle?: string;
+  bannerText?: string;
 }) {
   const filteredProducts =
     selectedFilter === "Todos"
@@ -473,6 +467,20 @@ function ProductCatalogPanel({
 
   return (
     <section className="product-browser-panel" id="catalogo-produtos">
+      <article className="product-catalog-banner">
+        <ManagedMedia
+          alt={bannerTitle || "Produtos em destaque"}
+          sizeLabel="1600 x 520"
+          src={bannerImage || "/images/produtos-hero-banner.svg"}
+          className="managed-media-fill"
+        />
+        <div className="product-catalog-banner-copy">
+          <span>Vitrine de afiliação</span>
+          <strong>{bannerTitle || "Produtos para você vender agora"}</strong>
+          <p>{bannerText || "Escolha um item, abra o detalhe e libere seu link de divulgação."}</p>
+        </div>
+      </article>
+
       <div className="product-browser-head">
         <div>
           <p>Catálogo completo</p>
@@ -565,7 +573,7 @@ function HomeLayout({ section }: { section: SectionConfig }) {
           <ManagedMedia alt="Felipe" sizeLabel="512 x 512" className="managed-media-avatar" />
           <div>
             <strong>Felipe</strong>
-            <span>Nível 7 • Pro</span>
+            <span>Membro Pro</span>
           </div>
         </div>
       </div>
@@ -612,7 +620,15 @@ function HomeLayout({ section }: { section: SectionConfig }) {
   );
 }
 
-function LivesLayout({ section }: { section: SectionConfig }) {
+function LivesLayout({
+  section,
+  upcomingLives = []
+}: {
+  section: SectionConfig;
+  upcomingLives?: ReturnType<typeof mapUpcomingLives>;
+}) {
+  const featuredLive = section.cards.find((card) => card.ctaHref) ?? section.cards[0];
+
   return (
     <>
       <section className="live-stage">
@@ -632,6 +648,11 @@ function LivesLayout({ section }: { section: SectionConfig }) {
               <span key={filter}>{filter}</span>
             ))}
           </div>
+          {featuredLive?.ctaHref ? (
+            <Link href={featuredLive.ctaHref} className="hero-link-button">
+              Ver live agora
+            </Link>
+          ) : null}
         </div>
       </section>
       <MetricsStrip section={section} className="metrics-grid-tight" />
@@ -643,17 +664,7 @@ function LivesLayout({ section }: { section: SectionConfig }) {
         </div>
         <div className="timeline-panel">
           <SectionHeader eyebrow="Programação" title="Próximas Lives" description={section.heroNotice} />
-          <div className="timeline-list">
-            {section.feed.map((item) => (
-              <article key={item.title} className="timeline-item">
-                <div className="timeline-time">{item.title}</div>
-                <div className="timeline-card">
-                  <strong>{item.detail}</strong>
-                  <span>{item.meta}</span>
-                </div>
-              </article>
-            ))}
-          </div>
+          <UpcomingLivesPanel lives={upcomingLives} fallback={section.feed} />
         </div>
         <aside className="stack-panels">
           <InsightPanel section={section} />
@@ -692,7 +703,14 @@ function ProdutosLayout({
         </aside>
         <div className="product-showcase">
           <MetricsStrip section={section} className="metrics-grid-double" />
-          <ProductCatalogPanel selectedFilter={selectedFilter} products={catalogProducts} filters={availableFilters} />
+          <ProductCatalogPanel
+            selectedFilter={selectedFilter}
+            products={catalogProducts}
+            filters={availableFilters}
+            bannerImage={catalogProducts[0]?.image || "/images/produtos-hero-banner.svg"}
+            bannerTitle={section.title}
+            bannerText={section.description}
+          />
           <SystemPanel section={section} />
         </div>
       </section>
@@ -943,78 +961,23 @@ function ListasLayout({ section }: { section: SectionConfig }) {
           <span className="hero-tag">{section.heroTag}</span>
           <h2>{section.title}</h2>
           <p>{section.description}</p>
-          <div className="hero-notice">{section.heroNotice}</div>
-          <div className="hero-actions">
-            <Link href={section.heroActionHref} className="hero-link-button">
-              {section.heroActionLabel}
-            </Link>
-          </div>
-          <div className="tag-cloud product-tag-cloud">
-            {section.filters.map((filter) => (
-              <span key={filter}>{filter}</span>
-            ))}
-          </div>
         </div>
       </section>
 
       <section className="layout-listas">
-        <div className="listas-main">
-          <section className="listas-table-panel">
-            <div className="listas-table-header">
-              <span>Ícone</span>
-              <span>Informação</span>
-              <span>Meta Dados</span>
-              <span>Status</span>
-              <span className="text-right">Ação</span>
-            </div>
-            <div className="listas-table-body">
-              {section.cards.map((card) => (
-                <article key={card.title} className="listas-table-row">
-                  <div className="listas-item-icon">
-                    <Icon name="list" />
-                  </div>
-                  <div className="listas-item-info">
-                    <h4>{card.title}</h4>
-                    <p>{card.subtitle}</p>
-                  </div>
-                  <div className="listas-item-meta">
-                    {card.meta}
-                  </div>
-                  <div className="listas-item-status">
-                    <span className="status-active">{card.badge || "Ativo"}</span>
-                  </div>
-                  <div className="listas-item-action">
-                    <Link href={section.heroActionHref} className="btn-list-action">
-                      <Icon name="chevron-right" />
-                    </Link>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          <section className="listas-ledger-panel">
-            <div className="listas-ledger-head">
-              <span>Operação</span>
-              <span>Leitura de Dados</span>
-              <span>Meta</span>
-            </div>
-            <div className="listas-ledger-body">
-              {section.feed.map((item) => (
-                <article key={item.title} className="listas-ledger-row">
-                  <strong>{item.title}</strong>
-                  <p>{item.detail}</p>
-                  <span>{item.meta}</span>
-                </article>
-              ))}
-            </div>
-          </section>
+        <div className="cards-grid cards-grid-three listas-card-grid" data-section="listas">
+          {section.cards.map((card) => (
+            <MediaCard
+              key={card.title}
+              card={{
+                ...card,
+                cta: card.cta || "Abrir lista",
+                href: card.href,
+                ctaHref: card.ctaHref ?? card.href
+              }}
+            />
+          ))}
         </div>
-
-        <aside className="stack-panels">
-          <InsightPanel section={section} />
-          <SystemPanel section={section} />
-        </aside>
       </section>
     </>
   );
@@ -1053,17 +1016,17 @@ function IndicacoesLayout({ section }: { section: SectionConfig }) {
       <section className="layout-indicacoes">
         <div className="indicacoes-main">
           <SectionHeader eyebrow={section.eyebrow} title={section.spotlightTitle} description={section.spotlightDescription} />
-          <div className="cards-grid cards-grid-two">
+          <div className="cards-grid cards-grid-three">
             {section.cards.map((card) => (
               <MediaCard key={card.title} card={card} />
             ))}
           </div>
         </div>
-        <aside className="stack-panels">
+        <div className="indicacoes-support">
           <FeedPanel section={section} />
           <InsightPanel section={section} />
           <SystemPanel section={section} />
-        </aside>
+        </div>
       </section>
     </>
   );
@@ -2469,7 +2432,7 @@ function PerfilLayout({ section }: { section: SectionConfig }) {
               </div>
               <div className="profile-identity-copy">
                 <span className="profile-identity-kicker">{section.heroTag}</span>
-                <h3>{section.title}</h3>
+                <h3>Felipe</h3>
                 <p>{section.description}</p>
               </div>
             </div>
@@ -2495,7 +2458,7 @@ function PerfilLayout({ section }: { section: SectionConfig }) {
               <Link href={section.heroActionHref} className="hero-link-button">
                 {section.heroActionLabel}
               </Link>
-              <span className="profile-level-pill">Status premium ativo</span>
+              <span className="profile-level-pill">Conta ativa</span>
             </div>
           </article>
 
@@ -2535,16 +2498,22 @@ function PerfilLayout({ section }: { section: SectionConfig }) {
           </aside>
         </div>
 
-        <div className="profile-detail-grid">
-          <MediaCard key={accountCard.title} card={{ ...accountCard, coverFit: "contain", ctaHref: accountCard.ctaHref ?? section.heroActionHref }} />
-          <MediaCard key={statsCard.title} card={{ ...statsCard, coverFit: "contain", ctaHref: statsCard.ctaHref ?? section.heroActionHref }} />
-          <MediaCard key={securityCard.title} card={{ ...securityCard, coverFit: "contain", ctaHref: securityCard.ctaHref ?? section.heroActionHref }} />
-        </div>
-
-        <div className="profile-support-grid">
-          <FeedPanel section={section} />
-          <InsightPanel section={section} />
-          <SystemPanel section={section} />
+        <div className="profile-modules-grid">
+          {[accountCard, statsCard, securityCard].map((card) => (
+            <article key={card.title} className="profile-module-card">
+              <span>{card.badge}</span>
+              <h3>{card.title}</h3>
+              <p>{card.subtitle}</p>
+              <ul className="profile-module-list">
+                {card.facts.map((fact) => (
+                  <li key={fact}>{fact}</li>
+                ))}
+              </ul>
+              <Link href={card.ctaHref ?? section.heroActionHref} className="media-card-button">
+                {card.cta}
+              </Link>
+            </article>
+          ))}
         </div>
       </section>
     </>
@@ -2562,13 +2531,14 @@ function renderSectionLayout(
     clubOffers?: any[];
     couponRedemptions?: CouponRedemptionRecord[];
     spinWheels?: SpinWheelRecord[];
+    upcomingLives?: ReturnType<typeof mapUpcomingLives>;
   }
 ) {
   switch (sectionKey) {
     case "home":
       return <HomeLayout section={section} />;
     case "lives":
-      return <LivesLayout section={section} />;
+      return <LivesLayout section={section} upcomingLives={options?.upcomingLives ?? []} />;
     case "produtos":
       return (
         <ProdutosLayout
@@ -2705,6 +2675,10 @@ export async function Dashboard({
   const spinWheelsSafe = Array.isArray((snapshot as any)?.spinWheels)
     ? (snapshot as any).spinWheels.filter((wheel: any) => wheel?.status === "PUBLICADO")
     : [];
+  const publishedLivesSafe = Array.isArray((snapshot as any)?.lives)
+    ? ((snapshot as any).lives as LiveRecord[]).filter((live) => live?.status === "PUBLICADO" || live?.status === "AGENDADO")
+    : [];
+  const upcomingLivesSafe = mapUpcomingLives(publishedLivesSafe, publishedProductsSafe);
 
   // #region debug-point D:E:dashboard-layout-start
   void __debugEmit("D", "components/dashboard.tsx:Dashboard:layout:start", "Iniciando render do layout", {
@@ -2726,19 +2700,13 @@ export async function Dashboard({
           </div>
         </div>
 
-        <div className="workspace-card">
-          <div className="workspace-avatar">F</div>
-          <div className="workspace-copy">
-            <strong>Meu espaço</strong>
-            <span>Membro Pro</span>
-          </div>
-        </div>
-
         {navGroups.map((group) => (
           <div key={group.label} className="sidebar-group">
             <span className="sidebar-label">{group.label}</span>
             <nav className="sidebar-nav" aria-label={group.label}>
-              {group.items.map((item) => {
+              {group.items
+                .filter((item) => item.key !== "ranking")
+                .map((item) => {
                 const itemHref = item.key === "home" ? "/" : "/" + String(item.key);
                 const itemClasses =
                   "nav-item" + (item.key === sectionKey ? " is-active" : "");
@@ -2769,6 +2737,9 @@ export async function Dashboard({
           <div>
             <p className="breadcrumb">FG EXACTA / {section.label.toUpperCase()}</p>
             <h1>{section.label}</h1>
+            {sectionKey === "clubao" ? (
+              <p className="topbar-subtitle">{section.description}</p>
+            ) : null}
           </div>
           <div className="topbar-actions">
             <label className="search-field" htmlFor="global-search">
@@ -2791,7 +2762,8 @@ export async function Dashboard({
           catalogProducts: publishedProductsSafe,
           clubOffers: clubOffersSafe,
           couponRedemptions: couponRedemptionsSafe,
-          spinWheels: spinWheelsSafe
+          spinWheels: spinWheelsSafe,
+          upcomingLives: upcomingLivesSafe
         })}
 
         <footer className="content-footer">

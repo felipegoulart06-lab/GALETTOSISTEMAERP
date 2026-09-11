@@ -2,6 +2,7 @@ import "server-only";
 
 import { NextRequest, NextResponse } from "next/server";
 import { getPlatformDb, savePlatformDb } from "@/lib/platform-store";
+import { formatPtDateTime } from "@/lib/safe-date";
 
 export const dynamic = "force-dynamic";
 
@@ -28,20 +29,8 @@ function buildVoucherHtml(params: {
     offerImage
   } = params;
 
-  const redeemedLabel = new Date(redeemedAt).toLocaleString("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-  const validLabel = new Date(validUntil).toLocaleString("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
+  const redeemedLabel = formatPtDateTime(redeemedAt);
+  const validLabel = formatPtDateTime(validUntil);
 
   return `<!doctype html>
 <html lang="pt-BR">

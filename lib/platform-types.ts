@@ -142,6 +142,7 @@ export interface LiveRecord extends BaseManagedEntity {
   kind: "live";
   presenterName: string;
   presenterAvatar: string;
+  provider?: "internal" | "tiktok";
   guests: string[];
   scheduledDate: string;
   scheduledTime: string;

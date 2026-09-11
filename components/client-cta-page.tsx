@@ -1,10 +1,13 @@
 import Link from "next/link";
 import { ClientShell } from "@/components/client-shell";
 import { ManagedMedia } from "@/components/managed-media";
+import { MentorshipCatalogPage } from "@/components/mentorship-catalog-page";
 import { clientCtaPages } from "@/lib/client-cta-data";
 import { dashboardSections, type SectionKey } from "@/lib/dashboard-data";
 import { productCatalog } from "@/lib/product-catalog";
 import { companyCatalog } from "@/lib/company-catalog";
+import { getPublishedMentorships } from "@/lib/platform-content";
+import type { MentorshipRecord } from "@/lib/platform-types";
 
 function CtaMetricStrip({ sectionKey }: { sectionKey: SectionKey }) {
   const page = clientCtaPages[sectionKey];
@@ -211,39 +214,14 @@ function ProdutosDetail({ sectionKey }: { sectionKey: SectionKey }) {
   );
 }
 
-function MentoriasDetail({ sectionKey }: { sectionKey: SectionKey }) {
-  const page = clientCtaPages[sectionKey];
-  return (
-    <>
-      <section className="cta-library-hero">
-        <ManagedMedia alt={page.title} sizeLabel="1600 x 720" className="managed-media-fill" />
-        <div className="cta-library-copy">
-          <span>{page.eyebrow}</span>
-          <h2>{page.title}</h2>
-          <p>{page.description}</p>
-        </div>
-      </section>
-      <CtaMetricStrip sectionKey={sectionKey} />
-      <section className="cta-course-list">
-        {page.primaryCards.map((item) => (
-          <VisualCard key={item.title} {...item} />
-        ))}
-      </section>
-      <section className="cta-bottom-double">
-        <div className="cta-module-list">
-          <p>Módulos visíveis</p>
-          <h3>Progressão e próximos passos</h3>
-          <ul className="cta-note-list">
-            <li>Módulo 1 — Fundamentos</li>
-            <li>Aula 1 e Aula 2 concluídas</li>
-            <li>Aula 3 em andamento</li>
-            <li>Conclusão libera pontos e missão</li>
-          </ul>
-        </div>
-        <SideNotes sectionKey={sectionKey} />
-      </section>
-    </>
-  );
+function MentoriasDetail({
+  mentorships,
+  selectedFilter
+}: {
+  mentorships: MentorshipRecord[];
+  selectedFilter?: string;
+}) {
+  return <MentorshipCatalogPage mentorships={mentorships} selectedFilter={selectedFilter} />;
 }
 
 function MosaicDetail({ sectionKey }: { sectionKey: SectionKey }) {
@@ -299,7 +277,6 @@ function DirectoryDetail({ sectionKey }: { sectionKey: SectionKey }) {
             image={company.logo}
             href={`/detalhes/empresas/${company.slug}`}
             ctaLabel="Ver empresa"
-            fitContain
             actionClassName="company-visual-action"
           />
         ))}
@@ -645,7 +622,11 @@ function ProfileDetail({ sectionKey }: { sectionKey: SectionKey }) {
   );
 }
 
-function renderDetail(sectionKey: SectionKey) {
+function renderDetail(
+  sectionKey: SectionKey,
+  mentorships: MentorshipRecord[] = [],
+  selectedFilter?: string
+) {
   const layout = clientCtaPages[sectionKey].layout;
 
   switch (layout) {
@@ -656,7 +637,7 @@ function renderDetail(sectionKey: SectionKey) {
     case "produtos":
       return <ProdutosDetail sectionKey={sectionKey} />;
     case "mentorias":
-      return <MentoriasDetail sectionKey={sectionKey} />;
+      return <MentoriasDetail mentorships={mentorships} selectedFilter={selectedFilter} />;
     case "clubao":
       return <MosaicDetail sectionKey={sectionKey} />;
     case "empresas":
@@ -685,16 +666,23 @@ function renderDetail(sectionKey: SectionKey) {
   }
 }
 
-export function ClientCtaPage({ sectionKey }: { sectionKey: SectionKey }) {
+export async function ClientCtaPage({
+  sectionKey,
+  selectedFilter
+}: {
+  sectionKey: SectionKey;
+  selectedFilter?: string;
+}) {
   const page = clientCtaPages[sectionKey];
+  const mentorships = sectionKey === "mentorias" ? await getPublishedMentorships() : [];
 
   return (
     <ClientShell
       activeSection={sectionKey}
-      title={page.ctaLabel}
-      breadcrumb={`FG EXACTA / ${page.sectionKey.toUpperCase()} / ${page.ctaLabel.toUpperCase()}`}
+      title={sectionKey === "mentorias" ? "Biblioteca de mentorias" : page.ctaLabel}
+      breadcrumb={`FG EXACTA / ${page.sectionKey.toUpperCase()} / ${sectionKey === "mentorias" ? "BIBLIOTECA" : page.ctaLabel.toUpperCase()}`}
     >
-      {renderDetail(sectionKey)}
+      {renderDetail(sectionKey, mentorships, selectedFilter)}
     </ClientShell>
   );
 }

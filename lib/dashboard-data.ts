@@ -181,7 +181,7 @@ const companyCard = (
   badge: company.badge,
   accent: company.accent,
   image: company.logo,
-  coverFit: "contain",
+  coverFit: "cover",
   cta: "Ver empresa",
   href: `/detalhes/empresas/${company.slug}`,
   ctaHref: `/detalhes/empresas/${company.slug}`,
@@ -275,6 +275,8 @@ const supplierListCard = (list: (typeof supplierListCatalog)[number]): MediaCard
   accent: "blue",
   image: image(list.prompt),
   cta: "Ver lista",
+  href: `/detalhes/listas`,
+  ctaHref: `/detalhes/listas`,
   facts: list.facts,
   chips: list.chips
 });
@@ -295,7 +297,7 @@ export const navGroups: NavGroup[] = [
       { key: "sorteios", label: "Sorteios", icon: "gift" },
       { key: "oportunidades", label: "Oportunidades", icon: "rocket" },
       { key: "campanhas", label: "Campanhas", icon: "megaphone" }
-    ])
+    ]).filter((item) => item.key !== "ranking")
   },
   {
     label: "Seus resultados",
@@ -313,7 +315,9 @@ export const navGroups: NavGroup[] = [
   }
 ];
 
-export const sectionOrder: SectionKey[] = navGroups.flatMap((group) => group.items.map((item) => item.key));
+export const sectionOrder: SectionKey[] = navGroups
+  .flatMap((group) => group.items.map((item) => item.key))
+  .filter((key) => key !== "ranking");
 
 const commonSystemPoints = [
   "A arquitetura da área do cliente segue o ciclo Descobrir → Aprender → Executar → Ganhar → Evoluir.",
@@ -740,7 +744,7 @@ export const dashboardSections: Record<SectionKey, SectionConfig> = {
     label: "Clubão",
     eyebrow: "Clube exclusivo",
     title: "Bem-vindo ao Clubão",
-    description: "Ofertas, descontos e vantagens exclusivas, com cara de clube premium e não de simples catálogo.",
+    description: "Ofertas, descontos e vantagens exclusivas para membros.",
     heroTag: "Benefícios e acesso",
     heroNotice: "Ofertas encerradas não desaparecem: elas mudam de estado para manter histórico e evitar links quebrados.",
     heroImage: "/images/clubao-hero-real.jpg",
@@ -2187,11 +2191,11 @@ export const dashboardSections: Record<SectionKey, SectionConfig> = {
   perfil: {
     key: "perfil",
     label: "Meu perfil",
-    eyebrow: "Conta e evolução",
-    title: "Felipe — Nível 7 Pro",
-    description: "O perfil reúne avatar, badge, pontuação, conquistas, estatísticas, dados pessoais, preferências e segurança.",
-    heroTag: "⭐ 4.820 pontos • 🏆 14 conquistas",
-    heroNotice: "O perfil mostra quem o usuário é dentro da plataforma, e não apenas seus dados cadastrais.",
+    eyebrow: "Conta",
+    title: "Felipe",
+    description: "Dados pessoais, preferências, segurança e o resumo da sua atividade na plataforma.",
+    heroTag: "4.820 pontos • 14 conquistas",
+    heroNotice: "Mantenha seus dados atualizados para receber oportunidades, pagamentos e comunicações.",
     heroImage: "/images/perfil-hero-real-v2.jpg",
     heroActionLabel: "Editar perfil",
     heroActionHref: "/detalhes/perfil",
@@ -2201,8 +2205,8 @@ export const dashboardSections: Record<SectionKey, SectionConfig> = {
       { label: "Missões", value: "14", detail: "Concluídas", tone: "violet" },
       { label: "Ranking", value: "27", detail: "Posição atual", tone: "orange" }
     ],
-    spotlightTitle: "Meu perfil em camadas",
-    spotlightDescription: "Cabeçalho com nível e conquistas, estatísticas, dados pessoais, preferências e segurança.",
+    spotlightTitle: "Sua conta",
+    spotlightDescription: "Cadastro, estatísticas, preferências e proteção da conta em um só lugar.",
     filters: ["Dados pessoais", "Foto", "Preferências", "Segurança", "Sessões", "Dispositivos"],
     cards: [
       card(
@@ -2221,7 +2225,7 @@ export const dashboardSections: Record<SectionKey, SectionConfig> = {
         "Estatísticas",
         "Produtos afiliados e posição no ranking",
         "Missões concluídas e desempenho geral",
-        "Perfil também mostra resultado e evolução",
+        "Resumo da sua atividade recente",
         "Progresso",
         "green",
         "user progress profile statistics card, realistic dashboard visual",
@@ -2244,20 +2248,20 @@ export const dashboardSections: Record<SectionKey, SectionConfig> = {
     ],
     feedTitle: "Leitura do perfil",
     feed: [
-      { title: "Badge e nível", detail: "Ajudam a comunicar evolução e status.", meta: "Identidade" },
+      { title: "Identidade", detail: "Nome, foto e dados de contato visíveis na plataforma.", meta: "Conta" },
       { title: "Pontuação", detail: "Conecta com ranking e recompensas.", meta: "Gamificação" },
-      { title: "Segurança", detail: "Mostra cuidado com a conta e crescimento futuro do sistema.", meta: "Conta" }
+      { title: "Segurança", detail: "Senha, sessões e dispositivos da conta.", meta: "Conta" }
     ],
     insightTitle: "Leituras rápidas",
     insights: [
-      { label: "Nível", value: "7 Pro", tone: "green" },
       { label: "Pontos", value: "4.820", tone: "blue" },
       { label: "Conquistas", value: "14", tone: "orange" },
-      { label: "Conexão", value: "Ranking e recompensas", tone: "violet" }
+      { label: "Ranking", value: "27º", tone: "green" },
+      { label: "Plano", value: "Pro", tone: "violet" }
     ],
     systemTitle: "Arquitetura do Perfil",
     systemPoints: [
-      "Perfil é mais do que cadastro: ele mostra identidade, evolução e status do usuário na plataforma.",
+      "Perfil concentra cadastro, atividade e segurança da conta.",
       "Cabeçalho, estatísticas e segurança devem conviver com clareza.",
       "A experiência de conta precisa fechar o ciclo de pertencimento.",
       ...commonSystemPoints

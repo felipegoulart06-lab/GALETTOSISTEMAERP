@@ -31,11 +31,14 @@ export function generateStaticParams() {
 }
 
 export default async function ClientDetailPage({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ section: string }>;
+  searchParams: Promise<{ categoria?: string }>;
 }) {
   const { section } = await params;
+  const { categoria } = await searchParams;
 
   const inSectionOrder = sectionOrder.includes(section as SectionKey);
   const hasCtaPage = !!clientCtaPages[section as SectionKey];
@@ -44,12 +47,12 @@ export default async function ClientDetailPage({
   
   // #endregion
 
-  if (!inSectionOrder || !hasCtaPage) {
+  if (section === "ranking" || !inSectionOrder || !hasCtaPage) {
     // #region debug-point D:detalhes-notfound
     
     // #endregion
     notFound();
   }
 
-  return <ClientCtaPage sectionKey={section as SectionKey} />;
+  return <ClientCtaPage sectionKey={section as SectionKey} selectedFilter={categoria} />;
 }

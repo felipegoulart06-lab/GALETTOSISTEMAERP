@@ -62,7 +62,7 @@ function createBaseEntity<T extends { title: string; subtitle: string; shortDesc
     updatedByUserId: adminMasterId,
     publishedAt: payload.status === "PUBLICADO" || !payload.status ? now : undefined,
     publishedByUserId: payload.status === "PUBLICADO" || !payload.status ? adminMasterId : undefined,
-    startAt: payload.startAt,
+    startAt: payload.startAt ?? now,
     endAt: payload.endAt
   };
 }
@@ -649,6 +649,13 @@ const seededMentorships: MentorshipRecord[] = [
 ];
 
 const liveCards = dashboardSections.lives.cards;
+const internalLiveVideos = [
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4"
+];
 const seededLives: LiveRecord[] = [
   ...liveCards.map((card, index) => ({
     ...createBaseEntity("live", index + 1, {
@@ -660,19 +667,20 @@ const seededLives: LiveRecord[] = [
       category: card.eyebrow.replace("Categoria ", ""),
       tags: card.chips,
       featured: index === 0,
-      status: index === 0 ? "PUBLICADO" : index < 3 ? "AGENDADO" : "PUBLICADO"
+      status: "PUBLICADO"
     }),
     kind: "live" as const,
     presenterName: index % 2 === 0 ? "Filipe Galetto" : "Felipe Goulart",
     presenterAvatar: adminAvatars[index % adminAvatars.length],
+    provider: "internal" as const,
     guests: index % 2 === 0 ? ["Convidado comercial", "Parceiro da campanha"] : ["Mentor convidado"],
     scheduledDate: `2026-09-${String(9 + index).padStart(2, "0")}`,
     scheduledTime: `${String(19 + (index % 3)).padStart(2, "0")}:00`,
     duration: "01h15",
-    transmissionLink: `https://fgexacta.com/live/${index + 1}`,
-    recordingUrl: index < 2 ? undefined : `https://fgexacta.com/gravações/live-${index + 1}`,
+    transmissionLink: internalLiveVideos[index % internalLiveVideos.length],
+    recordingUrl: internalLiveVideos[index % internalLiveVideos.length],
     heroCtaLabel: "Assistir live",
-    heroCtaHref: "/lives",
+    heroCtaHref: `/detalhes/lives/${createSlug(`${card.title}-${index + 1}`)}`,
     materials: ["Roteiro da live", "Banner da transmissão"],
     relatedProductIds: seededProducts.slice(index, index + 2).map((product) => product.id),
     facts: card.facts,
@@ -693,13 +701,15 @@ const seededLives: LiveRecord[] = [
     kind: "live" as const,
     presenterName: "Felipe Goulart",
     presenterAvatar: "/images/admin-felipe-goulart-02-v1.jpg",
+    provider: "internal" as const,
     guests: ["Parceiro Clubão"],
     scheduledDate: "2026-09-20",
     scheduledTime: "20:30",
     duration: "01h00",
-    transmissionLink: "https://fgexacta.com/live/especial-clubao",
+    transmissionLink: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    recordingUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
     heroCtaLabel: "Assistir live",
-    heroCtaHref: "/lives",
+    heroCtaHref: `/detalhes/lives/${createSlug("Live especial de Clubão e benefícios-6")}`,
     materials: ["Checklist de benefícios", "Banner premium"],
     relatedProductIds: [seededProducts[0].id, seededProducts[1].id],
     facts: ["Relação com Clubão", "Retenção", "Conversão"],

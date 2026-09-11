@@ -193,19 +193,13 @@ export function ClientShell({
           </div>
         </div>
 
-        <div className="workspace-card">
-          <div className="workspace-avatar">F</div>
-          <div className="workspace-copy">
-            <strong>Meu espaço</strong>
-            <span>Membro Pro</span>
-          </div>
-        </div>
-
         {navGroups.map((group) => (
           <div key={group.label} className="sidebar-group">
             <span className="sidebar-label">{group.label}</span>
             <nav className="sidebar-nav" aria-label={group.label}>
-              {group.items.map((item) => (
+              {group.items
+                .filter((item) => item.key !== "ranking")
+                .map((item) => (
                 <Link
                   key={item.key}
                   href={item.key === "home" ? "/" : `/${item.key}`}

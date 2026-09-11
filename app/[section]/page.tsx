@@ -23,6 +23,10 @@ export default async function SectionPage({
     redirect("/produtos");
   }
 
+  if (section === "ranking") {
+    notFound();
+  }
+
   if (!sectionOrder.includes(section as SectionKey) || section === "home") {
     notFound();
   }

@@ -111,7 +111,6 @@ export const adminNavGroups: AdminNavGroup[] = [
       { key: "clubao", label: "Clubao", icon: "gift" },
       { key: "divulgue", label: "Divulgue", icon: "share" },
       { key: "missoes", label: "Missoes", icon: "target" },
-      { key: "ranking", label: "Ranking", icon: "trophy" },
       { key: "recompensas", label: "Recompensas", icon: "sparkles" }
     ]
   },
