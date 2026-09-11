@@ -1,31 +1,66 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 import { Icon } from "@/components/ui-icon";
-import type { SpinWheelRecord, SpinRewardRecord } from "@/lib/platform-types";
 import type { SectionConfig } from "@/lib/dashboard-data";
+import type { SpinRewardRecord, SpinWheelRecord } from "@/lib/platform-types";
 
 interface SpinWheelHubProps {
   initialWheels: SpinWheelRecord[];
   section: SectionConfig;
 }
 
-export function SpinWheelHub({ initialWheels, section }: SpinWheelHubProps) {
+const WHEEL_TONES = ["#163a6b", "#1e4d8c", "#0f2748", "#2563eb", "#12233f", "#3b82f6"];
+
+function formatSpinDate(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
+function shortRewardLabel(title: string) {
+  const clean = title.replace(/\s+/g, " ").trim();
+  return clean.length > 18 ? `${clean.slice(0, 16)}…` : clean;
+}
+
+function wheelGradient(rewards: SpinRewardRecord[]) {
+  const count = Math.max(rewards.length, 1);
+  const slice = 360 / count;
+  return rewards
+    .map((_, index) => {
+      const color = WHEEL_TONES[index % WHEEL_TONES.length];
+      return `${color} ${index * slice}deg ${(index + 1) * slice}deg`;
+    })
+    .join(", ");
+}
+
+export function SpinWheelHub({ initialWheels }: SpinWheelHubProps) {
   const [wheels, setWheels] = useState<SpinWheelRecord[]>(initialWheels);
   const [activeWheelIndex, setActiveWheelIndex] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [resultReward, setResultReward] = useState<SpinRewardRecord | null>(null);
+  const [rewardCode, setRewardCode] = useState("");
   const [showCelebration, setShowCelebration] = useState(false);
-  
-  const activeWheel = wheels[activeWheelIndex];
+  const [highlightedRewardId, setHighlightedRewardId] = useState<string | null>(null);
   const wheelRef = useRef<HTMLDivElement>(null);
 
+  const activeWheel = wheels[activeWheelIndex];
+  const rewards = activeWheel?.rewards ?? [];
+  const sliceAngle = rewards.length ? 360 / rewards.length : 360;
+  const canSpin = Boolean(activeWheel && !isSpinning && activeWheel.availableSpins > 0);
+
   const handleSpin = async () => {
-    if (isSpinning || !activeWheel || activeWheel.availableSpins <= 0) return;
+    if (!canSpin || !activeWheel) return;
 
     setIsSpinning(true);
     setResultReward(null);
+    setShowCelebration(false);
 
     try {
       const response = await fetch("/api/giro-da-sorte/spin", {
@@ -33,29 +68,34 @@ export function SpinWheelHub({ initialWheels, section }: SpinWheelHubProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ wheelId: activeWheel.id })
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || "Erro ao processar giro");
       }
-      
-      const { reward, angle, availableSpins } = data;
-      
-      // A rotação total inclui voltas extras para o efeito visual
-      const totalRotation = 360 * 8 + angle;
-      setRotation(prev => prev + totalRotation);
 
-      setTimeout(() => {
+      const { reward, angle, availableSpins } = data as {
+        reward: SpinRewardRecord;
+        angle: number;
+        availableSpins: number;
+        rewardCode?: string;
+      };
+
+      const totalRotation = 360 * 8 + angle;
+      setRotation((prev) => prev + totalRotation);
+
+      window.setTimeout(() => {
         setIsSpinning(false);
         setResultReward(reward);
+        setRewardCode(data.rewardCode || reward.internalCode || "");
+        setHighlightedRewardId(reward.id);
         setShowCelebration(true);
-        
-        // Atualiza estado local com os dados vindos do servidor
+
         const updatedWheels = [...wheels];
         updatedWheels[activeWheelIndex] = {
           ...activeWheel,
-          availableSpins: availableSpins,
+          availableSpins,
           totalPrizesWon: activeWheel.totalPrizesWon + 1,
           history: [
             {
@@ -66,7 +106,7 @@ export function SpinWheelHub({ initialWheels, section }: SpinWheelHubProps) {
               resultLabel: "GANHOU",
               rewardTitle: reward.title,
               status: "ATIVO",
-              internalCode: data.rewardCode,
+              internalCode: data.rewardCode || reward.internalCode,
               playedAt: new Date().toISOString()
             },
             ...(activeWheel.history || [])
@@ -74,7 +114,6 @@ export function SpinWheelHub({ initialWheels, section }: SpinWheelHubProps) {
         };
         setWheels(updatedWheels);
       }, 5000);
-
     } catch (error) {
       console.error("Erro ao girar:", error);
       alert(error instanceof Error ? error.message : "Erro ao girar a roleta");
@@ -82,184 +121,250 @@ export function SpinWheelHub({ initialWheels, section }: SpinWheelHubProps) {
     }
   };
 
-  if (!activeWheel) return null;
+  if (!activeWheel) {
+    return (
+      <div className="giro-empty">
+        <span>Operação</span>
+        <strong>Nenhuma roleta publicada</strong>
+        <p>Quando o Admin Master publicar um giro, ele aparece aqui para você girar.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="layout-giro-da-sorte">
-      {/* HERO PREMIUM */}
-      <section className="giro-hero">
-        <div className="giro-hero-content">
-          <span className="giro-hero-badge">{activeWheel.wheelType}</span>
+    <div className="giro-hub">
+      <section className={`giro-arena${isSpinning ? " is-spinning" : ""}`}>
+        <div className="giro-arena-copy">
+          <span className="giro-kicker">{activeWheel.wheelType}</span>
           <h1>{activeWheel.title}</h1>
-          <p>{activeWheel.shortDescription || "Sua sorte está a um giro de distância. Participe agora e conquiste recompensas exclusivas do ecossistema FG EXACTA."}</p>
-          
-          <div className="giro-hero-actions">
-            <div className="spin-counter-card">
-              <span className="spin-counter-label">Giros Disponíveis</span>
-              <span className="spin-counter-value">{activeWheel.availableSpins}</span>
+          <p>
+            {activeWheel.shortDescription ||
+              "Sua sorte está a um giro de distância. Participe agora e conquiste recompensas do ecossistema FG EXACTA."}
+          </p>
+
+          <dl className="giro-meta-row">
+            <div>
+              <dt>Frequência</dt>
+              <dd>{activeWheel.spinFrequency}</dd>
             </div>
-            <button 
-              className={`hero-link-button ${isSpinning || activeWheel.availableSpins <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+            <div>
+              <dt>Regra</dt>
+              <dd>{activeWheel.releaseRule}</dd>
+            </div>
+            <div>
+              <dt>Público</dt>
+              <dd>{activeWheel.audienceRule}</dd>
+            </div>
+          </dl>
+
+          <div className="giro-hero-actions">
+            <div className={`giro-spin-meter${isSpinning ? " is-live" : ""}`}>
+              <span>Giros disponíveis</span>
+              <strong>{String(activeWheel.availableSpins).padStart(2, "0")}</strong>
+              <small>{isSpinning ? "Roleta em movimento" : activeWheel.nextSpinLabel}</small>
+            </div>
+            <button
+              type="button"
+              className={`giro-spin-button${isSpinning ? " is-spinning" : ""}${!canSpin ? " is-disabled" : ""}`}
               onClick={handleSpin}
-              disabled={isSpinning || activeWheel.availableSpins <= 0}
+              disabled={!canSpin}
+              aria-busy={isSpinning}
             >
-              {isSpinning ? "GIRANDO..." : "GIRAR AGORA"}
+              <span>{isSpinning ? "Girando a roleta" : canSpin ? "Girar agora" : "Sem giros agora"}</span>
             </button>
           </div>
-          
-          <div className="mt-8 flex items-center gap-2 text-slate-400 text-sm">
+
+          <div className="giro-next-slot">
             <Icon name="clock" />
-            <span>Próximo giro disponível em: {activeWheel.nextSpinAt || "24h"}</span>
+            <span>{activeWheel.nextSpinLabel || "Próximo giro em breve"}</span>
           </div>
         </div>
 
-        {/* VISUAL DA ROLETA */}
-        <div className="wheel-stage">
-          <div className="wheel-pointer"></div>
-          <div 
-            className="wheel-outer" 
-            style={{ transform: `rotate(${rotation}deg)` }}
-            ref={wheelRef}
-          >
-            {activeWheel.rewards?.map((reward, idx) => {
-              const sliceAngle = 360 / activeWheel.rewards.length;
-              const rotate = idx * sliceAngle;
-              const skew = 90 - sliceAngle;
-              
-              return (
-                <div 
-                  key={reward.id} 
-                  className="wheel-slice"
-                  style={{ 
-                    transform: `rotate(${rotate}deg) skewY(-${skew}deg)`,
-                    backgroundColor: idx % 2 === 0 ? '#1e293b' : '#0f172a',
-                    borderLeft: '1px solid rgba(255,255,255,0.05)'
-                  }}
+        <div className="giro-wheel-column">
+          <div className={`giro-wheel-stage${isSpinning ? " is-spinning" : ""}`}>
+            <div className="giro-wheel-lamps" aria-hidden="true">
+              {Array.from({ length: 20 }, (_, index) => (
+                <i key={index} style={{ ["--i" as string]: index } as CSSProperties} />
+              ))}
+            </div>
+            <div className="giro-wheel-pointer" aria-hidden="true" />
+            <div
+              ref={wheelRef}
+              className="giro-wheel"
+              style={{
+                background: `conic-gradient(from -90deg, ${wheelGradient(rewards)})`,
+                transform: `rotate(${rotation}deg)`
+              }}
+            >
+              <div className="giro-wheel-ticks" aria-hidden="true" />
+              {rewards.map((reward, index) => (
+                <span
+                  key={reward.id}
+                  className={`giro-wheel-label${highlightedRewardId === reward.id ? " is-won" : ""}`}
+                  style={{ transform: `rotate(${index * sliceAngle + sliceAngle / 2}deg)` }}
                 >
-                  <div style={{ transform: `skewY(${skew}deg) rotate(${sliceAngle/2}deg)`, textAlign: 'center' }}>
-                    {reward.title.split(' ').map((word, i) => <div key={i}>{word}</div>)}
-                  </div>
-                </div>
-              );
-            })}
-            <div className="wheel-center">
-              <div className="wheel-center-logo">FG</div>
+                  <em>{shortRewardLabel(reward.title)}</em>
+                </span>
+              ))}
+              <div className="giro-wheel-hub">
+                <strong>FG</strong>
+                <small>{isSpinning ? "SORTE" : "GIRO"}</small>
+              </div>
             </div>
           </div>
+          <p className="giro-wheel-caption">
+            {isSpinning ? "Aguarde o ponteiro travar no prêmio." : "Toque em Girar agora para acionar a roleta."}
+          </p>
         </div>
       </section>
 
-      {/* PAINEL DE STATUS */}
       <section className="giro-status-grid">
-        <div className="status-card-compact">
-          <span>Giros Realizados</span>
-          <strong>{activeWheel.totalPrizesWon + (activeWheel.history?.length || 0)}</strong>
-        </div>
-        <div className="status-card-compact">
-          <span>Prêmios Ganhos</span>
+        <article className="giro-status-card">
+          <span>Giros realizados</span>
+          <strong>{activeWheel.completedSpins || activeWheel.history?.length || 0}</strong>
+          <small>Nesta roleta</small>
+        </article>
+        <article className="giro-status-card">
+          <span>Prêmios ganhos</span>
           <strong>{activeWheel.totalPrizesWon}</strong>
+          <small>Registrados no histórico</small>
+        </article>
+        <article className="giro-status-card">
+          <span>Último prêmio</span>
+          <strong>{activeWheel.history?.[0]?.rewardTitle || "Aguardando"}</strong>
+          <small>{activeWheel.history?.[0]?.playedAt ? formatSpinDate(activeWheel.history[0].playedAt) : "Sem resultado ainda"}</small>
+        </article>
+        <article className="giro-status-card">
+          <span>Campanha</span>
+          <strong>{activeWheel.campaignLabel || "Operação"}</strong>
+          <small>{activeWheel.priorityLabel}</small>
+        </article>
+      </section>
+
+      <section className="giro-board">
+        <div className="giro-prize-panel">
+          <header className="giro-panel-head">
+            <div>
+              <span>Pool da roleta</span>
+              <h2>Prêmios desta rodada</h2>
+            </div>
+            <strong>{rewards.length} faixas</strong>
+          </header>
+          <div className="giro-prize-list">
+            {rewards.map((reward, index) => (
+              <article
+                key={reward.id}
+                className={`giro-prize-item${highlightedRewardId === reward.id ? " is-active" : ""}`}
+              >
+                <i style={{ background: WHEEL_TONES[index % WHEEL_TONES.length] }} />
+                <div>
+                  <span>{reward.category}</span>
+                  <strong>{reward.title}</strong>
+                  <small>
+                    {reward.estimatedValue} · {reward.probability}% · {reward.quantityAvailable} un.
+                  </small>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
-        <div className="status-card-compact">
-          <span>Último Prêmio</span>
-          <strong>{activeWheel.history?.[0]?.rewardTitle || "Nenhum"}</strong>
-        </div>
-        <div className="status-card-compact">
-          <span>Nível de Sorte</span>
-          <strong>Premium</strong>
+
+        <div className="giro-rules-panel">
+          <header className="giro-panel-head">
+            <div>
+              <span>Operação</span>
+              <h2>Regras do giro</h2>
+            </div>
+          </header>
+          <ul className="giro-rules-list">
+            {(activeWheel.rules?.length ? activeWheel.rules : [activeWheel.releaseRule, activeWheel.audienceRule])
+              .slice(0, 6)
+              .map((rule) => (
+                <li key={rule}>{rule}</li>
+              ))}
+          </ul>
         </div>
       </section>
 
-      {/* OUTRAS ROLETAS */}
-      {wheels.length > 1 && (
-        <section className="other-wheels-panel mt-8">
-          <div className="section-head mb-6">
+      {wheels.length > 1 ? (
+        <section className="giro-wheels-panel">
+          <header className="giro-panel-head">
             <div>
-              <p>Explorar</p>
-              <h2>Outras Roletas</h2>
+              <span>Explorar</span>
+              <h2>Outras roletas</h2>
             </div>
-          </div>
-          <div className="grid grid-cols-3 gap-4">
-            {wheels.map((w, idx) => (
-              <button 
-                key={w.id}
-                className={`p-6 border text-left transition-all ${idx === activeWheelIndex ? 'border-blue-500 bg-blue-50/5' : 'border-slate-200 hover:border-blue-300'}`}
-                onClick={() => setActiveWheelIndex(idx)}
+          </header>
+          <div className="giro-wheels-grid">
+            {wheels.map((wheel, index) => (
+              <button
+                key={wheel.id}
+                type="button"
+                className={`giro-wheel-card${index === activeWheelIndex ? " is-selected" : ""}`}
+                onClick={() => {
+                  if (isSpinning) return;
+                  setActiveWheelIndex(index);
+                  setHighlightedRewardId(null);
+                }}
+                disabled={isSpinning}
               >
-                <span className="text-xs uppercase tracking-widest text-slate-400 block mb-2">{w.wheelType}</span>
-                <strong className="text-lg block mb-1">{w.title}</strong>
-                <span className="text-sm text-slate-500">{w.availableSpins} giros restantes</span>
+                <span>{wheel.wheelType}</span>
+                <strong>{wheel.title}</strong>
+                <small>{wheel.availableSpins} giros restantes</small>
               </button>
             ))}
           </div>
         </section>
-      )}
+      ) : null}
 
-      {/* HISTÓRICO */}
-      <section className="listas-table-panel mt-12">
-        <div className="section-head p-6 border-b">
+      <section className="giro-history-panel">
+        <header className="giro-panel-head">
           <div>
-            <p>Registro</p>
-            <h2>Meu Histórico de Giros</h2>
+            <span>Registro</span>
+            <h2>Meu histórico de giros</h2>
           </div>
-        </div>
-        <div className="listas-table-header">
-          <span>Data</span>
-          <span>Roleta</span>
-          <span>Prêmio</span>
-          <span>Código</span>
-          <span className="text-right">Status</span>
-        </div>
-        <div className="listas-table-body">
-          {activeWheel.history?.length ? activeWheel.history.map((entry, idx) => (
-            <article key={idx} className="listas-table-row">
-              <div className="text-sm text-slate-500">{entry.playedAt}</div>
-              <div className="font-medium text-slate-700">{entry.wheelTitle}</div>
-              <div className="text-blue-600 font-bold">{entry.rewardTitle}</div>
-              <div className="font-mono text-xs bg-slate-100 px-2 py-1 rounded">{entry.internalCode}</div>
-              <div className="listas-item-action">
-                <span className={`status-active`}>{entry.status}</span>
-              </div>
-            </article>
-          )) : (
-            <div className="p-12 text-center text-slate-400">
-              Nenhum giro realizado nesta roleta ainda.
-            </div>
+        </header>
+        <div className="giro-history-table">
+          <div className="giro-history-head">
+            <span>Data</span>
+            <span>Roleta</span>
+            <span>Prêmio</span>
+            <span>Código</span>
+            <span>Status</span>
+          </div>
+          {activeWheel.history?.length ? (
+            activeWheel.history.map((entry) => (
+              <article key={entry.id} className="giro-history-row">
+                <span>{formatSpinDate(entry.playedAt)}</span>
+                <strong>{entry.wheelTitle}</strong>
+                <span className="giro-history-prize">{entry.rewardTitle}</span>
+                <code>{entry.internalCode}</code>
+                <em className="giro-history-status">{entry.status}</em>
+              </article>
+            ))
+          ) : (
+            <div className="giro-history-empty">Nenhum giro realizado nesta roleta ainda.</div>
           )}
         </div>
       </section>
 
-      {/* MODAL DE CELEBRAÇÃO */}
-      {showCelebration && resultReward && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
-          <div className="bg-white max-w-md w-full p-8 border-4 border-blue-500 shadow-2xl text-center relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-green-500 to-blue-500"></div>
-            
-            <div className="mb-6 inline-grid place-items-center w-20 h-20 rounded-full bg-blue-50 text-blue-600 mx-auto">
-              <Icon name="award" />
+      {showCelebration && resultReward ? (
+        <div className="giro-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="giro-result-title">
+          <div className="giro-modal">
+            <span>Resultado do giro</span>
+            <h2 id="giro-result-title">Você ganhou</h2>
+            <p>A recompensa já entrou no seu histórico e pode ser resgatada pela operação.</p>
+            <div className="giro-modal-prize">
+              <small>{resultReward.category}</small>
+              <strong>{resultReward.title}</strong>
+              {resultReward.estimatedValue ? <p>Valor estimado: {resultReward.estimatedValue}</p> : null}
+              {rewardCode ? <code>{rewardCode}</code> : null}
             </div>
-            
-            <h2 className="text-3xl font-black text-slate-900 mb-2">PARABÉNS!</h2>
-            <p className="text-slate-500 mb-8">Você acabou de conquistar uma recompensa exclusiva.</p>
-            
-            <div className="p-6 bg-slate-50 border border-slate-100 mb-8">
-              <span className="text-xs uppercase tracking-widest text-slate-400 block mb-2">{resultReward.category}</span>
-              <strong className="text-2xl block text-blue-700 mb-2">{resultReward.title}</strong>
-              <p className="text-sm text-slate-600">{resultReward.estimatedValue && `Valor estimado: ${resultReward.estimatedValue}`}</p>
-            </div>
-            
-            <button 
-              className="hero-link-button w-full"
-              onClick={() => setShowCelebration(false)}
-            >
-              RESGATAR AGORA
+            <button type="button" className="giro-spin-button" onClick={() => setShowCelebration(false)}>
+              <span>Fechar e continuar</span>
             </button>
-            
-            <p className="mt-4 text-xs text-slate-400">
-              O prêmio foi adicionado ao seu histórico e está pronto para uso.
-            </p>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

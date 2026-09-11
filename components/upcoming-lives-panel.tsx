@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { parseSafeDate } from "@/lib/safe-date";
 import type { UpcomingLiveItem } from "@/lib/upcoming-lives";
 
 export type { UpcomingLiveItem };
@@ -29,6 +30,23 @@ export function UpcomingLivesPanel({
   const [confirmed, setConfirmed] = useState<Record<string, boolean>>({});
   const [openProducts, setOpenProducts] = useState<Record<string, boolean>>({});
 
+  const formatLiveDate = (value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) return "A definir";
+    if (/^\d{4}-\d{2}-\d{2}/.test(trimmed)) {
+      return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit" }).format(parseSafeDate(trimmed));
+    }
+    return trimmed;
+  };
+
+  const formatLiveTime = (value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) return "";
+    const match = trimmed.match(/^(\d{1,2}):(\d{2})/);
+    if (match) return `${match[1].padStart(2, "0")}:${match[2]}`;
+    return trimmed;
+  };
+
   const togglePresence = (id: string) => {
     setConfirmed((current) => ({ ...current, [id]: !current[id] }));
   };
@@ -42,13 +60,15 @@ export function UpcomingLivesPanel({
       {items.map((item) => {
         const isConfirmed = Boolean(confirmed[item.id]);
         const productsOpen = Boolean(openProducts[item.id]);
-        const timeLabel = item.scheduledTime
-          ? `${item.scheduledDate}\n${item.scheduledTime}`
-          : item.scheduledDate;
+        const dateLabel = formatLiveDate(item.scheduledDate);
+        const timeLabel = formatLiveTime(item.scheduledTime);
 
         return (
           <article key={item.id} className="timeline-item">
-            <div className="timeline-time">{timeLabel}</div>
+            <time className="timeline-time" dateTime={`${item.scheduledDate}${timeLabel ? `T${timeLabel}` : ""}`}>
+              <span>{dateLabel}</span>
+              {timeLabel ? <span>{timeLabel}</span> : null}
+            </time>
             <div className="timeline-card">
               <strong>{item.title}</strong>
               <span>{item.presenterName}</span>

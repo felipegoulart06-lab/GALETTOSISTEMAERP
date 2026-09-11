@@ -793,7 +793,7 @@ function MentoriaLibraryCard({
 function MentoriasLayout({ section, selectedFilter = "Todas" }: { section: SectionConfig; selectedFilter?: string }) {
   const filters = ["Todas", ...section.filters];
   const startedCards = section.cards.filter((card) => (card.progressPercent ?? 0) > 0);
-  const visibleCards = section.cards.filter((card) => matchesMentoriaFilter(card, selectedFilter));
+  const visibleCards = section.cards.filter((card) => matchesMentoriaFilter(card, selectedFilter)).slice(0, 4);
 
   return (
     <>
@@ -972,11 +972,7 @@ function ListasLayout({ section }: { section: SectionConfig }) {
 }
 
 function GiroDaSorteLayout({ section, spinWheels }: { section: SectionConfig, spinWheels: SpinWheelRecord[] }) {
-  return (
-    <section className="layout-giro-da-sorte">
-      <SpinWheelHub initialWheels={spinWheels} section={section} />
-    </section>
-  );
+  return <SpinWheelHub initialWheels={spinWheels} section={section} />;
 }
 
 function IndicacoesLayout({ section }: { section: SectionConfig }) {
@@ -2076,7 +2072,7 @@ function SorteiosLayout({ section }: { section: SectionConfig }) {
                   alt={liveDraw.subtitle}
                   sizeLabel="1200 x 900"
                   src={liveDraw.image}
-                  className="managed-media-fill managed-media-fit-contain sorteios-live-media"
+                  className="managed-media-fill managed-media-fit-cover sorteios-live-media"
                 />
                 <div className="sorteios-live-copy">
                   <small>{liveDraw.eyebrow}</small>
@@ -2125,7 +2121,7 @@ function SorteiosLayout({ section }: { section: SectionConfig }) {
                     alt={card.subtitle}
                     sizeLabel="1200 x 900"
                     src={card.image}
-                    className="managed-media-fill managed-media-fit-contain sorteios-upcoming-media"
+                    className="managed-media-fill managed-media-fit-cover sorteios-upcoming-media"
                   />
                   <div className="sorteios-upcoming-copy">
                     <span className="sorteios-status-badge is-upcoming">{card.badge}</span>
@@ -2147,7 +2143,7 @@ function SorteiosLayout({ section }: { section: SectionConfig }) {
                     alt={card.subtitle}
                     sizeLabel="1200 x 900"
                     src={card.image}
-                    className="managed-media-fill managed-media-fit-contain sorteios-type-media"
+                    className="managed-media-fill managed-media-fit-cover sorteios-type-media"
                   />
                   <div className="sorteios-type-copy">
                     <div className="sorteios-type-top">
@@ -2182,7 +2178,7 @@ function SorteiosLayout({ section }: { section: SectionConfig }) {
                     alt={winner.name}
                     sizeLabel="512 x 512"
                     src={winner.avatar}
-                    className="managed-media-ranking-list-avatar managed-media-fit-contain"
+                    className="managed-media-ranking-list-avatar"
                     tone="soft"
                   />
                   <div className="sorteios-winner-copy">
@@ -2235,7 +2231,7 @@ function SorteiosLayout({ section }: { section: SectionConfig }) {
                     alt={card.subtitle}
                     sizeLabel="1200 x 900"
                     src={card.image}
-                    className="managed-media-fill managed-media-fit-contain sorteios-prize-media"
+                    className="managed-media-fill managed-media-fit-cover sorteios-prize-media"
                   />
                   <div>
                     <strong>{card.subtitle}</strong>
@@ -2406,105 +2402,97 @@ function NotificacoesLayout({ section }: { section: SectionConfig }) {
 
 function PerfilLayout({ section }: { section: SectionConfig }) {
   const [accountCard, statsCard, securityCard] = section.cards;
+  const accountKpis = section.insights.filter((item) => item.label !== "Ranking");
+  const modules = [
+    { card: accountCard, eyebrow: "Perfil", note: accountCard.meta },
+    { card: statsCard, eyebrow: "Desempenho", note: statsCard.meta },
+    { card: securityCard, eyebrow: "Segurança", note: securityCard.meta }
+  ];
 
   return (
-    <>
-      <HeroBlock section={section} className="hero-panel-soft-violet" />
-      <MetricsStrip section={section} className="metrics-grid-tight" />
-      <section className="layout-perfil">
-        <div className="profile-command">
-          <article className="profile-identity-card">
-            <div className="profile-identity-head">
-              <div className="profile-avatar-shell">
-                <span>F</span>
-              </div>
-              <div className="profile-identity-copy">
-                <span className="profile-identity-kicker">{section.heroTag}</span>
-                <h3>Felipe</h3>
-                <p>{section.description}</p>
-              </div>
+    <section className="layout-perfil">
+      <article className="profile-identity-card">
+        <div className="profile-identity-main">
+          <div className="profile-identity-head">
+            <div className="profile-avatar-shell" aria-hidden="true">
+              <span>F</span>
             </div>
-
-            <div className="profile-chip-cloud">
-              {section.filters.map((filter) => (
-                <span key={filter} className="profile-chip">
-                  {filter}
-                </span>
-              ))}
+            <div className="profile-identity-copy">
+              <span className="profile-identity-kicker">{section.heroTag}</span>
+              <h3>{section.title}</h3>
+              <p>{section.description}</p>
+              <small>{section.heroNotice}</small>
             </div>
+          </div>
 
-            <div className="profile-highlight-grid">
-              {section.insights.map((item) => (
-                <article key={item.label} className={`profile-highlight-card tone-${item.tone}`}>
-                  <span>{item.label}</span>
-                  <strong>{item.value}</strong>
-                </article>
-              ))}
-            </div>
+          <div className="profile-chip-cloud">
+            {section.filters.map((filter) => (
+              <span key={filter} className="profile-chip">
+                {filter}
+              </span>
+            ))}
+          </div>
 
-            <div className="profile-identity-actions">
-              <Link href={section.heroActionHref} className="hero-link-button">
-                {section.heroActionLabel}
-              </Link>
-              <span className="profile-level-pill">Conta ativa</span>
-            </div>
-          </article>
-
-          <aside className="profile-command-side">
-            <article className="profile-focus-card">
-              <div className="profile-side-head">
-                <h3>{statsCard.title}</h3>
-                <span>{statsCard.badge}</span>
-              </div>
-              <p>{statsCard.subtitle}</p>
-              <strong>{statsCard.meta}</strong>
-              <ul className="profile-side-list">
-                {statsCard.facts.map((fact) => (
-                  <li key={fact}>{fact}</li>
-                ))}
-              </ul>
-              <Link href={statsCard.ctaHref ?? section.heroActionHref} className="media-card-button">
-                {statsCard.cta}
-              </Link>
-            </article>
-
-            <article className="profile-security-card">
-              <div className="profile-side-head">
-                <h3>{securityCard.title}</h3>
-                <span>{securityCard.badge}</span>
-              </div>
-              <p>{securityCard.subtitle}</p>
-              <div className="profile-security-points">
-                {securityCard.facts.map((fact) => (
-                  <span key={fact}>{fact}</span>
-                ))}
-              </div>
-              <Link href={securityCard.ctaHref ?? section.heroActionHref} className="media-card-button">
-                {securityCard.cta}
-              </Link>
-            </article>
-          </aside>
+          <div className="profile-identity-actions">
+            <Link href={section.heroActionHref} className="hero-link-button">
+              {section.heroActionLabel}
+            </Link>
+            <span className="profile-level-pill">Conta ativa</span>
+          </div>
         </div>
+        <div className="profile-identity-media">
+          <ManagedMedia
+            alt={section.title}
+            sizeLabel="1600 x 720"
+            src={section.heroImage}
+            className="managed-media-fill"
+          />
+        </div>
+      </article>
 
-        <div className="profile-modules-grid">
-          {[accountCard, statsCard, securityCard].map((card) => (
-            <article key={card.title} className="profile-module-card">
-              <span>{card.badge}</span>
-              <h3>{card.title}</h3>
-              <p>{card.subtitle}</p>
-              <ul className="profile-module-list">
-                {card.facts.map((fact) => (
-                  <li key={fact}>{fact}</li>
-                ))}
-              </ul>
-              <Link href={card.ctaHref ?? section.heroActionHref} className="media-card-button">
-                {card.cta}
-              </Link>
+      <div className="profile-kpi-wrap">
+        <div className="profile-kpi-grid">
+          {section.metrics.map((metric) => (
+            <article key={metric.label} className={`profile-kpi-card tone-${metric.tone}`}>
+              <span>{metric.label}</span>
+              <strong>{metric.value}</strong>
+              <small>{metric.detail}</small>
             </article>
           ))}
         </div>
-      </section>
-    </>
+        <div className="profile-kpi-grid profile-kpi-grid-account">
+          {accountKpis.map((item) => (
+            <article key={item.label} className={`profile-kpi-card tone-${item.tone}`}>
+              <span>{item.label}</span>
+              <strong>{item.value}</strong>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <div className="profile-modules-grid">
+        {modules.map(({ card, eyebrow, note }) => (
+          <article key={card.title} className={`profile-module-card tone-${card.accent}`}>
+            <header className="profile-module-head">
+              <span>{eyebrow}</span>
+              <em>{card.badge}</em>
+            </header>
+            <h3>{card.eyebrow}</h3>
+            <p>{card.title}</p>
+            <small>{card.subtitle}</small>
+            {note ? <strong className="profile-module-note">{note}</strong> : null}
+            <ul className="profile-module-list">
+              {card.facts.map((fact) => (
+                <li key={fact}>{fact}</li>
+              ))}
+            </ul>
+            <Link href={card.ctaHref ?? section.heroActionHref} className="media-card-button">
+              {card.cta}
+            </Link>
+          </article>
+        ))}
+      </div>
+    </section>
   );
 }
 

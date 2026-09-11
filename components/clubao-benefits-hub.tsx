@@ -663,6 +663,33 @@ function normalizeRedemption(raw: Partial<CouponRedemption> | Record<string, unk
   };
 }
 
+function initClubOffers(initialOffers?: ClubOffer[]) {
+  return initialOffers && initialOffers.length > 0 ? initialOffers.map((offer) => normalizeOffer(offer)) : buildOffers();
+}
+
+function initClubRedemptions(initialRedemptions: CouponRedemption[] | undefined, offers: ClubOffer[]) {
+  return initialRedemptions && initialRedemptions.length > 0
+    ? initialRedemptions.map((item) => normalizeRedemption(item, offers))
+    : buildSeededRedemptions(offers);
+}
+
+function mergeRedemptions(base: CouponRedemption[], extra: CouponRedemption[]) {
+  return [...base, ...extra].reduce<CouponRedemption[]>((accumulator, item) => {
+    if (
+      accumulator.some(
+        (current) =>
+          current.id === item.id ||
+          current.couponCode === item.couponCode ||
+          current.validationToken === item.validationToken
+      )
+    ) {
+      return accumulator;
+    }
+    accumulator.push(item);
+    return accumulator;
+  }, []);
+}
+
 export function ClubaoBenefitsHub({
   initialOffers,
   initialRedemptions
@@ -670,14 +697,10 @@ export function ClubaoBenefitsHub({
   initialOffers?: ClubOffer[];
   initialRedemptions?: CouponRedemption[];
 }) {
-  const fallbackOffers =
-    initialOffers && initialOffers.length > 0 ? initialOffers.map((offer) => normalizeOffer(offer)) : buildOffers();
-  const fallbackRedemptions =
-    initialRedemptions && initialRedemptions.length > 0
-      ? initialRedemptions.map((item) => normalizeRedemption(item, fallbackOffers))
-      : buildSeededRedemptions(fallbackOffers);
-  const [offers] = useState<ClubOffer[]>(() => fallbackOffers);
-  const [redemptions, setRedemptions] = useState<CouponRedemption[]>(() => fallbackRedemptions);
+  const [offers] = useState<ClubOffer[]>(() => initClubOffers(initialOffers));
+  const [redemptions, setRedemptions] = useState<CouponRedemption[]>(() =>
+    initClubRedemptions(initialRedemptions, initClubOffers(initialOffers))
+  );
   const [selectedOfferId, setSelectedOfferId] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [now, setNow] = useState(new Date());
@@ -691,24 +714,15 @@ export function ClubaoBenefitsHub({
     if (stored) {
       try {
         const parsed = JSON.parse(stored) as CouponRedemption[];
-        const merged = [...fallbackRedemptions, ...parsed].reduce<CouponRedemption[]>((accumulator, item) => {
-          if (accumulator.some((current) => current.couponCode === item.couponCode)) {
-            return accumulator;
-          }
-
-          accumulator.push(item);
-          return accumulator;
-        }, []);
-
-        setRedemptions(merged);
+        setRedemptions((current) => mergeRedemptions(current, parsed));
       } catch {
-        setRedemptions(fallbackRedemptions);
+        /* mantém o estado atual */
       }
     }
 
     const timer = window.setInterval(() => setNow(new Date()), 60000);
     return () => window.clearInterval(timer);
-  }, [fallbackRedemptions]);
+  }, []);
 
   useEffect(() => {
     if (!hydrated) {
