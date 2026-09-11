@@ -123,7 +123,7 @@ export function ProductDetailPage({
               <p>{product.commercialInfo}</p>
             </div>
             <div className="commercial-checkpoints">
-              {product.facts.map((fact, idx) => (
+              {(product.facts ?? []).map((fact, idx) => (
                 <div key={idx} className="checkpoint-item">
                   <div className="checkpoint-icon"><Icon name="check" /></div>
                   <span>{fact}</span>
@@ -131,7 +131,7 @@ export function ProductDetailPage({
               ))}
             </div>
             <div className="commercial-tags">
-              {product.chips.map((chip) => (
+              {(product.chips ?? []).map((chip) => (
                 <span key={chip} className="chip-tag">{chip}</span>
               ))}
             </div>
