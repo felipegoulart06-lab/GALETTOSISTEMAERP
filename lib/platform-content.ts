@@ -3,25 +3,6 @@ import "server-only";
 import { dashboardSections, type MediaCardData, type SectionConfig, type SectionKey } from "@/lib/dashboard-data";
 import { parseSafeDate } from "@/lib/safe-date";
 import { getPlatformDb, isContentVisible } from "@/lib/platform-store";
-const __debugEmit = (hypothesisId: string, location: string, msg: string, data: Record<string, unknown> = {}) => {
-  try {
-    void fetch("http://127.0.0.1:7777/event", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        sessionId: "local",
-        runId: "pre-fix",
-        hypothesisId,
-        location,
-        msg: `[DEBUG] ${msg}`,
-        data,
-        ts: Date.now()
-      })
-    }).catch(() => undefined);
-  } catch {
-  }
-};
-// #endregion
 import type {
   CampaignRecord,
   ClubOfferRecord,
@@ -351,28 +332,7 @@ export async function getRelatedPublishedCampaigns(slug: string) {
 }
 
 export async function buildUserDashboardSections() {
-  // #region debug-point B:C:build-sections-enter
-  __debugEmit("B", "platform-content.ts:buildUserDashboardSections:enter", "buildUserDashboardSections enter", {});
-  // #endregion
   const db = await getPlatformDb();
-  // #region debug-point C:collection-shapes
-  __debugEmit("C", "platform-content.ts:buildUserDashboardSections:collections", "collections shape check", {
-    productsIsArray: Array.isArray(db.products),
-    mentorshipsIsArray: Array.isArray(db.mentorships),
-    livesIsArray: Array.isArray(db.lives),
-    companiesIsArray: Array.isArray(db.companies),
-    supplierListsIsArray: Array.isArray(db.supplierLists),
-    servicesIsArray: Array.isArray(db.referralServices),
-    opportunitiesIsArray: Array.isArray(db.opportunities),
-    campaignsIsArray: Array.isArray(db.campaigns),
-    sweepstakesIsArray: Array.isArray(db.sweepstakes),
-    clubOffersIsArray: Array.isArray(db.clubOffers),
-    referralsIsArray: Array.isArray(db.referrals),
-    usersIsArray: Array.isArray(db.users),
-    couponRedemptionsIsArray: Array.isArray(db.couponRedemptions),
-    auditIsArray: Array.isArray(db.auditLog)
-  });
-  // #endregion
   const products = Array.isArray(db.products) ? db.products.filter((item) => isContentVisible(item)) : [];
   const mentorships = Array.isArray(db.mentorships) ? db.mentorships.filter((item) => isContentVisible(item)) : [];
   const lives = Array.isArray(db.lives) ? db.lives.filter((item) => isContentVisible(item)) : [];
@@ -534,22 +494,10 @@ export async function buildUserDashboardSections() {
       })
     } satisfies Record<SectionKey, SectionConfig>;
 
-    // #region debug-point B:build-sections-success
-    __debugEmit("B", "platform-content.ts:buildUserDashboardSections:success", "buildUserDashboardSections success", {
-      sectionKeys: Object.keys(result),
-      homeCards: Array.isArray(result.home.cards) ? result.home.cards.length : -1,
-      homeMetrics: Array.isArray(result.home.metrics) ? result.home.metrics.length : -1
-    });
-    // #endregion
     return result;
   } catch (error) {
-    __debugEmit("C", "platform-content.ts:buildUserDashboardSections:error", "buildUserDashboardSections error", {
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined
-    });
     throw error;
   }
-  // #endregion
 }
 
 export async function getPublishedClubOffers() {
@@ -559,6 +507,20 @@ export async function getPublishedClubOffers() {
 
 export async function getPlatformSnapshot() {
   return getPlatformDb();
+}
+
+export async function loadDashboardPayload() {
+  const snapshot = await getPlatformDb();
+  const sections = await buildUserDashboardSections();
+  const publishedProducts = Array.isArray(snapshot.products)
+    ? snapshot.products.filter((item) => isContentVisible(item))
+    : [];
+
+  return {
+    sections,
+    publishedProducts,
+    snapshot
+  };
 }
 export async function getPublishedSupplierListBySlug(slug: string): Promise<SupplierListRecord | null> {
   const db = await getPlatformSnapshot();

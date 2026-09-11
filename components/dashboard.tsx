@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState, type MouseEvent } from "react";
 import Link from "next/link";
 import { LogoutButton } from "@/components/logout-button";
 import { ManagedMedia } from "@/components/managed-media";
@@ -5,8 +8,7 @@ import { ClubaoBenefitsHub } from "@/components/clubao-benefits-hub";
 import { SpinWheelHub } from "@/components/spin-wheel-hub";
 import { UpcomingLivesPanel } from "@/components/upcoming-lives-panel";
 import { mapUpcomingLives } from "@/lib/upcoming-lives";
-import { buildUserDashboardSections, getPlatformSnapshot, getPublishedProducts } from "@/lib/platform-content";
-import type { CouponRedemptionRecord, LiveRecord, ProductRecord, SpinWheelRecord } from "@/lib/platform-types";
+import type { CouponRedemptionRecord, LiveRecord, PlatformDb, ProductRecord, SpinWheelRecord } from "@/lib/platform-types";
 import {
   navGroups,
   sectionOrder,
@@ -18,28 +20,13 @@ import {
   type SectionKey
 } from "@/lib/dashboard-data";
 
-// #region debug-point D:E:dashboard-env
-let __dbgServerUrl = "http://127.0.0.1:7777/event";
-let __dbgSessionId = "vercel-server-crash";
-try {
-  if (typeof process !== "undefined") {
-    try {
-      if (typeof require !== "undefined") {
-        const envRaw = require("fs").readFileSync(".dbg/vercel-server-crash.env", "utf8") as string;
-        envRaw.split(/\r?\n/).forEach((line) => {
-          const [k, v] = line.split("=");
-          if (!k || !v) return;
-          if (k.trim() === "DEBUG_SERVER_URL") __dbgServerUrl = v.trim();
-          if (k.trim() === "DEBUG_SESSION_ID") __dbgSessionId = v.trim();
-        });
-      }
-    } catch {}
+function sectionFromPath(pathname: string): SectionKey {
+  const raw = pathname.replace(/^\//, "").split("/")[0] ?? "";
+  if (!raw || raw === "home") {
+    return "home";
   }
-} catch {}
-const __debugEmit = async (_hyp: string, _where: string, _msg: string, _extra?: Record<string, unknown>) => {
-  return;
-};
-// #endregion
+  return sectionOrder.includes(raw as SectionKey) ? (raw as SectionKey) : "home";
+}
 
 function Icon({ name }: { name: IconName }) {
   switch (name) {
@@ -2588,108 +2575,61 @@ function renderSectionLayout(
   }
 }
 
-export async function Dashboard({
-  sectionKey,
+export function DashboardView({
+  sectionKey: initialSectionKey,
   productCatalogOpen = false,
   productCatalogFilter = "Todos",
-  mentorshipFilter = "Todas"
+  mentorshipFilter = "Todas",
+  sections,
+  publishedProducts,
+  snapshot
 }: {
   sectionKey: SectionKey;
   productCatalogOpen?: boolean;
   productCatalogFilter?: string;
   mentorshipFilter?: string;
+  sections: Record<SectionKey, SectionConfig>;
+  publishedProducts: ProductRecord[];
+  snapshot: Pick<PlatformDb, "clubOffers" | "couponRedemptions" | "spinWheels" | "lives">;
 }) {
-  // #region debug-point D:E:dashboard-enter
-  void __debugEmit("D", "components/dashboard.tsx:Dashboard:enter", "Dashboard SSR iniciado", {
-    sectionKey,
-    productCatalogOpen,
-    productCatalogFilter,
-    mentorshipFilter
-  });
-  // #endregion
+  const [sectionKey, setSectionKey] = useState<SectionKey>(initialSectionKey);
 
-  let sections: Record<SectionKey, SectionConfig> | null = null;
-  let publishedProducts: ProductRecord[] = [];
-  let snapshot: Awaited<ReturnType<typeof getPlatformSnapshot>> | null = null;
+  useEffect(() => {
+    setSectionKey(initialSectionKey);
+  }, [initialSectionKey]);
 
-  try {
-    // #region debug-point D:E:dashboard-promise-all-start
-    void __debugEmit("D", "components/dashboard.tsx:Dashboard:promiseAll:start", "Promise.all carregando dados", {});
-    // #endregion
-    const loaded = await Promise.all([
-      buildUserDashboardSections(),
-      getPublishedProducts(),
-      getPlatformSnapshot()
-    ]);
-    sections = loaded[0];
-    publishedProducts = Array.isArray(loaded[1]) ? loaded[1] : [];
-    snapshot = loaded[2];
-    // #region debug-point D:E:dashboard-promise-all-success
-    void __debugEmit("D", "components/dashboard.tsx:Dashboard:promiseAll:success", "Dados carregados", {
-      sectionsKeys: sections && typeof sections === "object" ? Object.keys(sections).length : -1,
-      publishedProductsCount: publishedProducts.length,
-      snapshotIsNull: snapshot === null || snapshot === undefined,
-      snapshotClubOffersIsArray: Array.isArray((snapshot as any)?.clubOffers),
-      snapshotClubOffersLength: Array.isArray((snapshot as any)?.clubOffers) ? (snapshot as any).clubOffers.length : -1,
-      snapshotCouponIsArray: Array.isArray((snapshot as any)?.couponRedemptions),
-      snapshotCouponLength: Array.isArray((snapshot as any)?.couponRedemptions) ? (snapshot as any).couponRedemptions.length : -1
-    });
-    // #endregion
-  } catch (error) {
-    // #region debug-point D:E:dashboard-promise-all-error
-    void __debugEmit("D", "components/dashboard.tsx:Dashboard:promiseAll:error", "Erro no carregamento de dados", {
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined
-    });
-    // #endregion
-    throw error;
-  }
+  useEffect(() => {
+    const onPopState = () => {
+      setSectionKey(sectionFromPath(window.location.pathname));
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
 
-  if (!sections || typeof sections !== "object") {
-    // #region debug-point D:E:dashboard-sections-invalid
-    void __debugEmit("D", "components/dashboard.tsx:Dashboard:sections:invalid", "sections não é objeto válido", {
-      sectionsType: typeof sections,
-      sectionsIsNull: sections === null
-    });
-    // #endregion
-    throw new Error("Dashboard sections inválidas");
-  }
+  const goToSection = (key: SectionKey, href: string) => (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
+      return;
+    }
+    event.preventDefault();
+    setSectionKey(key);
+    if (window.location.pathname !== href) {
+      window.history.pushState(null, "", href);
+    }
+  };
 
-  const section = sections[sectionKey];
-  if (!section) {
-    // #region debug-point D:E:dashboard-section-missing
-    void __debugEmit("D", "components/dashboard.tsx:Dashboard:section:missing", "Seção não encontrada no sections", {
-      sectionKey,
-      availableKeys: Object.keys(sections)
-    });
-    // #endregion
-    throw new Error("Seção " + String(sectionKey) + " não encontrada");
-  }
-
-  const clubOffersSafe = Array.isArray((snapshot as any)?.clubOffers)
-    ? (snapshot as any).clubOffers.filter((offer: any) => offer?.status === "PUBLICADO")
+  const section = sections[sectionKey] ?? sections.home;
+  const clubOffersSafe = Array.isArray(snapshot.clubOffers)
+    ? snapshot.clubOffers.filter((offer) => offer?.status === "PUBLICADO")
     : [];
-  const couponRedemptionsSafe = Array.isArray((snapshot as any)?.couponRedemptions)
-    ? (snapshot as any).couponRedemptions
-    : [];
+  const couponRedemptionsSafe = Array.isArray(snapshot.couponRedemptions) ? snapshot.couponRedemptions : [];
   const publishedProductsSafe = Array.isArray(publishedProducts) ? publishedProducts : [];
-  const spinWheelsSafe = Array.isArray((snapshot as any)?.spinWheels)
-    ? (snapshot as any).spinWheels.filter((wheel: any) => wheel?.status === "PUBLICADO")
+  const spinWheelsSafe = Array.isArray(snapshot.spinWheels)
+    ? snapshot.spinWheels.filter((wheel) => wheel?.status === "PUBLICADO")
     : [];
-  const publishedLivesSafe = Array.isArray((snapshot as any)?.lives)
-    ? ((snapshot as any).lives as LiveRecord[]).filter((live) => live?.status === "PUBLICADO" || live?.status === "AGENDADO")
+  const publishedLivesSafe = Array.isArray(snapshot.lives)
+    ? snapshot.lives.filter((live) => live?.status === "PUBLICADO" || live?.status === "AGENDADO")
     : [];
   const upcomingLivesSafe = mapUpcomingLives(publishedLivesSafe, publishedProductsSafe);
-
-  // #region debug-point D:E:dashboard-layout-start
-  void __debugEmit("D", "components/dashboard.tsx:Dashboard:layout:start", "Iniciando render do layout", {
-    sectionKey,
-    sectionLabel: (section as any)?.label ?? null,
-    clubOffersSafeCount: clubOffersSafe.length,
-    couponRedemptionsCount: couponRedemptionsSafe.length,
-    productsCount: publishedProductsSafe.length
-  });
-  // #endregion
 
   return (
     <div className="app-shell">
@@ -2712,7 +2652,13 @@ export async function Dashboard({
                 const itemClasses =
                   "nav-item" + (item.key === sectionKey ? " is-active" : "");
                 return (
-                  <Link key={item.key} href={itemHref} className={itemClasses}>
+                  <Link
+                    key={item.key}
+                    href={itemHref}
+                    prefetch={false}
+                    className={itemClasses}
+                    onClick={goToSection(item.key, itemHref)}
+                  >
                     <span className="nav-icon">
                       <Icon name={item.icon} />
                     </span>
@@ -2779,7 +2725,7 @@ export async function Dashboard({
             {sectionOrder.slice(0, 6).map((item) => {
               const href = item === "home" ? "/" : "/" + String(item);
               return (
-                <Link key={item} href={href}>
+                <Link key={item} href={href} prefetch={false} onClick={goToSection(item, href)}>
                   {sections[item].label}
                 </Link>
               );

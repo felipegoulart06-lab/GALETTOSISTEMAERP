@@ -1,5 +1,5 @@
 import { notFound, redirect } from "next/navigation";
-import { Dashboard } from "@/components/dashboard";
+import { Dashboard } from "@/components/user-dashboard";
 import { sectionOrder, type SectionKey } from "@/lib/dashboard-data";
 
 

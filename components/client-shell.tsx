@@ -203,6 +203,7 @@ export function ClientShell({
                 <Link
                   key={item.key}
                   href={item.key === "home" ? "/" : `/${item.key}`}
+                  prefetch={false}
                   className={`nav-item${item.key === activeSection ? " is-active" : ""}`}
                 >
                   <span className="nav-icon">
