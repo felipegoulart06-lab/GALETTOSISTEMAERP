@@ -16,8 +16,7 @@ export default function AppErrorBoundary({
   }, [error]);
 
   return (
-    <html lang="pt-BR">
-      <body style={{ minHeight: "100dvh", background: "#0b1020", color: "#e5e7eb", display: "grid", placeItems: "center", padding: 24, fontFamily: "system-ui, -apple-system, sans-serif", margin: 0 }}>
+    <div style={{ minHeight: "100dvh", background: "#0b1020", color: "#e5e7eb", display: "grid", placeItems: "center", padding: 24, fontFamily: "system-ui, -apple-system, sans-serif", margin: 0 }}>
         <div style={{ width: "min(680px, 100%)", borderRadius: 16, border: "1px solid #1f2937", background: "linear-gradient(180deg,#0f172a 0%, #0b1220 100%)", padding: 32, boxShadow: "0 20px 60px rgba(0,0,0,0.45)" }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 12px", borderRadius: 999, border: "1px solid #7f1d1d", background: "#450a0a", color: "#fecaca", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5 }}>
             <span aria-hidden>●</span> Falha ao renderizar
@@ -59,7 +58,6 @@ export default function AppErrorBoundary({
             </Link>
           </div>
         </div>
-      </body>
-    </html>
+    </div>
   );
 }

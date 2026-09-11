@@ -3,7 +3,8 @@ import { LogoutButton } from "@/components/logout-button";
 import { ManagedMedia } from "@/components/managed-media";
 import { ClubaoBenefitsHub } from "@/components/clubao-benefits-hub";
 import { SpinWheelHub } from "@/components/spin-wheel-hub";
-import { UpcomingLivesPanel, mapUpcomingLives } from "@/components/upcoming-lives-panel";
+import { UpcomingLivesPanel } from "@/components/upcoming-lives-panel";
+import { mapUpcomingLives } from "@/lib/upcoming-lives";
 import { buildUserDashboardSections, getPlatformSnapshot, getPublishedProducts } from "@/lib/platform-content";
 import type { CouponRedemptionRecord, LiveRecord, ProductRecord, SpinWheelRecord } from "@/lib/platform-types";
 import {
@@ -273,12 +274,12 @@ function MediaCard({ card, compact = false }: { card: MediaCardData; compact?: b
         {!compact ? (
           <>
             <ul className="media-facts">
-              {card.facts.map((fact) => (
+              {(card.facts ?? []).map((fact) => (
                 <li key={fact}>{fact}</li>
               ))}
             </ul>
             <div className="media-chips">
-              {card.chips.map((chip) => (
+              {(card.chips ?? []).map((chip) => (
                 <span key={chip}>{chip}</span>
               ))}
             </div>
@@ -349,7 +350,7 @@ function SystemPanel({ section }: { section: SectionConfig }) {
         <span>Base estrutural</span>
       </div>
       <ul className="system-list">
-        {section.systemPoints.map((item) => (
+        {(section.systemPoints ?? []).map((item) => (
           <li key={item}>{item}</li>
         ))}
       </ul>
@@ -724,7 +725,7 @@ function matchesMentoriaFilter(card: MediaCardData, selectedFilter: string) {
   }
 
   const normalizedFilter = selectedFilter.toLowerCase();
-  return [card.eyebrow, ...card.chips].some((value) => value.toLowerCase() === normalizedFilter);
+  return [card.eyebrow, ...(card.chips ?? [])].some((value) => value.toLowerCase() === normalizedFilter);
 }
 
 function MentoriaLibraryCard({
