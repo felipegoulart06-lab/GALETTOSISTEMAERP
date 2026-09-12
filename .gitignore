@@ -3,6 +3,7 @@ node_modules
 npm-debug.log*
 *.log
 .env*
+!.env.example
 .DS_Store
 data/platform-db.json
 data/*.json.tmp

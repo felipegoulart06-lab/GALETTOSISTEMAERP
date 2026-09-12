@@ -125,23 +125,6 @@ export interface SectionConfig {
   systemPoints: string[];
 }
 
-const countMenuLetters = (label: string) =>
-  label
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^A-Za-z]/g, "").length;
-
-const sortNavItemsByLabelLength = (items: NavItem[]) =>
-  [...items].sort((a, b) => {
-    const labelLengthDifference = countMenuLetters(a.label) - countMenuLetters(b.label);
-
-    if (labelLengthDifference !== 0) {
-      return labelLengthDifference;
-    }
-
-    return a.label.localeCompare(b.label, "pt-BR");
-  });
-
 const image = (prompt: string, imageSize = "landscape_16_9") =>
   `https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=${encodeURIComponent(
     prompt
@@ -283,35 +266,48 @@ const supplierListCard = (list: (typeof supplierListCatalog)[number]): MediaCard
 
 export const navGroups: NavGroup[] = [
   {
-    label: "Explorar",
-    items: sortNavItemsByLabelLength([
-      { key: "home", label: "Home", icon: "home" },
+    label: "Início",
+    items: [{ key: "home", label: "Home", icon: "home" }]
+  },
+  {
+    label: "Aprender",
+    items: [
       { key: "lives", label: "Lives", icon: "live" },
+      { key: "mentorias", label: "Mentorias", icon: "cap" }
+    ]
+  },
+  {
+    label: "Vender",
+    items: [
       { key: "produtos", label: "Produtos", icon: "box" },
-      { key: "giro-da-sorte", label: "Giro da Sorte", icon: "sparkles" },
-      { key: "mentorias", label: "Mentorias", icon: "cap" },
-      { key: "clubao", label: "Clubão", icon: "gift" },
+      { key: "campanhas", label: "Campanhas", icon: "megaphone" },
       { key: "empresas", label: "Empresas", icon: "building" },
       { key: "listas", label: "Listas", icon: "list" },
       { key: "indicacoes", label: "Indicações", icon: "users" },
-      { key: "sorteios", label: "Sorteios", icon: "gift" },
-      { key: "oportunidades", label: "Oportunidades", icon: "rocket" },
-      { key: "campanhas", label: "Campanhas", icon: "megaphone" }
-    ]).filter((item) => item.key !== "ranking")
+      { key: "oportunidades", label: "Oportunidades", icon: "rocket" }
+    ]
   },
   {
-    label: "Seus resultados",
-    items: sortNavItemsByLabelLength([
-      { key: "minha-renda", label: "Minha renda", icon: "wallet" },
-      { key: "desempenho", label: "Desempenho", icon: "grid" }
-    ])
+    label: "Premiar",
+    items: [
+      { key: "clubao", label: "Clubão", icon: "gift" },
+      { key: "giro-da-sorte", label: "Giro da Sorte", icon: "sparkles" },
+      { key: "sorteios", label: "Sorteios", icon: "gift" }
+    ]
+  },
+  {
+    label: "Resultados",
+    items: [
+      { key: "desempenho", label: "Desempenho", icon: "grid" },
+      { key: "minha-renda", label: "Minha renda", icon: "wallet" }
+    ]
   },
   {
     label: "Conta",
-    items: sortNavItemsByLabelLength([
-      { key: "notificacoes", label: "Notificações", icon: "bell" },
-      { key: "perfil", label: "Meu perfil", icon: "profile" }
-    ])
+    items: [
+      { key: "perfil", label: "Meu perfil", icon: "profile" },
+      { key: "notificacoes", label: "Notificações", icon: "bell" }
+    ]
   }
 ];
 

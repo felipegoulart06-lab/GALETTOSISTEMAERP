@@ -953,18 +953,34 @@ function ListasLayout({ section }: { section: SectionConfig }) {
       </section>
 
       <section className="layout-listas">
-        <div className="cards-grid cards-grid-three listas-card-grid" data-section="listas">
-          {section.cards.map((card) => (
-            <MediaCard
-              key={card.title}
-              card={{
-                ...card,
-                cta: card.cta || "Abrir lista",
-                href: card.href,
-                ctaHref: card.ctaHref ?? card.href
-              }}
-            />
-          ))}
+        <div className="listas-directory">
+          <header className="listas-directory-toolbar">
+            <div>
+              <span>Diretório</span>
+              <h3>{section.spotlightTitle}</h3>
+            </div>
+            <strong>{section.cards.length} listas</strong>
+          </header>
+          <div className="listas-directory-table" role="table" aria-label="Listas de fornecedores">
+            <div className="listas-directory-head" role="row">
+              <span>Lista</span>
+              <span>Segmento</span>
+              <span>Descrição</span>
+              <span>Leitura operacional</span>
+              <span>Ação</span>
+            </div>
+            {section.cards.map((card) => (
+              <article key={card.title} className="listas-directory-row" role="row">
+                <strong>{card.title}</strong>
+                <em>{card.badge}</em>
+                <p>{card.subtitle}</p>
+                <span>{card.meta}</span>
+                <Link href={card.ctaHref ?? card.href ?? section.heroActionHref} className="listas-directory-action">
+                  {card.cta || "Abrir lista"}
+                </Link>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
     </>
