@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Kit pet">
+  <rect width="800" height="600" fill="#047857"/>
+  <circle cx="680" cy="80" r="150" fill="#FACC15"/>
+  <ellipse cx="400" cy="340" rx="170" ry="130" fill="#FDE68A"/>
+  <circle cx="340" cy="250" r="46" fill="#FDE68A"/>
+  <circle cx="460" cy="250" r="46" fill="#FDE68A"/>
+  <circle cx="350" cy="320" r="16" fill="#0F172A"/>
+  <circle cx="450" cy="320" r="16" fill="#0F172A"/>
+  <path d="M360 380c30 24 50 24 80 0" fill="none" stroke="#0F172A" stroke-width="10"/>
+</svg>

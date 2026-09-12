@@ -25,7 +25,13 @@ export type ManagedModuleKey =
   | "rewards"
   | "spinWheels"
   | "sweepstakes"
-  | "couponRedemptions";
+  | "couponRedemptions"
+  | "shareKits"
+  | "rankingBoards"
+  | "financeTickets"
+  | "notifications"
+  | "requests"
+  | "settings";
 
 export interface AuditEntry {
   id: string;
@@ -395,6 +401,64 @@ export interface SweepstakesRecord extends BaseManagedEntity {
   winnerUserId?: string;
 }
 
+export interface ShareKitRecord extends BaseManagedEntity {
+  kind: "shareKit";
+  channel: string;
+  packType: string;
+  copyLines: string[];
+  materials: string[];
+  ctaLabel: string;
+  ctaHref: string;
+  relatedProductIds: string[];
+  facts: string[];
+  chips: string[];
+}
+
+export interface RankingBoardRecord extends BaseManagedEntity {
+  kind: "rankingBoard";
+  metric: string;
+  periodLabel: string;
+  prizeLabel: string;
+  criteria: string[];
+  facts: string[];
+  chips: string[];
+}
+
+export interface FinanceTicketRecord extends BaseManagedEntity {
+  kind: "financeTicket";
+  ticketType: "SAQUE" | "COMISSAO" | "AJUSTE" | "BONUS";
+  amountLabel: string;
+  userName: string;
+  userEmail: string;
+  origin: string;
+  payoutStatus: "PENDENTE" | "EM_ANALISE" | "APROVADO" | "PAGO" | "RECUSADO";
+}
+
+export interface NotificationRecord extends BaseManagedEntity {
+  kind: "notification";
+  audience: string;
+  channel: string;
+  ctaLabel: string;
+  ctaHref: string;
+  priority: "NORMAL" | "URGENTE";
+}
+
+export interface RequestRecord extends BaseManagedEntity {
+  kind: "request";
+  requestType: "CADASTRO" | "PUBLICACAO" | "SAQUE" | "SUPORTE" | "DENUNCIA";
+  requesterName: string;
+  requesterEmail: string;
+  linkedModule: string;
+  resolution: string;
+}
+
+export interface SettingRecord extends BaseManagedEntity {
+  kind: "setting";
+  groupLabel: string;
+  settingKey: string;
+  settingValue: string;
+}
+
 export interface CouponRedemptionRecord {
   id: string;
   couponId: string;
@@ -436,6 +500,12 @@ export interface PlatformDb {
   spinWheels: SpinWheelRecord[];
   sweepstakes: SweepstakesRecord[];
   couponRedemptions: CouponRedemptionRecord[];
+  shareKits: ShareKitRecord[];
+  rankingBoards: RankingBoardRecord[];
+  financeTickets: FinanceTicketRecord[];
+  notifications: NotificationRecord[];
+  requests: RequestRecord[];
+  settings: SettingRecord[];
   auditLog: AuditEntry[];
 }
 

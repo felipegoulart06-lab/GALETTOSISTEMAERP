@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Mochila">
+  <rect width="800" height="600" fill="#1B4D8F"/>
+  <rect x="0" y="420" width="800" height="180" fill="#F4B942"/>
+  <circle cx="640" cy="90" r="160" fill="#2E6BC7"/>
+  <path d="M290 210h220c18 0 32 14 32 32v230c0 22-18 40-40 40H298c-22 0-40-18-40-40V242c0-18 14-32 32-32z" fill="#0F2A52"/>
+  <path d="M318 210v-28c0-28 22-50 50-50h64c28 0 50 22 50 50v28" fill="none" stroke="#F4B942" stroke-width="18"/>
+  <rect x="340" y="280" width="120" height="70" rx="10" fill="#F4B942"/>
+</svg>

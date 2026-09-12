@@ -118,6 +118,7 @@ const moduleConfig: Partial<
       { name: "recordingUrl", label: "Gravação", type: "text", section: "Programação" },
       { name: "guests", label: "Convidados (1 por linha)", type: "list", section: "Programação" },
       { name: "materials", label: "Materiais relacionados (1 por linha)", type: "list", section: "Programação" },
+      { name: "relatedProductIds", label: "IDs de produtos relacionados (1 por linha)", type: "list", section: "Programação" },
       { name: "status", label: "Status", type: "select", section: "Governança", options: workflowOptions },
       { name: "featured", label: "Destaque", type: "boolean", section: "Governança" },
       { name: "tags", label: "Tags (1 por linha)", type: "list", section: "Governança" }
@@ -199,10 +200,10 @@ const moduleConfig: Partial<
     fields: [
       { name: "title", label: "Nome da empresa", type: "text", section: "Identidade" },
       { name: "subtitle", label: "Subtítulo", type: "text", section: "Identidade" },
-      { name: "shortDescription", label: "Descriação curta", type: "textarea", section: "Descrição" },
-      { name: "description", label: "Descriação completa", type: "textarea", section: "Descrição" },
+      { name: "shortDescription", label: "Descrição curta", type: "textarea", section: "Descrição" },
+      { name: "description", label: "Descrição completa", type: "textarea", section: "Descrição" },
       { name: "logo", label: "Logo", type: "text", section: "Mídia" },
-      { name: "image", label: "Imagem principal", type: "text", section: "Mítia" },
+      { name: "image", label: "Imagem principal", type: "text", section: "Mídia" },
       { name: "category", label: "Categoria", type: "text", section: "Operação" },
       { name: "segment", label: "Segmento", type: "text", section: "Operação" },
       { name: "type", label: "Tipo / descrição comercial", type: "text", section: "Operação" },
@@ -323,6 +324,7 @@ const moduleConfig: Partial<
       { name: "rewardLabel", label: "Recompensa", type: "text", section: "Operação" },
       { name: "scoreLabel", label: "Pontuação", type: "text", section: "Operação" },
       { name: "materials", label: "Materiais (1 por linha)", type: "list", section: "Operação" },
+      { name: "relatedProductIds", label: "IDs de produtos relacionados (1 por linha)", type: "list", section: "Operação" },
       { name: "rules", label: "Regras (1 por linha)", type: "list", section: "Governança" },
       { name: "status", label: "Status", type: "select", section: "Governança", options: workflowOptions },
       { name: "featured", label: "Destaque", type: "boolean", section: "Governança" },
@@ -333,6 +335,8 @@ const moduleConfig: Partial<
     collection: "missions",
     label: "Missões",
     description: "Crie missões, pontos, recompensas e critérios de progresso.",
+    previewLabel: "Ver missões",
+    getPreviewHref: () => "/missoes",
     fields: [
       { name: "title", label: "Título", type: "text", section: "Identidade" },
       { name: "subtitle", label: "Subtítulo", type: "text", section: "Identidade" },
@@ -355,6 +359,8 @@ const moduleConfig: Partial<
     collection: "rewards",
     label: "Recompensas",
     description: "Administre catálogo de recompensas, estoque, pontos e validade.",
+    previewLabel: "Ver recompensas",
+    getPreviewHref: () => "/recompensas",
     fields: [
       { name: "title", label: "Nome", type: "text", section: "Identidade" },
       { name: "subtitle", label: "Subtítulo", type: "text", section: "Identidade" },
@@ -404,6 +410,7 @@ const moduleConfig: Partial<
     fields: [
       { name: "fullName", label: "Nome", type: "text", section: "Conta" },
       { name: "email", label: "E-mail", type: "text", section: "Conta" },
+      { name: "role", label: "Perfil", type: "select", section: "Conta", options: ["USER", "EDITOR", "ADMIN", "ADMIN_MASTER"] },
       { name: "status", label: "Status", type: "select", section: "Conta", options: ["ATIVO", "PENDENTE", "BLOQUEADO"] },
       { name: "plan", label: "Plano", type: "select", section: "Conta", options: ["Membro Pro", "Premium", "Essencial"] },
       { name: "points", label: "Pontos", type: "number", section: "Performance" },
@@ -411,7 +418,129 @@ const moduleConfig: Partial<
       { name: "commissionTotal", label: "Comissões", type: "number", section: "Performance" },
       { name: "referralsCount", label: "Indicações", type: "number", section: "Performance" },
       { name: "redeemedCouponsCount", label: "Cupons", type: "number", section: "Performance" },
+      { name: "rankingPosition", label: "Posição no ranking", type: "number", section: "Performance" },
       { name: "progressPercent", label: "Progresso", type: "number", section: "Performance" }
+    ]
+  },
+  divulgue: {
+    collection: "shareKits",
+    label: "Divulgue",
+    description: "Publique kits de material pronto: imagem, copy, link, stories e QR para o menu Divulgue.",
+    previewLabel: "Ver Divulgue",
+    getPreviewHref: () => "/divulgue",
+    fields: [
+      { name: "title", label: "Nome do kit", type: "text", section: "Identidade" },
+      { name: "subtitle", label: "Subtítulo", type: "text", section: "Identidade" },
+      { name: "shortDescription", label: "Descrição curta", type: "textarea", section: "Descrição" },
+      { name: "description", label: "Descrição completa", type: "textarea", section: "Descrição" },
+      { name: "image", label: "Imagem", type: "text", section: "Mídia" },
+      { name: "channel", label: "Canal", type: "text", section: "Operação" },
+      { name: "packType", label: "Tipo de pacote", type: "text", section: "Operação" },
+      { name: "copyLines", label: "Legendas / copies (1 por linha)", type: "list", section: "Operação" },
+      { name: "materials", label: "Materiais (1 por linha)", type: "list", section: "Operação" },
+      { name: "ctaLabel", label: "CTA", type: "text", section: "Operação" },
+      { name: "ctaHref", label: "Link do CTA", type: "text", section: "Operação" },
+      { name: "relatedProductIds", label: "IDs de produtos (1 por linha)", type: "list", section: "Operação" },
+      { name: "status", label: "Status", type: "select", section: "Governança", options: workflowOptions },
+      { name: "featured", label: "Destaque", type: "boolean", section: "Governança" },
+      { name: "tags", label: "Tags (1 por linha)", type: "list", section: "Governança" }
+    ]
+  },
+  ranking: {
+    collection: "rankingBoards",
+    label: "Ranking",
+    description: "Defina quadros, métricas, período e premiação que alimentam o ranking da base.",
+    previewLabel: "Ver ranking",
+    getPreviewHref: () => "/ranking",
+    fields: [
+      { name: "title", label: "Nome do quadro", type: "text", section: "Identidade" },
+      { name: "subtitle", label: "Subtítulo", type: "text", section: "Identidade" },
+      { name: "shortDescription", label: "Descrição curta", type: "textarea", section: "Descrição" },
+      { name: "description", label: "Descrição completa", type: "textarea", section: "Descrição" },
+      { name: "image", label: "Imagem", type: "text", section: "Mídia" },
+      { name: "metric", label: "Métrica", type: "text", section: "Operação" },
+      { name: "periodLabel", label: "Período", type: "text", section: "Operação" },
+      { name: "prizeLabel", label: "Premiação", type: "text", section: "Operação" },
+      { name: "criteria", label: "Critérios (1 por linha)", type: "list", section: "Governança" },
+      { name: "status", label: "Status", type: "select", section: "Governança", options: workflowOptions },
+      { name: "featured", label: "Destaque", type: "boolean", section: "Governança" },
+      { name: "tags", label: "Tags (1 por linha)", type: "list", section: "Governança" }
+    ]
+  },
+  financeiro: {
+    collection: "financeTickets",
+    label: "Financeiro",
+    description: "Aprove saques, comissões, bônus e ajustes que aparecem em Minha renda.",
+    previewLabel: "Ver Minha renda",
+    getPreviewHref: () => "/minha-renda",
+    fields: [
+      { name: "title", label: "Título do lançamento", type: "text", section: "Identidade" },
+      { name: "subtitle", label: "Subtítulo", type: "text", section: "Identidade" },
+      { name: "shortDescription", label: "Descrição curta", type: "textarea", section: "Descrição" },
+      { name: "description", label: "Descrição completa", type: "textarea", section: "Descrição" },
+      { name: "amountLabel", label: "Valor", type: "text", section: "Operação" },
+      { name: "ticketType", label: "Tipo", type: "select", section: "Operação", options: ["SAQUE", "COMISSAO", "AJUSTE", "BONUS"] },
+      { name: "payoutStatus", label: "Status do pagamento", type: "select", section: "Operação", options: ["PENDENTE", "EM_ANALISE", "APROVADO", "PAGO", "RECUSADO"] },
+      { name: "userName", label: "Usuário", type: "text", section: "Operação" },
+      { name: "userEmail", label: "E-mail", type: "text", section: "Operação" },
+      { name: "origin", label: "Origem", type: "text", section: "Operação" },
+      { name: "status", label: "Status editorial", type: "select", section: "Governança", options: workflowOptions },
+      { name: "featured", label: "Destaque", type: "boolean", section: "Governança" }
+    ]
+  },
+  notificacoes: {
+    collection: "notifications",
+    label: "Notificações",
+    description: "Crie alertas com CTA que levam o usuário a lives, produtos, missões e oportunidades.",
+    previewLabel: "Ver notificações",
+    getPreviewHref: () => "/notificacoes",
+    fields: [
+      { name: "title", label: "Título", type: "text", section: "Identidade" },
+      { name: "subtitle", label: "Subtítulo", type: "text", section: "Identidade" },
+      { name: "shortDescription", label: "Descrição curta", type: "textarea", section: "Descrição" },
+      { name: "description", label: "Descrição completa", type: "textarea", section: "Descrição" },
+      { name: "image", label: "Imagem", type: "text", section: "Mídia" },
+      { name: "audience", label: "Público", type: "text", section: "Operação" },
+      { name: "channel", label: "Canal", type: "text", section: "Operação" },
+      { name: "priority", label: "Prioridade", type: "select", section: "Operação", options: ["NORMAL", "URGENTE"] },
+      { name: "ctaLabel", label: "CTA", type: "text", section: "Operação" },
+      { name: "ctaHref", label: "Link do CTA", type: "text", section: "Operação" },
+      { name: "status", label: "Status", type: "select", section: "Governança", options: workflowOptions },
+      { name: "featured", label: "Destaque", type: "boolean", section: "Governança" },
+      { name: "tags", label: "Tags (1 por linha)", type: "list", section: "Governança" }
+    ]
+  },
+  solicitacoes: {
+    collection: "requests",
+    label: "Solicitações",
+    description: "Central operacional: cadastros, publicações, saques, suporte e denúncias passam por aqui.",
+    fields: [
+      { name: "title", label: "Assunto", type: "text", section: "Identidade" },
+      { name: "subtitle", label: "Resumo", type: "text", section: "Identidade" },
+      { name: "shortDescription", label: "Descrição curta", type: "textarea", section: "Descrição" },
+      { name: "description", label: "Detalhe", type: "textarea", section: "Descrição" },
+      { name: "requestType", label: "Tipo", type: "select", section: "Operação", options: ["CADASTRO", "PUBLICACAO", "SAQUE", "SUPORTE", "DENUNCIA"] },
+      { name: "requesterName", label: "Solicitante", type: "text", section: "Operação" },
+      { name: "requesterEmail", label: "E-mail", type: "text", section: "Operação" },
+      { name: "linkedModule", label: "Módulo ligado", type: "text", section: "Operação" },
+      { name: "resolution", label: "Resolução / próximo passo", type: "textarea", section: "Operação" },
+      { name: "status", label: "Status", type: "select", section: "Governança", options: workflowOptions },
+      { name: "featured", label: "Prioridade alta", type: "boolean", section: "Governança" }
+    ]
+  },
+  configuracoes: {
+    collection: "settings",
+    label: "Configurações",
+    description: "Parâmetros estruturais da plataforma: marca, suporte, comissão e saque mínimo.",
+    fields: [
+      { name: "title", label: "Nome da configuração", type: "text", section: "Identidade" },
+      { name: "subtitle", label: "Subtítulo", type: "text", section: "Identidade" },
+      { name: "shortDescription", label: "Descrição curta", type: "textarea", section: "Descrição" },
+      { name: "description", label: "Descrição completa", type: "textarea", section: "Descrição" },
+      { name: "groupLabel", label: "Grupo", type: "text", section: "Operação" },
+      { name: "settingKey", label: "Chave", type: "text", section: "Operação" },
+      { name: "settingValue", label: "Valor", type: "text", section: "Operação" },
+      { name: "status", label: "Status", type: "select", section: "Governança", options: workflowOptions }
     ]
   }
 };
@@ -783,7 +912,7 @@ function formToRecord(sectionKey: AdminMasterSectionKey, formState: Record<strin
         heroCtaLabel: "Assistir live",
         heroCtaHref: `/detalhes/lives/${base.slug}`,
         materials: parseList(String(formState.materials ?? toMultiline(existing?.materials))),
-        relatedProductIds: Array.isArray(existing?.relatedProductIds) ? existing?.relatedProductIds : [],
+        relatedProductIds: parseList(String(formState.relatedProductIds ?? toMultiline(existing?.relatedProductIds))),
         facts: parseList(String(formState.materials ?? toMultiline(existing?.facts))),
         chips: parseList(String(formState.tags ?? toMultiline(existing?.chips)))
       };
@@ -916,7 +1045,7 @@ function formToRecord(sectionKey: AdminMasterSectionKey, formState: Record<strin
         periodLabel: String(formState.periodLabel ?? existing?.periodLabel ?? ""),
         rewardLabel: String(formState.rewardLabel ?? existing?.rewardLabel ?? ""),
         scoreLabel: String(formState.scoreLabel ?? existing?.scoreLabel ?? ""),
-        relatedProductIds: Array.isArray(existing?.relatedProductIds) ? existing?.relatedProductIds : [],
+        relatedProductIds: parseList(String(formState.relatedProductIds ?? toMultiline(existing?.relatedProductIds))),
         materials: parseList(String(formState.materials ?? toMultiline(existing?.materials))),
         participantCount: Number(existing?.participantCount ?? 0),
         resultsSummary: String(existing?.resultsSummary ?? ""),
@@ -964,7 +1093,7 @@ function formToRecord(sectionKey: AdminMasterSectionKey, formState: Record<strin
         fullName: String(formState.fullName ?? existing?.fullName ?? ""),
         email: String(formState.email ?? existing?.email ?? ""),
         avatar: String(existing?.avatar ?? "/images/user-avatar-01-v1.png"),
-        role: String(existing?.role ?? "USER"),
+        role: String(formState.role ?? existing?.role ?? "USER"),
         status: String(formState.status ?? existing?.status ?? "ATIVO"),
         plan: String(formState.plan ?? existing?.plan ?? "Membro Pro"),
         joinedAt: String(existing?.joinedAt ?? new Date().toISOString()),
@@ -973,8 +1102,72 @@ function formToRecord(sectionKey: AdminMasterSectionKey, formState: Record<strin
         commissionTotal: Number(formState.commissionTotal ?? existing?.commissionTotal ?? 0),
         referralsCount: Number(formState.referralsCount ?? existing?.referralsCount ?? 0),
         redeemedCouponsCount: Number(formState.redeemedCouponsCount ?? existing?.redeemedCouponsCount ?? 0),
-        rankingPosition: Number(existing?.rankingPosition ?? 0),
+        rankingPosition: Number(formState.rankingPosition ?? existing?.rankingPosition ?? 0),
         progressPercent: Number(formState.progressPercent ?? existing?.progressPercent ?? 0)
+      };
+    case "divulgue":
+      return {
+        ...base,
+        kind: "shareKit",
+        channel: String(formState.channel ?? existing?.channel ?? "Multi-canal"),
+        packType: String(formState.packType ?? existing?.packType ?? "Kit completo"),
+        copyLines: parseList(String(formState.copyLines ?? toMultiline(existing?.copyLines))),
+        materials: parseList(String(formState.materials ?? toMultiline(existing?.materials))),
+        ctaLabel: String(formState.ctaLabel ?? existing?.ctaLabel ?? "Abrir kit"),
+        ctaHref: String(formState.ctaHref ?? existing?.ctaHref ?? "/divulgue"),
+        relatedProductIds: parseList(String(formState.relatedProductIds ?? toMultiline(existing?.relatedProductIds))),
+        facts: parseList(String(formState.materials ?? toMultiline(existing?.facts))),
+        chips: parseList(String(formState.tags ?? toMultiline(existing?.chips)))
+      };
+    case "ranking":
+      return {
+        ...base,
+        kind: "rankingBoard",
+        metric: String(formState.metric ?? existing?.metric ?? "Pontos"),
+        periodLabel: String(formState.periodLabel ?? existing?.periodLabel ?? "Mensal"),
+        prizeLabel: String(formState.prizeLabel ?? existing?.prizeLabel ?? "Destaque no painel"),
+        criteria: parseList(String(formState.criteria ?? toMultiline(existing?.criteria))),
+        facts: parseList(String(formState.criteria ?? toMultiline(existing?.facts))),
+        chips: parseList(String(formState.tags ?? toMultiline(existing?.chips)))
+      };
+    case "financeiro":
+      return {
+        ...base,
+        kind: "financeTicket",
+        ticketType: String(formState.ticketType ?? existing?.ticketType ?? "COMISSAO"),
+        amountLabel: String(formState.amountLabel ?? existing?.amountLabel ?? "R$ 0,00"),
+        userName: String(formState.userName ?? existing?.userName ?? ""),
+        userEmail: String(formState.userEmail ?? existing?.userEmail ?? ""),
+        origin: String(formState.origin ?? existing?.origin ?? "Plataforma"),
+        payoutStatus: String(formState.payoutStatus ?? existing?.payoutStatus ?? "PENDENTE")
+      };
+    case "notificacoes":
+      return {
+        ...base,
+        kind: "notification",
+        audience: String(formState.audience ?? existing?.audience ?? "Todos os ativos"),
+        channel: String(formState.channel ?? existing?.channel ?? "Painel"),
+        ctaLabel: String(formState.ctaLabel ?? existing?.ctaLabel ?? "Abrir"),
+        ctaHref: String(formState.ctaHref ?? existing?.ctaHref ?? "/"),
+        priority: String(formState.priority ?? existing?.priority ?? "NORMAL")
+      };
+    case "solicitacoes":
+      return {
+        ...base,
+        kind: "request",
+        requestType: String(formState.requestType ?? existing?.requestType ?? "SUPORTE"),
+        requesterName: String(formState.requesterName ?? existing?.requesterName ?? ""),
+        requesterEmail: String(formState.requesterEmail ?? existing?.requesterEmail ?? ""),
+        linkedModule: String(formState.linkedModule ?? existing?.linkedModule ?? "resumo"),
+        resolution: String(formState.resolution ?? existing?.resolution ?? "")
+      };
+    case "configuracoes":
+      return {
+        ...base,
+        kind: "setting",
+        groupLabel: String(formState.groupLabel ?? existing?.groupLabel ?? "Geral"),
+        settingKey: String(formState.settingKey ?? existing?.settingKey ?? createSlug(base.title)),
+        settingValue: String(formState.settingValue ?? existing?.settingValue ?? "")
       };
     default:
       return base;
@@ -982,21 +1175,89 @@ function formToRecord(sectionKey: AdminMasterSectionKey, formState: Record<strin
 }
 
 function buildSummaryMetrics(db: PlatformDb) {
+  const pendingUsers = db.users.filter((item) => item.status === "PENDENTE").length;
+  const pendingRequests = (db.requests ?? []).filter((item) => item.status === "EM_REVISAO").length;
+  const pendingPayouts = (db.financeTickets ?? []).filter((item) => item.payoutStatus === "PENDENTE" || item.payoutStatus === "EM_ANALISE").length;
+
   return [
     { label: "Usuários cadastrados", value: db.users.length, tone: "blue" },
     { label: "Usuários ativos", value: db.users.filter((item) => item.status === "ATIVO").length, tone: "green" },
+    { label: "Solicitações em revisão", value: pendingRequests + pendingUsers, tone: "orange" },
+    { label: "Saques em análise", value: pendingPayouts, tone: "violet" },
     { label: "Produtos publicados", value: db.products.filter((item) => item.status === "PUBLICADO").length, tone: "violet" },
-    { label: "Mentorias publicadas", value: db.mentorships.filter((item) => item.status === "PUBLICADO").length, tone: "orange" },
+    { label: "Kits de divulgação", value: (db.shareKits ?? []).filter((item) => item.status === "PUBLICADO").length, tone: "blue" },
+    { label: "Notificações ativas", value: (db.notifications ?? []).filter((item) => item.status === "PUBLICADO").length, tone: "green" },
+    { label: "Configurações", value: (db.settings ?? []).length, tone: "orange" },
     { label: "Lives agendadas", value: db.lives.filter((item) => item.status === "AGENDADO").length, tone: "blue" },
     { label: "Ofertas ativas", value: db.clubOffers.filter((item) => item.status === "PUBLICADO").length, tone: "green" },
-    { label: "Empresas", value: db.companies.length, tone: "orange" },
-    { label: "Serviços de indicação", value: db.referralServices.length, tone: "violet" },
-    { label: "Oportunidades", value: db.opportunities.length, tone: "blue" },
-    { label: "Campanhas", value: db.campaigns.length, tone: "green" },
-    { label: "Missões", value: db.missions.length, tone: "violet" },
-    { label: "Giro da Sorte", value: db.spinWheels.length, tone: "blue" },
+    { label: "Quadros de ranking", value: (db.rankingBoards ?? []).length, tone: "violet" },
     { label: "Sorteios", value: db.sweepstakes.length, tone: "orange" }
   ];
+}
+
+function buildPendingInbox(db: PlatformDb) {
+  const items: Array<{ title: string; detail: string; href: string }> = [];
+
+  db.users
+    .filter((item) => item.status === "PENDENTE")
+    .forEach((item) => {
+      items.push({
+        title: `Cadastro pendente · ${item.fullName}`,
+        detail: item.email,
+        href: "/admin/usuarios"
+      });
+    });
+
+  const reviewCollections: Array<{ records: Array<{ title?: string; status?: string }>; href: string; label: string }> = [
+    { records: db.products, href: "/admin/produtos", label: "Produto" },
+    { records: db.companies, href: "/admin/empresas", label: "Empresa" },
+    { records: db.lives, href: "/admin/lives", label: "Live" },
+    { records: db.campaigns, href: "/admin/campanhas", label: "Campanha" }
+  ];
+
+  reviewCollections.forEach((group) => {
+    group.records
+      .filter((item) => item.status === "EM_REVISAO")
+      .forEach((item) => {
+        items.push({
+          title: `${group.label} em revisão · ${String(item.title ?? "Registro")}`,
+          detail: "Publicar, pausar ou devolver no módulo de origem.",
+          href: group.href
+        });
+      });
+  });
+
+  (db.referrals ?? [])
+    .filter((item) => item.status === "EM_ANALISE")
+    .forEach((item) => {
+      items.push({
+        title: `Indicação em análise · ${item.id}`,
+        detail: item.rewardLabel ?? "Aguardando validação comercial",
+        href: "/admin/indicacoes"
+      });
+    });
+
+  (db.financeTickets ?? [])
+    .filter((item) => item.payoutStatus === "PENDENTE" || item.payoutStatus === "EM_ANALISE")
+    .forEach((item) => {
+      items.push({
+        title: `${item.ticketType} · ${item.title}`,
+        detail: `${item.amountLabel} · ${item.userName}`,
+        href: "/admin/financeiro"
+      });
+    });
+
+  (db.requests ?? [])
+    .filter((item) => item.status === "EM_REVISAO" || item.status === "RASCUNHO")
+    .forEach((item) => {
+      items.push({
+        title: `${item.requestType} · ${item.title}`,
+        detail: item.requesterName,
+        href: "/admin/solicitacoes"
+      });
+    });
+
+  return items;
 }
 
 export function AdminMasterClient({
@@ -1160,7 +1421,7 @@ export function AdminMasterClient({
             </div>
           </div>
           <div className="master-admin-module-grid">
-            {adminMasterNavGroups.flatMap((group) => group.items).filter((item) => item.key !== "resumo").map((item) => {
+            {adminMasterNavGroups.flatMap((group) => group.items).filter((item) => moduleConfig[item.key]).map((item) => {
               const count = getCollectionItems(db, item.key).length;
               const href = item.key === "resumo" ? "/admin" : `/admin/${item.key}`;
               return (
@@ -1182,10 +1443,13 @@ export function AdminMasterClient({
               </div>
             </div>
             <ul className="master-admin-list">
-              <li>{db.clubOffers.filter((item) => item.status === "AGENDADO").length} ofertas agendadas aguardando janela de publicação.</li>
-              <li>{db.lives.filter((item) => item.status === "AGENDADO").length} lives agendadas com transmissão próxima.</li>
-              <li>{db.couponRedemptions.filter((item) => item.status === "ATIVO").length} cupons ativos ainda válidos no Clubão.</li>
-              <li>{db.referrals.filter((item) => item.status === "EM_ANALISE").length} indicações em análise precisam de acompanhamento.</li>
+              {buildPendingInbox(db).slice(0, 8).map((item) => (
+                <li key={`${item.href}-${item.title}`}>
+                  <Link href={item.href}>{item.title}</Link>
+                  <span> — {item.detail}</span>
+                </li>
+              ))}
+              {buildPendingInbox(db).length === 0 ? <li>Nenhuma pendência operacional no momento.</li> : null}
             </ul>
           </div>
 
@@ -1238,31 +1502,136 @@ export function AdminMasterClient({
       );
     }
 
+    const team = db.users.filter((item) => item.role === "ADMIN_MASTER" || item.role === "ADMIN" || item.role === "EDITOR");
+
     return (
-      <div className="master-admin-surface">
-        <div className="master-admin-head">
-          <div>
-            <span>RBAC</span>
-            <h3>Perfis administrativos</h3>
+      <div className="master-admin-content">
+        <div className="master-admin-surface">
+          <div className="master-admin-head">
+            <div>
+              <span>RBAC</span>
+              <h3>{sectionKey === "equipe" ? "Equipe com acesso administrativo" : "Perfis administrativos"}</h3>
+            </div>
+          </div>
+          <div className="master-admin-table">
+            <article className="master-admin-row">
+              <strong>ADMIN MASTER</strong>
+              <span>Controle total sobre publicação, usuários, financeiro, solicitações e configurações.</span>
+              <small>Permissão `manage:all`.</small>
+            </article>
+            <article className="master-admin-row">
+              <strong>ADMIN</strong>
+              <span>Gerencia conteúdo, publicação e leitura operacional.</span>
+              <small>Permissão `manage:content`.</small>
+            </article>
+            <article className="master-admin-row">
+              <strong>EDITOR</strong>
+              <span>Prepara rascunhos e revisões, sem governança total.</span>
+              <small>Fluxo editorial para aprovação.</small>
+            </article>
           </div>
         </div>
-        <div className="master-admin-table">
-          <article className="master-admin-row">
-            <strong>ADMIN MASTER</strong>
-            <span>Controle total sobre publicação, usuários, auditoria e configurações estruturais.</span>
-            <small>Backend protegido por permissão `manage:all`.</small>
-          </article>
-          <article className="master-admin-row">
-            <strong>ADMIN</strong>
-            <span>Gerencia conteúdo, publicação e leitura operacional da plataforma.</span>
-            <small>Pronto para escopos por módulo.</small>
-          </article>
-          <article className="master-admin-row">
-            <strong>EDITOR</strong>
-            <span>Prepara rascunhos e revisões, sem controle total de governança.</span>
-            <small>Fluxo editorial preparado para aprovação posterior.</small>
-          </article>
+
+        <div className="master-admin-surface">
+          <div className="master-admin-head">
+            <div>
+              <span>Equipe</span>
+              <h3>{team.length} contas administrativas</h3>
+            </div>
+          </div>
+          <p className="master-admin-coupon-ledger-copy">Papel, status e plano se alteram em Usuários. Esta tela lista quem já tem acesso interno.</p>
+          <div className="master-admin-table">
+            {team.map((user) => (
+              <article key={user.id} className="master-admin-row">
+                <strong>{user.fullName}</strong>
+                <span>
+                  {user.role} · {user.email}
+                </span>
+                <small>
+                  {user.status} · {user.plan}
+                </small>
+              </article>
+            ))}
+          </div>
+          <div className="master-admin-editor-actions">
+            <Link href="/admin/usuarios" className="master-admin-inline">
+              Editar usuários e papéis
+            </Link>
+          </div>
         </div>
+      </div>
+    );
+  };
+
+  const renderReports = () => {
+    const rankingLeaders = [...db.users].sort((a, b) => (a.rankingPosition || 99) - (b.rankingPosition || 99)).slice(0, 8);
+    const publishedSettings = db.settings ?? [];
+
+    return (
+      <div className="master-admin-content">
+        <section className="master-admin-hero">
+          <div>
+            <span>Relatórios</span>
+            <h2>Leitura operacional da plataforma</h2>
+            <p>Números consolidados a partir do que o Admin Master publica e aprova. Sem módulo paralelo: esta tela só lê a mesma base.</p>
+          </div>
+          <div className="master-admin-kpi-grid">
+            {summaryMetrics.map((metric) => (
+              <article key={metric.label} className={`master-admin-kpi tone-${metric.tone}`}>
+                <span>{metric.label}</span>
+                <strong>{metric.value}</strong>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="master-admin-grid">
+          <div className="master-admin-surface">
+            <div className="master-admin-head">
+              <div>
+                <span>Ranking</span>
+                <h3>Posições atuais</h3>
+              </div>
+            </div>
+            <div className="master-admin-table">
+              {rankingLeaders.map((user) => (
+                <article key={user.id} className="master-admin-row">
+                  <strong>
+                    #{user.rankingPosition || "—"} {user.fullName}
+                  </strong>
+                  <span>
+                    {user.salesCount} vendas · {user.points} pontos · R$ {user.commissionTotal}
+                  </span>
+                  <small>
+                    {user.plan} · {user.status}
+                  </small>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <aside className="master-admin-side">
+            <div className="master-admin-surface">
+              <div className="master-admin-head">
+                <div>
+                  <span>Parâmetros</span>
+                  <h3>Configurações ativas</h3>
+                </div>
+              </div>
+              <div className="master-admin-table">
+                {publishedSettings.map((item) => (
+                  <article key={item.id} className="master-admin-row">
+                    <strong>{item.title}</strong>
+                    <span>{item.settingValue}</span>
+                    <small>
+                      {item.groupLabel} · {item.settingKey}
+                    </small>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </aside>
+        </section>
       </div>
     );
   };
@@ -1290,7 +1659,7 @@ export function AdminMasterClient({
             />
             <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="master-admin-select">
               <option>Todos</option>
-              {workflowOptions.map((option) => (
+              {(sectionConfig.fields.find((field) => field.name === "status")?.options ?? workflowOptions).map((option) => (
                 <option key={option}>{option}</option>
               ))}
             </select>
@@ -1299,6 +1668,62 @@ export function AdminMasterClient({
             </button>
           </div>
         </section>
+
+        {sectionKey === "solicitacoes" ? (
+          <section className="master-admin-surface">
+            <div className="master-admin-head">
+              <div>
+                <span>Fila viva</span>
+                <h3>{buildPendingInbox(db).length} pendências cruzadas</h3>
+              </div>
+            </div>
+            <p className="master-admin-coupon-ledger-copy">
+              Cadastros, revisões, indicações e saques aparecem aqui mesmo quando nasceram em outro módulo. O registro abaixo documenta a decisão.
+            </p>
+            <div className="master-admin-table">
+              {buildPendingInbox(db).map((item) => (
+                <article key={`${item.href}-${item.title}`} className="master-admin-row">
+                  <div className="master-admin-row-main">
+                    <div>
+                      <strong>{item.title}</strong>
+                      <p>{item.detail}</p>
+                    </div>
+                  </div>
+                  <div className="master-admin-row-actions">
+                    <Link href={item.href} className="master-admin-inline">
+                      Abrir módulo
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {sectionKey === "indicacoes" ? (
+          <section className="master-admin-surface">
+            <div className="master-admin-head">
+              <div>
+                <span>Leads</span>
+                <h3>{Array.isArray(db.referrals) ? db.referrals.length : 0} indicações rastreadas</h3>
+              </div>
+            </div>
+            <p className="master-admin-coupon-ledger-copy">
+              Serviços se cadastram nesta tela. O histórico de leads fica aqui para o Admin Master acompanhar conversão e premiação.
+            </p>
+            <div className="master-admin-table">
+              {(Array.isArray(db.referrals) ? db.referrals : []).map((item) => (
+                <article key={item.id} className="master-admin-row">
+                  <strong>{item.id}</strong>
+                  <span>{item.status}</span>
+                  <small>
+                    {item.rewardLabel ?? "Sem premiação"} · {formatPtDateTime(item.createdAt)}
+                  </small>
+                </article>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         {sectionKey === "clubao" ? (
           <section className="master-admin-surface master-admin-coupon-ledger">
@@ -1550,7 +1975,13 @@ export function AdminMasterClient({
           </div>
         </header>
 
-        {sectionKey === "resumo" ? renderSummary() : sectionKey === "auditoria" || sectionKey === "administradores" ? renderReadOnlySection() : renderEditableSection()}
+        {sectionKey === "resumo"
+          ? renderSummary()
+          : sectionKey === "relatorios"
+            ? renderReports()
+            : sectionKey === "auditoria" || sectionKey === "administradores" || sectionKey === "equipe"
+              ? renderReadOnlySection()
+              : renderEditableSection()}
       </main>
     </div>
   );

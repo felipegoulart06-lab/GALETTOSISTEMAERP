@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Tênis">
+  <rect width="800" height="600" fill="#65A30D"/>
+  <rect y="340" width="800" height="260" fill="#F97316"/>
+  <path d="M160 360c80-90 200-110 300-70 90 36 170 40 250 18v70c-90 40-200 60-310 54-110-6-180 8-240 28z" fill="#F8FAFC"/>
+  <path d="M180 390c70-10 160-16 250 6" fill="none" stroke="#F97316" stroke-width="16"/>
+  <ellipse cx="220" cy="430" rx="70" ry="18" fill="#0F172A"/>
+  <ellipse cx="520" cy="424" rx="90" ry="18" fill="#0F172A"/>
+</svg>

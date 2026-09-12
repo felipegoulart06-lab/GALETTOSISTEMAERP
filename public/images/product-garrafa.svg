@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Garrafa">
+  <rect width="800" height="600" fill="#0E7490"/>
+  <rect y="0" width="800" height="220" fill="#FB7185"/>
+  <rect x="330" y="90" width="140" height="50" rx="12" fill="#F8FAFC"/>
+  <rect x="310" y="140" width="180" height="340" rx="70" fill="#155E75"/>
+  <rect x="330" y="200" width="140" height="200" rx="20" fill="#F9A8D4"/>
+</svg>

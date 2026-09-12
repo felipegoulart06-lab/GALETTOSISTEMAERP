@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Skincare">
+  <rect width="800" height="600" fill="#FB7185"/>
+  <circle cx="90" cy="80" r="140" fill="#FBCFE8"/>
+  <rect x="250" y="180" width="110" height="250" rx="20" fill="#FFF1F2"/>
+  <rect x="278" y="140" width="54" height="50" rx="8" fill="#9D174D"/>
+  <rect x="390" y="220" width="150" height="210" rx="75" fill="#BE185D"/>
+  <ellipse cx="465" cy="250" rx="48" ry="28" fill="#FCE7F3"/>
+</svg>

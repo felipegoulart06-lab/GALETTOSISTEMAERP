@@ -1,6 +1,6 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { Dashboard } from "@/components/user-dashboard";
-import { sectionOrder, type SectionKey } from "@/lib/dashboard-data";
+import { dashboardSections, type SectionKey } from "@/lib/dashboard-data";
 
 
 export const dynamic = "force-dynamic";
@@ -15,19 +15,7 @@ export default async function SectionPage({
   const { section } = await params;
   const query = await searchParams;
 
-  // #region debug-point D:section-check
-  
-  // #endregion
-
-  if (section === "divulgue") {
-    redirect("/produtos");
-  }
-
-  if (section === "ranking") {
-    notFound();
-  }
-
-  if (!sectionOrder.includes(section as SectionKey) || section === "home") {
+  if (!(section in dashboardSections) || section === "home") {
     notFound();
   }
 

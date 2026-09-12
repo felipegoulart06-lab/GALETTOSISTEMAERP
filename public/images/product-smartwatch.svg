@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Smartwatch">
+  <rect width="800" height="600" fill="#0F766E"/>
+  <rect y="380" width="800" height="220" fill="#F43F5E"/>
+  <rect x="330" y="70" width="140" height="110" rx="20" fill="#FB7185"/>
+  <rect x="300" y="170" width="200" height="220" rx="48" fill="#111827"/>
+  <rect x="328" y="198" width="144" height="164" rx="32" fill="#67E8F9"/>
+  <circle cx="400" cy="280" r="8" fill="#111827"/>
+  <rect x="330" y="400" width="140" height="110" rx="20" fill="#FB7185"/>
+</svg>

@@ -7,6 +7,12 @@ import {
 
 export const dynamic = "force-dynamic";
 
+export function generateStaticParams() {
+  return adminMasterSectionOrder
+    .filter((section) => section !== "resumo")
+    .map((section) => ({ section }));
+}
+
 export default async function AdminSectionPage({
   params
 }: {

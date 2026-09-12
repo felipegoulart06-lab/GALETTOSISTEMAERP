@@ -2285,6 +2285,28 @@ svg {
   display: grid;
   grid-template-columns: 320px minmax(0, 1fr) 340px;
   gap: 18px;
+  margin-top: 8px;
+  align-items: start;
+}
+
+.stack-panels-lives {
+  gap: 8px;
+}
+
+.side-panel-architecture {
+  border-radius: 8px;
+  padding: 28px 26px 26px;
+  position: sticky;
+  top: 12px;
+  z-index: 5;
+}
+
+.side-panel-architecture .side-panel-head {
+  margin-bottom: 18px;
+}
+
+.side-panel-architecture .system-list {
+  gap: 14px;
 }
 
 .timeline-list,
@@ -2600,10 +2622,15 @@ svg {
   letter-spacing: 0.08em;
 }
 
+.product-browser-card.tone-blue .product-browser-copy span { color: #1d4ed8; }
+.product-browser-card.tone-green .product-browser-copy span { color: #15803d; }
+.product-browser-card.tone-orange .product-browser-copy span { color: #c2410c; }
+.product-browser-card.tone-violet .product-browser-copy span { color: #6d28d9; }
+
 .product-browser-filter.is-active {
-  border-color: #4e62be;
-  color: #1f2b4d;
-  background: #eef2ff;
+  border-color: #7c3aed;
+  color: #ffffff;
+  background: #7c3aed;
 }
 
 .product-browser-list {
@@ -2684,6 +2711,32 @@ svg {
   border-color: #cbd5e1;
 }
 
+.product-browser-card.tone-blue {
+  border-color: #93c5fd;
+}
+.product-browser-card.tone-green {
+  border-color: #86efac;
+}
+.product-browser-card.tone-orange {
+  border-color: #fdba74;
+}
+.product-browser-card.tone-violet {
+  border-color: #c4b5fd;
+}
+
+.product-browser-card.tone-blue .product-browser-media {
+  background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%);
+}
+.product-browser-card.tone-green .product-browser-media {
+  background: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 100%);
+}
+.product-browser-card.tone-orange .product-browser-media {
+  background: linear-gradient(180deg, #ffedd5 0%, #fff7ed 100%);
+}
+.product-browser-card.tone-violet .product-browser-media {
+  background: linear-gradient(180deg, #ede9fe 0%, #f5f3ff 100%);
+}
+
 .product-browser-media {
   position: relative;
   width: 100%;
@@ -2704,12 +2757,12 @@ svg {
 .product-browser-media .managed-media-fit-contain img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  padding: 12px;
+  object-fit: cover;
+  padding: 0;
   display: block;
   max-width: 100%;
   max-height: 100%;
-  background: #ffffff;
+  background: transparent;
 }
 
 .product-browser-card .product-browser-copy {
@@ -8698,6 +8751,10 @@ svg {
     grid-template-columns: 1fr;
   }
 
+  .side-panel-architecture {
+    position: static;
+  }
+
   .clubao-bottom-grid,
   .ranking-lists,
   .empresa-support-grid,
@@ -9049,7 +9106,7 @@ svg {
 .giro-status-card span,
 .giro-prize-item span,
 .giro-history-head span,
-.giro-modal span,
+.giro-modal > span,
 .giro-spin-meter span {
   color: var(--text-faint);
   font-size: 11px;
@@ -9238,16 +9295,35 @@ svg {
   gap: 12px;
 }
 
+.giro-arena.is-idle {
+  box-shadow: inset 0 0 0 1px rgba(147, 197, 253, 0.18);
+}
+
 .giro-wheel-stage {
   position: relative;
   width: min(100%, 430px);
   aspect-ratio: 1;
 }
 
+.giro-wheel-halo {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, transparent 54%, rgba(59, 130, 246, 0.18) 62%, rgba(253, 224, 71, 0.2) 68%, transparent 76%);
+  opacity: 0;
+}
+
+.giro-wheel-stage.is-idle .giro-wheel-halo {
+  animation: giro-idle-halo 2.8s ease-in-out infinite;
+}
+
 .giro-wheel-lamps {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  z-index: 5;
 }
 
 .giro-wheel-lamps i {
@@ -9262,6 +9338,11 @@ svg {
   transform: rotate(calc(var(--i) * 18deg)) translateY(-214px);
 }
 
+.giro-wheel-stage.is-idle .giro-wheel-lamps i {
+  animation: giro-lamp-idle 2.4s linear infinite;
+  animation-delay: calc(var(--i) * 70ms);
+}
+
 .giro-wheel-stage.is-spinning .giro-wheel-lamps i {
   animation: giro-lamp 0.72s linear infinite;
   animation-delay: calc(var(--i) * 36ms);
@@ -9271,7 +9352,7 @@ svg {
   position: absolute;
   top: 6px;
   left: 50%;
-  z-index: 4;
+  z-index: 6;
   width: 22px;
   height: 28px;
   transform: translateX(-50%);
@@ -9280,8 +9361,21 @@ svg {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.35);
 }
 
+.giro-wheel-stage.is-idle .giro-wheel-pointer {
+  animation: giro-idle-pointer 1.6s ease-in-out infinite;
+}
+
 .giro-wheel-stage.is-spinning .giro-wheel-pointer {
   animation: giro-pointer 0.18s ease-in-out infinite alternate;
+}
+
+.giro-wheel-idle {
+  position: absolute;
+  inset: 0;
+}
+
+.giro-wheel-stage.is-idle .giro-wheel-idle {
+  animation: giro-idle-nudge 4.8s ease-in-out infinite;
 }
 
 .giro-wheel {
@@ -9295,6 +9389,42 @@ svg {
     0 18px 40px rgba(0, 0, 0, 0.35);
   transition: transform 5s cubic-bezier(0.12, 0.7, 0.12, 1);
   will-change: transform;
+}
+
+.giro-wheel-stage.is-idle .giro-wheel {
+  box-shadow:
+    0 0 0 6px #0b1628,
+    0 0 28px rgba(96, 165, 250, 0.35),
+    0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.giro-wheel-sheen {
+  position: absolute;
+  inset: -20%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    118deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.08) 46%,
+    rgba(255, 255, 255, 0.62) 50%,
+    rgba(253, 230, 138, 0.28) 54%,
+    transparent 62%
+  );
+  transform: translateX(-70%) rotate(18deg);
+  opacity: 0;
+}
+
+.giro-wheel-stage.is-idle .giro-wheel-sheen {
+  animation: giro-idle-sheen 3.2s ease-in-out infinite;
+}
+
+.giro-arena.is-idle .giro-spin-button:not(:disabled)::after {
+  animation: giro-shimmer 2.4s ease-in-out infinite;
+}
+
+.giro-arena.is-idle .giro-spin-button:not(:disabled) {
+  box-shadow: 0 0 0 1px rgba(147, 197, 253, 0.35), 0 10px 24px rgba(37, 99, 235, 0.28);
 }
 
 .giro-wheel-ticks {
@@ -9348,6 +9478,11 @@ svg {
   background: linear-gradient(180deg, #1e3a5f 0%, #0f172a 100%);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
   transform: translate(-50%, -50%);
+}
+
+.giro-wheel-stage.is-idle .giro-wheel-hub {
+  animation: giro-idle-hub 2.8s ease-in-out infinite;
+  border-color: #fde68a;
 }
 
 .giro-wheel-hub strong {
@@ -9581,6 +9716,35 @@ svg {
   max-width: none;
 }
 
+.giro-modal-action {
+  min-height: 52px;
+  margin-top: 8px;
+  padding: 0 20px;
+  border: 1px solid #15803d;
+  background: #16a34a;
+  color: #ffffff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.giro-modal-action span {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.giro-modal-action:hover,
+.giro-modal-action:focus-visible {
+  background: #15803d;
+  border-color: #166534;
+}
+
 .giro-modal-prize {
   margin: 8px 0 6px;
   padding: 16px;
@@ -9653,6 +9817,91 @@ svg {
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+@keyframes giro-idle-halo {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+
+@keyframes giro-idle-nudge {
+  0%,
+  100% {
+    transform: rotate(-7deg);
+  }
+  50% {
+    transform: rotate(7deg);
+  }
+}
+
+@keyframes giro-idle-sheen {
+  0% {
+    opacity: 0;
+    transform: translateX(-80%) rotate(18deg);
+  }
+  18% {
+    opacity: 1;
+  }
+  42% {
+    opacity: 0.15;
+    transform: translateX(80%) rotate(18deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(80%) rotate(18deg);
+  }
+}
+
+@keyframes giro-lamp-idle {
+  0%,
+  72%,
+  100% {
+    background: #334155;
+    box-shadow: none;
+  }
+  80% {
+    background: #fde68a;
+    box-shadow: 0 0 10px rgba(253, 224, 71, 0.95);
+  }
+}
+
+@keyframes giro-idle-pointer {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(-4deg);
+  }
+  50% {
+    transform: translateX(-50%) rotate(4deg);
+  }
+}
+
+@keyframes giro-idle-hub {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(253, 224, 71, 0.15), 0 8px 20px rgba(0, 0, 0, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 18px 4px rgba(253, 224, 71, 0.45), 0 8px 20px rgba(0, 0, 0, 0.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .giro-wheel-stage.is-idle .giro-wheel-halo,
+  .giro-wheel-stage.is-idle .giro-wheel-idle,
+  .giro-wheel-stage.is-idle .giro-wheel-sheen,
+  .giro-wheel-stage.is-idle .giro-wheel-lamps i,
+  .giro-wheel-stage.is-idle .giro-wheel-pointer,
+  .giro-wheel-stage.is-idle .giro-wheel-hub,
+  .giro-arena.is-idle .giro-spin-button:not(:disabled)::after {
+    animation: none;
   }
 }
 

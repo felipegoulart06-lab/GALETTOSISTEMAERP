@@ -7,16 +7,22 @@ import type {
   ClubOfferRecord,
   CompanyRecord,
   CouponRedemptionRecord,
+  FinanceTicketRecord,
   LiveRecord,
   MentorshipRecord,
   MissionRecord,
+  NotificationRecord,
   OpportunityRecord,
   PlatformDb,
   PlatformUser,
   ProductRecord,
+  RankingBoardRecord,
   ReferralRecord,
   ReferralServiceRecord,
+  RequestRecord,
   RewardRecord,
+  SettingRecord,
+  ShareKitRecord,
   SpinWheelRecord,
   SupplierListRecord,
   SweepstakesRecord,
@@ -362,149 +368,9 @@ const seededProducts: ProductRecord[] = [
     affiliationRules: ["Disponível para afiliados aprovados", "Comissão válida após aprovação da venda"],
     materials: ["Criativo para story", "Criativo para reels", "Banner 1080x1080"],
     facts: product.facts,
-    chips: product.chips
-  })),
-  {
-    ...createBaseEntity("product", 6, {
-      title: "Hub Smart Home Vision",
-      subtitle: "Central residencial com apelo premium para automação",
-      shortDescription: "Hub premium para automação residencial e bundles de alto valor.",
-      description: "Produto pensado para ofertas mais premium, comparação técnica e campanhas de demonstração com foco em ticket maior.",
-      image: "/images/product-card-03-real-v2.png",
-      category: "Smart Home",
-      tags: ["Smart Home", "Premium", "Bundle"],
-      featured: true
-    }),
-    kind: "product" as const,
-    badge: "Premium",
-    accent: "violet",
-    brand: "Vision Home",
-    manufacturer: "Vision Home",
-    price: "R$ 899,00",
-    commissionRate: "18%",
-    commissionValue: "R$ 161,82",
-    commercialInfo: "Ideal para bundles e lives com demonstração.",
-    audience: "Público premium, tecnologia e automação residencial.",
-    payoutWindow: "Liberação após confirmação da venda e validação logística.",
-    approvalFlow: "Afiliação liberada após aceite do regulamento comercial.",
-    affiliateLink: "https://fgexacta.com/r/admin/hub-smart-home-vision",
-    affiliationRules: ["Necessita aprovação administrativa", "Conteúdo deve seguir o material oficial"],
-    materials: ["Vídeo de demonstração", "Carrossel de benefícios"],
-    facts: ["Forte para bundles", "Boa margem para comissão", "Encaixe com creator tech"],
-    chips: ["Smart Home", "Premium", "Comissão"]
-  },
-  {
-    ...createBaseEntity("product", 7, {
-      title: "Mochila Urban Creator",
-      subtitle: "Acessório lifestyle com apelo visual para rotina e viagem",
-      shortDescription: "Produto lifestyle com forte leitura visual para creators.",
-      description: "Boa opção para criativos de rotina, moda, utilidade e conteúdos com valor percebido mais alto.",
-      image: "/images/product-card-01-real-v2.png",
-      category: "Lifestyle",
-      tags: ["Lifestyle", "Moda", "Creator"]
-    }),
-    kind: "product" as const,
-    badge: "Lifestyle",
-    accent: "blue",
-    brand: "Urban Creator",
-    manufacturer: "Urban Creator",
-    price: "R$ 249,90",
-    commissionRate: "21%",
-    commissionValue: "R$ 52,47",
-    commercialInfo: "Acessório de giro com forte apelo visual.",
-    audience: "Moda, creators, rotina e lifestyle.",
-    payoutWindow: "Validação de comissão em até 7 dias.",
-    approvalFlow: "Link gerado para afiliados aprovados.",
-    affiliateLink: "https://fgexacta.com/r/admin/mochila-urban-creator",
-    affiliationRules: ["Divulgação sem promessa irreal", "Uso da identidade visual oficial"],
-    materials: ["Criativo estático", "Story motion"],
-    facts: ["Bom para rotina", "Apelo visual alto", "Campanhas sazonais"],
-    chips: ["Lifestyle", "Moda", "Creator"]
-  },
-  {
-    ...createBaseEntity("product", 8, {
-      title: "Ring Light Studio Max",
-      subtitle: "Equipamento creator com ticket intermediário e boa conversão",
-      shortDescription: "Ring light com apelo para creators, mentorias e lives.",
-      description: "Produto creator com linguagem simples, valor percebido e excelente encaixe para lives, mentorias e bundles.",
-      image: "/images/product-card-05-real-v2.png",
-      category: "Creator Gear",
-      tags: ["Creator", "Live", "Mentorias"]
-    }),
-    kind: "product" as const,
-    badge: "Ao vivo",
-    accent: "green",
-    brand: "Studio Max",
-    manufacturer: "Studio Max",
-    price: "R$ 319,90",
-    commissionRate: "17%",
-    commissionValue: "R$ 54,38",
-    commercialInfo: "Perfeito para bundles e lives de demonstração.",
-    audience: "Creators, professores e vendedores em live.",
-    payoutWindow: "Validação comercial após entrega do pedido.",
-    approvalFlow: "Afiliação aprovada com aceite do material oficial.",
-    affiliateLink: "https://fgexacta.com/r/admin/ring-light-studio-max",
-    affiliationRules: ["Uso do posicionamento oficial", "Sem alterar claims de benefício"],
-    materials: ["Roteiro de live", "Assets para criativos"],
-    facts: ["Encaixa com mentorias", "Ticket médio bom", "Alta leitura para vídeo"],
-    chips: ["Creator Gear", "Live", "Demonstração"]
-  },
-  {
-    ...createBaseEntity("product", 9, {
-      title: "Power Bank Turbo Air",
-      subtitle: "Produto de giro com forte apelo de utilidade e recorrência",
-      shortDescription: "Acessório prático e fácil de explicar em campanhas de performance.",
-      description: "Produto com linguagem simples, boa utilidade e ótimo encaixe para campanhas rápidas de conversão.",
-      image: "/images/product-card-02-real-v2.png",
-      category: "Tecnologia",
-      tags: ["Tecnologia", "Utilidade", "Giro"]
-    }),
-    kind: "product" as const,
-    badge: "Giro rápido",
-    accent: "orange",
-    brand: "Turbo Air",
-    manufacturer: "Turbo Air",
-    price: "R$ 149,90",
-    commissionRate: "19%",
-    commissionValue: "R$ 28,48",
-    commercialInfo: "Produto para criativos diretos e utilitários.",
-    audience: "Público geral, rotina e mobilidade.",
-    payoutWindow: "Comissão após aprovação da venda.",
-    approvalFlow: "Link liberado dentro da plataforma após aprovação.",
-    affiliateLink: "https://fgexacta.com/r/admin/power-bank-turbo-air",
-    affiliationRules: ["Oferta sujeita ao estoque", "Não usar claims técnicos não aprovados"],
-    materials: ["Pack de criativos", "Vídeo curto"],
-    facts: ["Fácil de explicar", "Boa taxa de clique", "Preço competitivo"],
-    chips: ["Tecnologia", "Giro", "Conversão"]
-  },
-  {
-    ...createBaseEntity("product", 10, {
-      title: "Kit Office Premium Desk",
-      subtitle: "Bundle de mesa para público de produtividade e home office",
-      shortDescription: "Bundle com excelente valor percebido para home office.",
-      description: "Kit com apelo premium para produtividade, bem-estar e conteúdo de organização de ambiente.",
-      image: "/images/product-card-04-real-v2.png",
-      category: "Home Office",
-      tags: ["Home Office", "Produtividade", "Premium"]
-    }),
-    kind: "product" as const,
-    badge: "Bundle",
-    accent: "violet",
-    brand: "Desk Premium",
-    manufacturer: "Desk Premium",
-    price: "R$ 459,90",
-    commissionRate: "20%",
-    commissionValue: "R$ 91,98",
-    commercialInfo: "Produto premium com excelente leitura visual.",
-    audience: "Home office, creators e produtividade.",
-    payoutWindow: "Comissão validada após ciclo de entrega.",
-    approvalFlow: "Afiliação precisa aceite do regulamento de marca.",
-    affiliateLink: "https://fgexacta.com/r/admin/kit-office-premium-desk",
-    affiliationRules: ["Obrigatório usar material aprovado", "Campanhas com preço devem seguir tabela vigente"],
-    materials: ["Fotos de lifestyle", "Assets de campanha"],
-    facts: ["Bundle premium", "Ótimo para conteúdo de mesa", "Bom valor percebido"],
-    chips: ["Home Office", "Bundle", "Premium"]
-  }
+    chips: product.chips,
+    slug: product.slug
+  }))
 ];
 
 const mentorshipCards = dashboardSections.mentorias.cards;
@@ -1616,6 +1482,352 @@ const seededCouponRedemptions: CouponRedemptionRecord[] = [
   }
 ];
 
+const seededShareKits: ShareKitRecord[] = [
+  {
+    ...createBaseEntity("sharekit", 1, {
+      title: "Kit Instagram — Produto destaque",
+      subtitle: "Stories, feed e legenda prontos",
+      shortDescription: "Pacote visual para divulgar o produto em destaque sem edição.",
+      description: "Inclui imagem, stories, legenda curta, link rastreado e QR Code gerado pelo Admin Master.",
+      image: "/images/product-card-01-real-v2.png",
+      category: "Social",
+      tags: ["Instagram", "Stories", "Link"],
+      featured: true
+    }),
+    kind: "shareKit",
+    channel: "Instagram",
+    packType: "Stories + feed",
+    copyLines: ["Pronto para vender hoje.", "Link na bio com rastreio FG EXACTA.", "Use o QR no story de 24h."],
+    materials: ["Imagem 1080x1350", "Story 1080x1920", "QR Code"],
+    ctaLabel: "Copiar kit",
+    ctaHref: "/produtos",
+    relatedProductIds: [],
+    facts: ["Reduz atrito do iniciante", "Liga produto e campanha", "Copy pronta"],
+    chips: ["Divulgue", "Produto", "Social"]
+  },
+  {
+    ...createBaseEntity("sharekit", 2, {
+      title: "Kit WhatsApp — Indicação",
+      subtitle: "Texto curto para conversão direta",
+      shortDescription: "Mensagem pronta para enviar no WhatsApp com CTA de indicação.",
+      description: "Use para indicar serviços credenciados com um toque, sem inventar copy.",
+      image: "/images/product-card-02-real-v2.png",
+      category: "WhatsApp",
+      tags: ["WhatsApp", "Indicação"]
+    }),
+    kind: "shareKit",
+    channel: "WhatsApp",
+    packType: "Texto + link",
+    copyLines: ["Indique com um toque.", "Comissão rastreada no painel."],
+    materials: ["Texto curto", "Link de indicação"],
+    ctaLabel: "Copiar mensagem",
+    ctaHref: "/indicacoes",
+    relatedProductIds: [],
+    facts: ["Conecta com Indicações", "Mensagem curta", "Rastreio ativo"],
+    chips: ["WhatsApp", "Indicação"]
+  },
+  {
+    ...createBaseEntity("sharekit", 3, {
+      title: "Kit campanha da temporada",
+      subtitle: "Banner, reels e QR da campanha ativa",
+      shortDescription: "Materiais oficiais da campanha publicada pelo Admin Master.",
+      description: "Pacote único para quem entra na campanha e precisa executar no mesmo dia.",
+      image: "/images/product-card-03-real-v2.png",
+      category: "Campanha",
+      tags: ["Campanha", "Banner"]
+    }),
+    kind: "shareKit",
+    channel: "Multi-canal",
+    packType: "Banner + vídeo",
+    copyLines: ["Campanha com prazo e meta visíveis.", "Use só material oficial."],
+    materials: ["Banner horizontal", "Vídeo curto", "QR Code"],
+    ctaLabel: "Abrir campanha",
+    ctaHref: "/campanhas",
+    relatedProductIds: [],
+    facts: ["Material oficial", "Prazo da campanha", "Recompensa vinculada"],
+    chips: ["Campanha", "Banner", "Vídeo"]
+  }
+];
+
+const seededRankingBoards: RankingBoardRecord[] = [
+  {
+    ...createBaseEntity("ranking", 1, {
+      title: "Ranking de vendas",
+      subtitle: "Ciclo mensal da plataforma",
+      shortDescription: "Ordena a base por vendas confirmadas no ciclo.",
+      description: "Critério principal de performance comercial. Pontos e comissões entram como desempate.",
+      image: "/images/product-card-04-real-v2.png",
+      category: "Vendas",
+      tags: ["Vendas", "Mensal"],
+      featured: true
+    }),
+    kind: "rankingBoard",
+    metric: "Vendas confirmadas",
+    periodLabel: "Mensal",
+    prizeLabel: "Bônus de liderança + destaque no painel",
+    criteria: ["Venda aprovada", "Sem cancelamento", "Desempate por pontos"],
+    facts: ["Alimenta Desempenho", "Usa posição do usuário", "Premiação visível"],
+    chips: ["Ranking", "Vendas"]
+  },
+  {
+    ...createBaseEntity("ranking", 2, {
+      title: "Ranking de indicações",
+      subtitle: "Qualidade de rede no ciclo",
+      shortDescription: "Mede indicações convertidas e premiadas.",
+      description: "Peso maior para conversão, não só volume de leads criados.",
+      image: "/images/product-card-05-real-v2.png",
+      category: "Indicações",
+      tags: ["Indicações"]
+    }),
+    kind: "rankingBoard",
+    metric: "Indicações convertidas",
+    periodLabel: "Quinzenal",
+    prizeLabel: "Extra de pontos e selo de rede",
+    criteria: ["Lead convertido", "Premiação validada"],
+    facts: ["Liga Indicações e Renda", "Desempate por cupons"],
+    chips: ["Ranking", "Rede"]
+  }
+];
+
+const seededFinanceTickets: FinanceTicketRecord[] = [
+  {
+    ...createBaseEntity("finance", 1, {
+      title: "Saque Rafael Mendes",
+      subtitle: "Solicitação de liberação",
+      shortDescription: "Valor disponível após janela de validação.",
+      description: "Pedido de saque gerado a partir de comissões aprovadas no ciclo.",
+      image: "/images/minha-renda-hero-real-v2.jpg",
+      category: "Saque",
+      tags: ["Saque"],
+      status: "EM_REVISAO"
+    }),
+    kind: "financeTicket",
+    ticketType: "SAQUE",
+    amountLabel: "R$ 840,00",
+    userName: "Rafael Mendes",
+    userEmail: "rafael@fgexacta.com",
+    origin: "Comissões de produtos",
+    payoutStatus: "EM_ANALISE"
+  },
+  {
+    ...createBaseEntity("finance", 2, {
+      title: "Comissão Juliana Campos",
+      subtitle: "Venda confirmada",
+      shortDescription: "Comissão de produto já aprovada.",
+      description: "Registro financeiro ligado à venda do catálogo publicado.",
+      image: "/images/minha-renda-hero-real-v2.jpg",
+      category: "Comissão",
+      tags: ["Comissão"],
+      status: "PUBLICADO"
+    }),
+    kind: "financeTicket",
+    ticketType: "COMISSAO",
+    amountLabel: "R$ 25,98",
+    userName: "Juliana Campos",
+    userEmail: "juliana@fgexacta.com",
+    origin: "Fone Bluetooth",
+    payoutStatus: "APROVADO"
+  },
+  {
+    ...createBaseEntity("finance", 3, {
+      title: "Bônus campanha",
+      subtitle: "Meta da temporada",
+      shortDescription: "Bônus por cumprimento de campanha.",
+      description: "Lançamento administrativo vinculado à campanha ativa.",
+      image: "/images/minha-renda-hero-real-v2.jpg",
+      category: "Bônus",
+      tags: ["Campanha"],
+      status: "PUBLICADO"
+    }),
+    kind: "financeTicket",
+    ticketType: "BONUS",
+    amountLabel: "R$ 150,00",
+    userName: "Rafael Mendes",
+    userEmail: "rafael@fgexacta.com",
+    origin: "Desafio de vendas",
+    payoutStatus: "PAGO"
+  }
+];
+
+const seededNotifications: NotificationRecord[] = [
+  {
+    ...createBaseEntity("notice", 1, {
+      title: "Live em destaque hoje",
+      subtitle: "Assistir agora",
+      shortDescription: "A live do ciclo já está no ar.",
+      description: "Notificação de ação imediata para levar o usuário à transmissão publicada.",
+      image: "/images/lives-card-01-v1.jpg",
+      category: "Lives",
+      tags: ["Live"],
+      featured: true
+    }),
+    kind: "notification",
+    audience: "Todos os ativos",
+    channel: "Painel",
+    ctaLabel: "Assistir live",
+    ctaHref: "/lives",
+    priority: "URGENTE"
+  },
+  {
+    ...createBaseEntity("notice", 2, {
+      title: "Nova missão diária",
+      subtitle: "Concluir hoje",
+      shortDescription: "Compartilhe 3 produtos e ganhe pontos.",
+      description: "Puxa execução no menu de missões publicado pelo Admin Master.",
+      image: "/images/missoes-hero-real.jpg",
+      category: "Missões",
+      tags: ["Missão"]
+    }),
+    kind: "notification",
+    audience: "Membros Pro",
+    channel: "Painel + e-mail",
+    ctaLabel: "Abrir missões",
+    ctaHref: "/missoes",
+    priority: "NORMAL"
+  },
+  {
+    ...createBaseEntity("notice", 3, {
+      title: "Produto novo no catálogo",
+      subtitle: "Afiliar com material pronto",
+      shortDescription: "Um produto publicado já tem kit de divulgação.",
+      description: "Liga catálogo, Divulgue e Minha renda em um único clique.",
+      image: "/images/product-card-05-real-v2.png",
+      category: "Produtos",
+      tags: ["Produto"]
+    }),
+    kind: "notification",
+    audience: "Afiliados",
+    channel: "Painel",
+    ctaLabel: "Ver produto",
+    ctaHref: "/produtos",
+    priority: "NORMAL"
+  }
+];
+
+const seededRequests: RequestRecord[] = [
+  {
+    ...createBaseEntity("request", 1, {
+      title: "Aprovação de cadastro pendente",
+      subtitle: "Usuário aguardando ativação",
+      shortDescription: "Conta em status PENDENTE na base.",
+      description: "Solicitação operacional para o Admin Master ativar ou bloquear o usuário.",
+      image: "/images/admin-filipe-galetto-01-v1.png",
+      category: "Cadastro",
+      tags: ["Usuário"],
+      status: "EM_REVISAO"
+    }),
+    kind: "request",
+    requestType: "CADASTRO",
+    requesterName: "Conta pendente",
+    requesterEmail: "pendente@fgexacta.com",
+    linkedModule: "usuarios",
+    resolution: "Revisar status na lista de usuários."
+  },
+  {
+    ...createBaseEntity("request", 2, {
+      title: "Saque em análise",
+      subtitle: "Liberação financeira",
+      shortDescription: "Pedido de saque aguardando decisão.",
+      description: "Espelha o ticket financeiro até o Admin Master aprovar ou recusar.",
+      image: "/images/minha-renda-hero-real-v2.jpg",
+      category: "Financeiro",
+      tags: ["Saque"],
+      status: "EM_REVISAO"
+    }),
+    kind: "request",
+    requestType: "SAQUE",
+    requesterName: "Rafael Mendes",
+    requesterEmail: "rafael@fgexacta.com",
+    linkedModule: "financeiro",
+    resolution: "Conferir ticket em Financeiro e atualizar payoutStatus."
+  },
+  {
+    ...createBaseEntity("request", 3, {
+      title: "Conteúdo em revisão",
+      subtitle: "Publicação editorial",
+      shortDescription: "Item de catálogo aguardando publicação.",
+      description: "Centraliza o fluxo EM_REVISAO para o Admin Master publicar, pausar ou arquivar.",
+      image: "/images/product-card-01-real-v2.png",
+      category: "Publicação",
+      tags: ["Editorial"],
+      status: "EM_REVISAO"
+    }),
+    kind: "request",
+    requestType: "PUBLICACAO",
+    requesterName: "Editoria FG EXACTA",
+    requesterEmail: "editor@fgexacta.com",
+    linkedModule: "produtos",
+    resolution: "Abrir o módulo e publicar se o conteúdo estiver completo."
+  }
+];
+
+const seededSettings: SettingRecord[] = [
+  {
+    ...createBaseEntity("setting", 1, {
+      title: "Nome da plataforma",
+      subtitle: "Identidade pública",
+      shortDescription: "Nome exibido no painel e no Admin Master.",
+      description: "Ajuste estrutural da marca apresentada ao usuário.",
+      image: "/images/admin-filipe-galetto-01-v1.png",
+      category: "Geral",
+      tags: ["Marca"],
+      status: "PUBLICADO"
+    }),
+    kind: "setting",
+    groupLabel: "Geral",
+    settingKey: "platformName",
+    settingValue: "FG EXACTA"
+  },
+  {
+    ...createBaseEntity("setting", 2, {
+      title: "E-mail de suporte",
+      subtitle: "Canal oficial",
+      shortDescription: "Destino das solicitações de suporte.",
+      description: "Usado nas mensagens operacionais e no rodapé administrativo.",
+      image: "/images/admin-filipe-galetto-01-v1.png",
+      category: "Geral",
+      tags: ["Suporte"],
+      status: "PUBLICADO"
+    }),
+    kind: "setting",
+    groupLabel: "Geral",
+    settingKey: "supportEmail",
+    settingValue: "suporte@fgexacta.com"
+  },
+  {
+    ...createBaseEntity("setting", 3, {
+      title: "Janela de comissão",
+      subtitle: "Dias até liberação",
+      shortDescription: "Prazo de retenção antes do saque.",
+      description: "Define quantos dias a comissão fica em validação antes de ficar disponível.",
+      image: "/images/minha-renda-hero-real-v2.jpg",
+      category: "Financeiro",
+      tags: ["Comissão"],
+      status: "PUBLICADO"
+    }),
+    kind: "setting",
+    groupLabel: "Financeiro",
+    settingKey: "commissionHoldDays",
+    settingValue: "7"
+  },
+  {
+    ...createBaseEntity("setting", 4, {
+      title: "Saque mínimo",
+      subtitle: "Valor mínimo de liberação",
+      shortDescription: "Piso para solicitar saque.",
+      description: "O Admin Master controla o valor mínimo aceito nos tickets financeiros.",
+      image: "/images/minha-renda-hero-real-v2.jpg",
+      category: "Financeiro",
+      tags: ["Saque"],
+      status: "PUBLICADO"
+    }),
+    kind: "setting",
+    groupLabel: "Financeiro",
+    settingKey: "minWithdrawal",
+    settingValue: "R$ 50,00"
+  }
+];
+
 function linkCompanyRelationships() {
   seededProducts.forEach((product, index) => {
     seededCompanies[index % seededCompanies.length].linkedProductIds.push(product.id);
@@ -1643,7 +1855,7 @@ linkCompanyRelationships();
 
 export function createPlatformSeed(): PlatformDb {
   return {
-    version: 1,
+    version: 2,
     seededAt: now,
     users: seededUsers,
     products: seededProducts,
@@ -1661,6 +1873,12 @@ export function createPlatformSeed(): PlatformDb {
     spinWheels: seededSpinWheels,
     sweepstakes: seededSweepstakes,
     couponRedemptions: seededCouponRedemptions,
+    shareKits: seededShareKits,
+    rankingBoards: seededRankingBoards,
+    financeTickets: seededFinanceTickets,
+    notifications: seededNotifications,
+    requests: seededRequests,
+    settings: seededSettings,
     auditLog: [
       {
         id: "audit-001",

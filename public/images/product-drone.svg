@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Drone">
+  <rect width="800" height="600" fill="#0EA5E9"/>
+  <rect y="420" width="800" height="180" fill="#84CC16"/>
+  <rect x="340" y="250" width="120" height="90" rx="18" fill="#111827"/>
+  <circle cx="230" cy="230" r="54" fill="#FDE047"/>
+  <circle cx="570" cy="230" r="54" fill="#FDE047"/>
+  <circle cx="230" cy="370" r="54" fill="#F472B6"/>
+  <circle cx="570" cy="370" r="54" fill="#F472B6"/>
+  <path d="M284 250h56M460 250h56M284 340h56M460 340h56" stroke="#111827" stroke-width="16"/>
+</svg>

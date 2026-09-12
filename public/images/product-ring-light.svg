@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Ring light">
+  <rect width="800" height="600" fill="#3B0A5C"/>
+  <circle cx="140" cy="480" r="180" fill="#7C3AED"/>
+  <circle cx="400" cy="270" r="176" fill="#FDE047"/>
+  <circle cx="400" cy="270" r="118" fill="#3B0A5C"/>
+  <rect x="388" y="446" width="24" height="90" fill="#E2E8F0"/>
+  <rect x="300" y="536" width="200" height="18" rx="9" fill="#94A3B8"/>
+</svg>

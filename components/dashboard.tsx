@@ -331,7 +331,7 @@ function InsightPanel({ section }: { section: SectionConfig }) {
 
 function SystemPanel({ section }: { section: SectionConfig }) {
   return (
-    <section className="side-panel">
+    <section className="side-panel side-panel-architecture">
       <div className="side-panel-head">
         <h3>{section.systemTitle}</h3>
         <span>Base estrutural</span>
@@ -499,7 +499,7 @@ function ProductCatalogPanel({
 
       <div className="product-browser-list product-browser-grid">
         {filteredProducts.map((product) => (
-          <Link key={product.slug} href={`/detalhes/produtos/${product.slug}`} className="product-browser-item product-browser-card">
+          <Link key={product.slug} href={`/detalhes/produtos/${product.slug}`} className={`product-browser-item product-browser-card tone-${product.accent}`}>
             <div className="product-browser-media">
               <ManagedMedia
                 alt={product.title}
@@ -654,9 +654,9 @@ function LivesLayout({
           <SectionHeader eyebrow="Programação" title="Próximas Lives" description={section.heroNotice} />
           <UpcomingLivesPanel lives={upcomingLives} fallback={section.feed} />
         </div>
-        <aside className="stack-panels">
-          <InsightPanel section={section} />
+        <aside className="stack-panels stack-panels-lives">
           <SystemPanel section={section} />
+          <InsightPanel section={section} />
         </aside>
       </section>
     </>
@@ -1807,7 +1807,19 @@ function MissoesLayout({ section }: { section: SectionConfig }) {
 }
 
 function RankingLayout({ section }: { section: SectionConfig }) {
-  const podiumCards = section.cards.slice(0, 3);
+  const fallbackCard = section.cards[0] ?? {
+    eyebrow: "Ranking",
+    title: "Aguardando publicação",
+    subtitle: "O Admin Master ainda não definiu o quadro.",
+    meta: "Sem posições",
+    badge: "—",
+    accent: "blue" as const,
+    image: "/images/product-card-01-real-v2.png",
+    cta: "Voltar",
+    facts: [],
+    chips: []
+  };
+  const podiumCards = [0, 1, 2].map((index) => section.cards[index] ?? fallbackCard);
   const leaderboardCards = section.cards.slice(3);
 
   return (

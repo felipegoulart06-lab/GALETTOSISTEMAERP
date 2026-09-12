@@ -7,12 +7,17 @@ import type {
   CampaignRecord,
   ClubOfferRecord,
   CompanyRecord,
+  FinanceTicketRecord,
   LiveRecord,
   MentorshipRecord,
+  MissionRecord,
+  NotificationRecord,
   OpportunityRecord,
   PlatformDb,
   ProductRecord,
   ReferralServiceRecord,
+  RewardRecord,
+  ShareKitRecord,
   SpinWheelRecord,
   SupplierListRecord,
   SweepstakesRecord
@@ -194,6 +199,59 @@ function toSweepstakeCard(item: SweepstakesRecord): MediaCardData {
   };
 }
 
+function toManagedCard(
+  item: {
+    title: string;
+    subtitle?: string;
+    shortDescription?: string;
+    image: string;
+    category?: string;
+    featured?: boolean;
+    status?: string;
+    tags?: string[];
+    facts?: string[];
+    chips?: string[];
+  },
+  cta: string,
+  href: string,
+  meta: string
+): MediaCardData {
+  return {
+    eyebrow: item.category ?? "FG EXACTA",
+    title: item.title,
+    subtitle: item.shortDescription ?? item.subtitle ?? "",
+    meta,
+    badge: item.featured ? "Destaque" : String(item.status ?? "Publicado"),
+    accent: item.featured ? "orange" : "blue",
+    image: item.image,
+    cta,
+    href,
+    ctaHref: href,
+    facts: Array.isArray(item.facts) ? item.facts : [],
+    chips: Array.isArray(item.chips) ? item.chips : Array.isArray(item.tags) ? item.tags : []
+  };
+}
+
+function toShareKitCard(item: ShareKitRecord): MediaCardData {
+  return toManagedCard(item, item.ctaLabel || "Abrir kit", item.ctaHref || "/divulgue", `${item.channel} • ${item.packType}`);
+}
+
+function toFinanceTicketCard(item: FinanceTicketRecord): MediaCardData {
+  return toManagedCard(item, "Acompanhar", "/minha-renda", `${item.amountLabel} • ${item.payoutStatus}`);
+}
+
+function toNotificationCard(item: NotificationRecord): MediaCardData {
+  return toManagedCard(item, item.ctaLabel || "Abrir", item.ctaHref || "/notificacoes", `${item.priority} • ${item.channel}`);
+}
+
+function toMissionCard(item: MissionRecord): MediaCardData {
+  return toManagedCard(item, "Ver missão", "/missoes", `${item.scoreLabel} • ${item.difficulty}`);
+}
+
+function toRewardCard(item: RewardRecord): MediaCardData {
+  return toManagedCard(item, "Ver recompensa", "/recompensas", `${item.pointsRequired} pontos • ${item.valueLabel}`);
+}
+
 function toSpinWheelCard(item: SpinWheelRecord): MediaCardData {
   const rewardsSafe = Array.isArray(item.rewards) ? item.rewards : [];
   const rewardTitle = rewardsSafe[0]?.title ?? "Recompensa premium";
@@ -343,6 +401,12 @@ export async function buildUserDashboardSections() {
   const campaigns = Array.isArray(db.campaigns) ? db.campaigns.filter((item) => isContentVisible(item)) : [];
   const spinWheels = Array.isArray(db.spinWheels) ? db.spinWheels.filter((item) => isContentVisible(item)) : [];
   const sweepstakes = Array.isArray(db.sweepstakes) ? db.sweepstakes.filter((item) => isContentVisible(item)) : [];
+  const missions = Array.isArray(db.missions) ? db.missions.filter((item) => isContentVisible(item)) : [];
+  const rewards = Array.isArray(db.rewards) ? db.rewards.filter((item) => isContentVisible(item)) : [];
+  const shareKits = Array.isArray(db.shareKits) ? db.shareKits.filter((item) => isContentVisible(item)) : [];
+  const rankingBoards = Array.isArray(db.rankingBoards) ? db.rankingBoards.filter((item) => isContentVisible(item)) : [];
+  const financeTickets = Array.isArray(db.financeTickets) ? db.financeTickets.filter((item) => isContentVisible(item)) : [];
+  const notifications = Array.isArray(db.notifications) ? db.notifications.filter((item) => isContentVisible(item)) : [];
   const offers = Array.isArray(db.clubOffers) ? db.clubOffers.filter((item) => isContentVisible(item)).map(toClubOfferClientCard) : [];
 
   const homeHighlights = [
@@ -477,11 +541,28 @@ export async function buildUserDashboardSections() {
         }))
       }),
       ranking: withFallback(dashboardSections.ranking, {
+        cards: [...dbUsersSafe]
+          .sort((a, b) => (a.rankingPosition || 99) - (b.rankingPosition || 99))
+          .slice(0, 10)
+          .map((user, index) => ({
+            eyebrow: user.plan,
+            title: user.fullName,
+            subtitle: `${user.points} pontos`,
+            meta: `${user.salesCount} vendas • R$ ${user.commissionTotal}`,
+            badge: `#${user.rankingPosition || index + 1}`,
+            accent: (index === 0 ? "green" : index === 1 ? "blue" : index === 2 ? "orange" : "violet") as "green" | "blue" | "orange" | "violet",
+            image: user.avatar,
+            cta: "Ver desempenho",
+            href: "/desempenho",
+            ctaHref: "/desempenho",
+            facts: rankingBoards.slice(0, 3).map((board) => `${board.title}: ${board.metric}`),
+            chips: [user.status, user.role]
+          })),
         metrics: [
           { label: "Top usuário", value: dbUsersSafe[0]?.fullName ?? "FG EXACTA", detail: "Liderança atual", tone: "green" as const },
           { label: "Pontos totais", value: `${dbUsersSafe.reduce((total, item) => total + (typeof item.points === "number" ? item.points : 0), 0)}`, detail: "Base ranqueada", tone: "blue" as const },
-          { label: "Conversões", value: `${dbReferralsSafe.filter((item) => item.status === "CONVERTIDA").length}`, detail: "Peso no ranking", tone: "orange" as const },
-          { label: "Cupons", value: `${dbCouponSafe.length}`, detail: "Interações do ecossistema", tone: "violet" as const }
+          { label: "Quadros publicados", value: `${rankingBoards.length}`, detail: "Regras do Admin Master", tone: "orange" as const },
+          { label: "Conversões", value: `${dbReferralsSafe.filter((item) => item.status === "CONVERTIDA").length}`, detail: "Peso no ranking", tone: "violet" as const }
         ]
       }),
       desempenho: withFallback(dashboardSections.desempenho, {
@@ -490,6 +571,51 @@ export async function buildUserDashboardSections() {
           { label: "Comissões", value: `R$ ${dbUsersSafe.reduce((total, item) => total + (typeof item.commissionTotal === "number" ? item.commissionTotal : 0), 0).toFixed(0)}`, detail: "Plataforma", tone: "green" as const },
           { label: "Indicações", value: `${dbReferralsSafe.length}`, detail: "Rastreamento ativo", tone: "violet" as const },
           { label: "Cupons", value: `${dbCouponSafe.length}`, detail: "Clubão e ofertas", tone: "orange" as const }
+        ]
+      }),
+      divulgue: withFallback(dashboardSections.divulgue, {
+        cards: shareKits.map(toShareKitCard),
+        metrics: [
+          { label: "Kits publicados", value: `${shareKits.length}`, detail: "Materiais oficiais", tone: "blue" as const },
+          { label: "Canais", value: `${new Set(shareKits.map((item) => item.channel)).size}`, detail: "Redes ativas", tone: "green" as const },
+          { label: "Copies", value: `${shareKits.reduce((total, item) => total + item.copyLines.length, 0)}`, detail: "Legendas prontas", tone: "violet" as const },
+          { label: "Destaques", value: `${shareKits.filter((item) => item.featured).length}`, detail: "Prioridade do admin", tone: "orange" as const }
+        ]
+      }),
+      missoes: withFallback(dashboardSections.missoes, {
+        cards: missions.map(toMissionCard),
+        metrics: [
+          { label: "Missões publicadas", value: `${missions.length}`, detail: "Vindas do Admin Master", tone: "orange" as const },
+          { label: "Alta dificuldade", value: `${missions.filter((item) => item.difficulty === "Alta").length}`, detail: "Desafios", tone: "blue" as const },
+          { label: "Destaques", value: `${missions.filter((item) => item.featured).length}`, detail: "Em foco", tone: "violet" as const },
+          { label: "Recompensas ligadas", value: `${rewards.length}`, detail: "Catálogo paralelo", tone: "green" as const }
+        ]
+      }),
+      recompensas: withFallback(dashboardSections.recompensas, {
+        cards: rewards.map(toRewardCard),
+        metrics: [
+          { label: "Catálogo", value: `${rewards.length}`, detail: "Itens publicados", tone: "green" as const },
+          { label: "Estoque", value: `${rewards.reduce((total, item) => total + item.quantityAvailable, 0)}`, detail: "Unidades", tone: "blue" as const },
+          { label: "Tipos", value: `${new Set(rewards.map((item) => item.rewardType)).size}`, detail: "Formatos", tone: "violet" as const },
+          { label: "Destaques", value: `${rewards.filter((item) => item.featured).length}`, detail: "Em evidência", tone: "orange" as const }
+        ]
+      }),
+      "minha-renda": withFallback(dashboardSections["minha-renda"], {
+        cards: financeTickets.map(toFinanceTicketCard),
+        metrics: [
+          { label: "Lançamentos", value: `${financeTickets.length}`, detail: "Controlados pelo admin", tone: "green" as const },
+          { label: "Em análise", value: `${(db.financeTickets ?? []).filter((item) => item.payoutStatus === "EM_ANALISE" || item.payoutStatus === "PENDENTE").length}`, detail: "Aguardando Master", tone: "orange" as const },
+          { label: "Pagos", value: `${(db.financeTickets ?? []).filter((item) => item.payoutStatus === "PAGO").length}`, detail: "Concluídos", tone: "blue" as const },
+          { label: "Saques", value: `${(db.financeTickets ?? []).filter((item) => item.ticketType === "SAQUE").length}`, detail: "Pedidos", tone: "violet" as const }
+        ]
+      }),
+      notificacoes: withFallback(dashboardSections.notificacoes, {
+        cards: notifications.map(toNotificationCard),
+        metrics: [
+          { label: "Publicadas", value: `${notifications.length}`, detail: "Visíveis no painel", tone: "orange" as const },
+          { label: "Urgentes", value: `${notifications.filter((item) => item.priority === "URGENTE").length}`, detail: "Ação imediata", tone: "green" as const },
+          { label: "Canais", value: `${new Set(notifications.map((item) => item.channel)).size}`, detail: "Distribuição", tone: "blue" as const },
+          { label: "Destaques", value: `${notifications.filter((item) => item.featured).length}`, detail: "Prioridade", tone: "violet" as const }
         ]
       })
     } satisfies Record<SectionKey, SectionConfig>;

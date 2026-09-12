@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Umidificador">
+  <rect width="800" height="600" fill="#5B21B6"/>
+  <circle cx="140" cy="120" r="110" fill="#C4B5FD"/>
+  <ellipse cx="400" cy="380" rx="130" ry="150" fill="#F5D0FE"/>
+  <rect x="300" y="250" width="200" height="40" rx="20" fill="#FDE68A"/>
+  <path d="M370 210c10-40 50-40 60 0" fill="none" stroke="#67E8F9" stroke-width="14"/>
+  <path d="M400 170c10-40 50-40 60 0" fill="none" stroke="#F472B6" stroke-width="14"/>
+</svg>

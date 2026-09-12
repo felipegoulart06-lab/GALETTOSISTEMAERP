@@ -23,7 +23,13 @@ const moduleToCollection: Record<string, { collection: CollectionKey; auditModul
   missoes: { collection: "missions", auditModule: "missions" },
   recompensas: { collection: "rewards", auditModule: "rewards" },
   "giro-da-sorte": { collection: "spinWheels", auditModule: "spinWheels" },
-  sorteios: { collection: "sweepstakes", auditModule: "sweepstakes" }
+  sorteios: { collection: "sweepstakes", auditModule: "sweepstakes" },
+  divulgue: { collection: "shareKits", auditModule: "shareKits" },
+  ranking: { collection: "rankingBoards", auditModule: "rankingBoards" },
+  financeiro: { collection: "financeTickets", auditModule: "financeTickets" },
+  notificacoes: { collection: "notifications", auditModule: "notifications" },
+  solicitacoes: { collection: "requests", auditModule: "requests" },
+  configuracoes: { collection: "settings", auditModule: "settings" }
 };
 
 export async function GET() {

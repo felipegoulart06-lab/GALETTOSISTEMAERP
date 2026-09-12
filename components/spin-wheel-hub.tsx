@@ -133,7 +133,7 @@ export function SpinWheelHub({ initialWheels }: SpinWheelHubProps) {
 
   return (
     <div className="giro-hub">
-      <section className={`giro-arena${isSpinning ? " is-spinning" : ""}`}>
+      <section className={`giro-arena${isSpinning ? " is-spinning" : " is-idle"}`}>
         <div className="giro-arena-copy">
           <span className="giro-kicker">{activeWheel.wheelType}</span>
           <h1>{activeWheel.title}</h1>
@@ -181,39 +181,47 @@ export function SpinWheelHub({ initialWheels }: SpinWheelHubProps) {
         </div>
 
         <div className="giro-wheel-column">
-          <div className={`giro-wheel-stage${isSpinning ? " is-spinning" : ""}`}>
+          <div className={`giro-wheel-stage${isSpinning ? " is-spinning" : " is-idle"}`}>
+            <div className="giro-wheel-halo" aria-hidden="true" />
             <div className="giro-wheel-lamps" aria-hidden="true">
               {Array.from({ length: 20 }, (_, index) => (
                 <i key={index} style={{ ["--i" as string]: index } as CSSProperties} />
               ))}
             </div>
             <div className="giro-wheel-pointer" aria-hidden="true" />
-            <div
-              ref={wheelRef}
-              className="giro-wheel"
-              style={{
-                background: `conic-gradient(from -90deg, ${wheelGradient(rewards)})`,
-                transform: `rotate(${rotation}deg)`
-              }}
-            >
-              <div className="giro-wheel-ticks" aria-hidden="true" />
-              {rewards.map((reward, index) => (
-                <span
-                  key={reward.id}
-                  className={`giro-wheel-label${highlightedRewardId === reward.id ? " is-won" : ""}`}
-                  style={{ transform: `rotate(${index * sliceAngle + sliceAngle / 2}deg)` }}
-                >
-                  <em>{shortRewardLabel(reward.title)}</em>
-                </span>
-              ))}
-              <div className="giro-wheel-hub">
-                <strong>FG</strong>
-                <small>{isSpinning ? "SORTE" : "GIRO"}</small>
+            <div className="giro-wheel-idle">
+              <div
+                ref={wheelRef}
+                className="giro-wheel"
+                style={{
+                  background: `conic-gradient(from -90deg, ${wheelGradient(rewards)})`,
+                  transform: `rotate(${rotation}deg)`
+                }}
+              >
+                <div className="giro-wheel-ticks" aria-hidden="true" />
+                {rewards.map((reward, index) => (
+                  <span
+                    key={reward.id}
+                    className={`giro-wheel-label${highlightedRewardId === reward.id ? " is-won" : ""}`}
+                    style={{ transform: `rotate(${index * sliceAngle + sliceAngle / 2}deg)` }}
+                  >
+                    <em>{shortRewardLabel(reward.title)}</em>
+                  </span>
+                ))}
+                <div className="giro-wheel-sheen" aria-hidden="true" />
+                <div className="giro-wheel-hub">
+                  <strong>FG</strong>
+                  <small>{isSpinning ? "SORTE" : "GIRO"}</small>
+                </div>
               </div>
             </div>
           </div>
           <p className="giro-wheel-caption">
-            {isSpinning ? "Aguarde o ponteiro travar no prêmio." : "Toque em Girar agora para acionar a roleta."}
+            {isSpinning
+              ? "Aguarde o ponteiro travar no prêmio."
+              : canSpin
+                ? "A roleta já está acesa. Clique em Girar agora."
+                : "Sem giros disponíveis neste momento."}
           </p>
         </div>
       </section>
@@ -359,7 +367,7 @@ export function SpinWheelHub({ initialWheels }: SpinWheelHubProps) {
               {resultReward.estimatedValue ? <p>Valor estimado: {resultReward.estimatedValue}</p> : null}
               {rewardCode ? <code>{rewardCode}</code> : null}
             </div>
-            <button type="button" className="giro-spin-button" onClick={() => setShowCelebration(false)}>
+            <button type="button" className="giro-modal-action" onClick={() => setShowCelebration(false)}>
               <span>Fechar e continuar</span>
             </button>
           </div>

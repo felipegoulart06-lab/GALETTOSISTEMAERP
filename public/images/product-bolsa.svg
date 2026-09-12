@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Bolsa">
+  <rect width="800" height="600" fill="#9D174D"/>
+  <circle cx="680" cy="520" r="160" fill="#F59E0B"/>
+  <path d="M300 230c0-70 50-120 100-120s100 50 100 120" fill="none" stroke="#FDE68A" stroke-width="22"/>
+  <rect x="240" y="220" width="320" height="240" rx="28" fill="#FB7185"/>
+  <rect x="270" y="260" width="260" height="28" rx="10" fill="#831843"/>
+  <circle cx="400" cy="360" r="22" fill="#FDE68A"/>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Power bank">
+  <rect width="800" height="600" fill="#0F766E"/>
+  <polygon points="800,0 800,600 420,600" fill="#14B8A6"/>
+  <rect x="270" y="150" width="260" height="300" rx="36" fill="#042F2E"/>
+  <rect x="300" y="190" width="200" height="16" rx="8" fill="#5EEAD4"/>
+  <rect x="300" y="220" width="140" height="16" rx="8" fill="#2DD4BF"/>
+  <circle cx="400" cy="350" r="36" fill="#F97316"/>
+</svg>

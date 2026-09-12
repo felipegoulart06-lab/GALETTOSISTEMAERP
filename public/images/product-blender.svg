@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Blender">
+  <rect width="800" height="600" fill="#166534"/>
+  <circle cx="120" cy="90" r="120" fill="#FACC15"/>
+  <path d="M300 150h200l40 210H260z" fill="#A7F3D0"/>
+  <circle cx="360" cy="250" r="28" fill="#BE123C"/>
+  <circle cx="430" cy="250" r="22" fill="#FB7185"/>
+  <rect x="270" y="360" width="260" height="90" rx="18" fill="#111827"/>
+  <rect x="300" y="390" width="80" height="16" rx="8" fill="#FACC15"/>
+</svg>

@@ -38,6 +38,12 @@ type CollectionMap = {
   spinWheels: PlatformDb["spinWheels"];
   sweepstakes: PlatformDb["sweepstakes"];
   couponRedemptions: PlatformDb["couponRedemptions"];
+  shareKits: PlatformDb["shareKits"];
+  rankingBoards: PlatformDb["rankingBoards"];
+  financeTickets: PlatformDb["financeTickets"];
+  notifications: PlatformDb["notifications"];
+  requests: PlatformDb["requests"];
+  settings: PlatformDb["settings"];
 };
 
 export type CollectionKey = keyof CollectionMap;
@@ -78,8 +84,8 @@ async function readPlatformDbFromDisk(): Promise<PlatformDb> {
   try {
     const raw = await readFile(DB_PATH, "utf8");
     const parsed = JSON.parse(raw) as PlatformDb;
-    memoryDb = parsed;
-    return parsed;
+    memoryDb = hydratePlatformDb(parsed);
+    return memoryDb;
   } catch {
     if (memoryDb) {
       return memoryDb;
@@ -89,8 +95,62 @@ async function readPlatformDbFromDisk(): Promise<PlatformDb> {
   }
 }
 
+function mergeCollection<T extends { id: string; title?: string }>(saved: T[] | undefined, seed: T[]): T[] {
+  if (!Array.isArray(saved) || saved.length === 0) {
+    return seed;
+  }
+
+  const byId = new Map(saved.map((item) => [item.id, item]));
+  const byTitle = new Map(saved.map((item) => [item.title, item]));
+  const merged = seed.map((item) => {
+    const current = byId.get(item.id) ?? (item.title ? byTitle.get(item.title) : undefined);
+    if (!current) {
+      return item;
+    }
+    return { ...current, ...item, id: current.id };
+  });
+  const usedTitles = new Set(merged.map((item) => item.title));
+  const extras = saved.filter((item) => !usedTitles.has(item.title));
+  return [...merged, ...extras];
+}
+
+function hydratePlatformDb(parsed: Partial<PlatformDb> | null | undefined): PlatformDb {
+  const seed = createPlatformSeed();
+  const source = parsed ?? {};
+
+  return {
+    ...seed,
+    ...source,
+    version: Math.max(Number(source.version ?? 1), 3),
+    users: Array.isArray(source.users) ? source.users : seed.users,
+    products: mergeCollection(source.products, seed.products),
+    mentorships: Array.isArray(source.mentorships) ? source.mentorships : seed.mentorships,
+    lives: Array.isArray(source.lives) ? source.lives : seed.lives,
+    clubOffers: Array.isArray(source.clubOffers) ? source.clubOffers : seed.clubOffers,
+    companies: Array.isArray(source.companies) ? source.companies : seed.companies,
+    supplierLists: Array.isArray(source.supplierLists) ? source.supplierLists : seed.supplierLists,
+    referralServices: Array.isArray(source.referralServices) ? source.referralServices : seed.referralServices,
+    referrals: Array.isArray(source.referrals) ? source.referrals : seed.referrals,
+    opportunities: Array.isArray(source.opportunities) ? source.opportunities : seed.opportunities,
+    campaigns: Array.isArray(source.campaigns) ? source.campaigns : seed.campaigns,
+    missions: Array.isArray(source.missions) ? source.missions : seed.missions,
+    rewards: Array.isArray(source.rewards) ? source.rewards : seed.rewards,
+    spinWheels: Array.isArray(source.spinWheels) ? source.spinWheels : seed.spinWheels,
+    sweepstakes: Array.isArray(source.sweepstakes) ? source.sweepstakes : seed.sweepstakes,
+    couponRedemptions: Array.isArray(source.couponRedemptions) ? source.couponRedemptions : seed.couponRedemptions,
+    shareKits: Array.isArray(source.shareKits) ? source.shareKits : seed.shareKits,
+    rankingBoards: Array.isArray(source.rankingBoards) ? source.rankingBoards : seed.rankingBoards,
+    financeTickets: Array.isArray(source.financeTickets) ? source.financeTickets : seed.financeTickets,
+    notifications: Array.isArray(source.notifications) ? source.notifications : seed.notifications,
+    requests: Array.isArray(source.requests) ? source.requests : seed.requests,
+    settings: Array.isArray(source.settings) ? source.settings : seed.settings,
+    auditLog: Array.isArray(source.auditLog) ? source.auditLog : seed.auditLog
+  };
+}
+
 export async function getPlatformDb(): Promise<PlatformDb> {
   if (memoryDb) {
+    memoryDb = hydratePlatformDb(memoryDb);
     return memoryDb;
   }
 

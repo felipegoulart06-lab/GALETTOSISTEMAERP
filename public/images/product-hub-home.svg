@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Hub smart home">
+  <rect width="800" height="600" fill="#1D4ED8"/>
+  <polygon points="0,600 800,280 800,600" fill="#7C3AED"/>
+  <rect x="250" y="180" width="300" height="220" rx="28" fill="#0B1220"/>
+  <circle cx="400" cy="290" r="54" fill="#34D399"/>
+  <rect x="290" y="360" width="40" height="10" rx="5" fill="#93C5FD"/>
+  <rect x="350" y="360" width="40" height="10" rx="5" fill="#F472B6"/>
+  <rect x="410" y="360" width="40" height="10" rx="5" fill="#FBBF24"/>
+</svg>

@@ -555,7 +555,7 @@ export const dashboardSections: Record<SectionKey, SectionConfig> = {
     heroSecondaryActionLabel: "Ver todos os produtos",
     heroSecondaryActionHref: "/produtos?catalogo=aberto#catalogo-produtos",
     metrics: [
-      { label: "Produtos ativos", value: "05", detail: "Prontos para afiliação", tone: "blue" },
+      { label: "Produtos ativos", value: "16", detail: "Prontos para afiliação", tone: "blue" },
       { label: "Maior comissão", value: "50%", detail: "Campanha destaque", tone: "green" },
       { label: "Cliques no mês", value: "1.284", detail: "Nos seus links", tone: "violet" },
       { label: "Conversão média", value: "5,9%", detail: "Seu desempenho", tone: "orange" }
